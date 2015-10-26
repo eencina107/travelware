@@ -8,17 +8,20 @@ package com.fpuna.py.travelware.bean;
 import com.fpuna.py.travelware.dao.PermisoDao;
 import com.fpuna.py.travelware.dao.RolDao;
 import com.fpuna.py.travelware.dao.UsuarioDao;
+import com.fpuna.py.travelware.model.PgePermisos;
 import com.fpuna.py.travelware.model.PgeRoles;
 import com.fpuna.py.travelware.model.PgeUsuarios;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.jsp.tagext.IterationTag;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 
@@ -91,6 +94,53 @@ public class LoginBean implements Serializable{
      * @throws IOException
      */
     public void redirect() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("secure/index.html");
+        //FacesContext.getCurrentInstance().getExternalContext().redirect("secure/index.html");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+    }
+    
+    public boolean getPermisoPantalla(List<String> roles) {
+        //revisar 
+        return true;
+    }
+    
+    //Getters && Setters
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    public List<PgeRoles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<PgeRoles> rol) {
+        this.roles = rol;
+    }
+
+    public PgeUsuarios getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(PgeUsuarios usuario) {
+        this.usuario = usuario;
     }
 }

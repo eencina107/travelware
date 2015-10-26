@@ -5,12 +5,26 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <head>
-        <title>TODO supply a title</title>
+        <title>Ingreso al Sistema</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div></div>
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:growl id="mensajes" showDetail="true" life="2000" />
+            <h:form>
+                <p:inputText id="userNameInput" label="Usuario:" value="#{loginBean.username}" required="true" requiredMessage="Debe ingresar el usuario."/>
+                <p:password id="passwordInput" label="Contraseña:" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
+                <f:facet name="footer">
+                        <p:commandButton id="loginButton" value="Login"
+                                         actionListener="#{loginBean.login}" update=":mensajes"
+                                         />
+            </h:form>
+        </h:panelGrid>    
     </body>
 </html>
