@@ -4,27 +4,29 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-    <head>
+    <h:head>
         <title>Ingreso al Sistema</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div></div>
-        <h:panelGrid columns="2" cellpadding="5">
-            <p:growl id="mensajes" showDetail="true" life="2000" />
-            <h:form>
-                <p:inputText id="userNameInput" label="Usuario:" value="#{loginBean.username}" required="true" requiredMessage="Debe ingresar el usuario."/>
-                <p:password id="passwordInput" label="Contraseña:" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
-                <f:facet name="footer">
-                        <p:commandButton id="loginButton" value="Login"
-                                         actionListener="#{loginBean.login}" update=":mensajes"
-                                         />
-            </h:form>
-        </h:panelGrid>    
-    </body>
+    </h:head>
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="2000"></p:growl>
+        <h:form>
+            <p:panel header="login" style="width:400px">
+                <p:panelGrid columns="2">
+                    <p:outputLabel id="userLabel" value="Usuario:"/>
+                    <p:inputText id="userNameInput" label="userLabel"  value="#{loginBean.username}" onblur="alert('se ingreso el usuario: '+#{loginBean.username})" required="true" requiredMessage="Debe ingresar el usuario."></p:inputText>
+                    <p:outputLabel id="passLabel" value="Contraseña:"/>
+                    <p:password id="passwordInput" label="passLabel" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
+                    <f:facet name="footer">
+                        <p:commandButton id="loginButton" value="Ingresar" actionListener="#{loginBean.login}" update=":mensajes"/>
+                    </f:facet>
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+    </h:body>
 </html>
+

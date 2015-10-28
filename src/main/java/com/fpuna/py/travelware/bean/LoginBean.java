@@ -8,20 +8,19 @@ package com.fpuna.py.travelware.bean;
 import com.fpuna.py.travelware.dao.PermisoDao;
 import com.fpuna.py.travelware.dao.RolDao;
 import com.fpuna.py.travelware.dao.UsuarioDao;
-import com.fpuna.py.travelware.model.PgePermisos;
 import com.fpuna.py.travelware.model.PgeRoles;
 import com.fpuna.py.travelware.model.PgeUsuarios;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.jsp.tagext.IterationTag;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 
@@ -29,6 +28,8 @@ import org.primefaces.context.RequestContext;
  *
  * @author eencina
  */
+@ManagedBean
+@SessionScoped
 public class LoginBean implements Serializable{
     private String username;
     private String password;
@@ -66,7 +67,7 @@ public class LoginBean implements Serializable{
             logger.info("Se inició sesión como " + username);
             roles = rolDaoEJB.getRolesByUsuario(usuario);
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("secure/home.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -89,7 +90,7 @@ public class LoginBean implements Serializable{
      * Método que redirecciona al home de la aplicación en caso de que el
      * usuario este correctamente autenticado, de lo contrario la regla de
      * acceso aplicada a travez de loginFilter hace que se redireccione al
-     * login.jsf
+     * login.xhtml
      *
      * @throws IOException
      */
