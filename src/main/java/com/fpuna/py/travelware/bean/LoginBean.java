@@ -67,7 +67,7 @@ public class LoginBean implements Serializable{
             logger.info("Se inició sesión como " + username);
             roles = rolDaoEJB.getRolesByUsuario(usuario);
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
             }
