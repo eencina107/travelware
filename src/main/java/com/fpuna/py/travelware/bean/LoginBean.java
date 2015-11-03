@@ -96,7 +96,7 @@ public class LoginBean implements Serializable{
      */
     public void redirect() throws IOException {
         //FacesContext.getCurrentInstance().getExternalContext().redirect("secure/index.html");
-        FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
     }
     
     public boolean getPermisoPantalla(List<String> roles) {

@@ -21,7 +21,9 @@
         </div>
         <div>
             <div id="left">
+                <p:growl id="messages" showDetail="false"/>
                 <ui:insert name="left">Left</ui:insert>
+                <p:slideMenu id="menuPrincipal" model="#{menuBean.menuModel}"/>
             </div>
             <div id="content" class="left_content">
                 <ui:insert name="content">Content</ui:insert>
