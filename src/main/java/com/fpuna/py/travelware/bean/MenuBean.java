@@ -36,6 +36,10 @@ public class MenuBean {
     List<PgeMenus> menus;
     PgeUsuarios usuario;
     
+    public MenuBean(){
+        
+    }
+    
     public MenuBean(PgeUsuarios user) throws IOException{
         
         ModuloDao modulos = null;
@@ -56,8 +60,10 @@ public class MenuBean {
                 n=menu.getPgeMenusPK().getMenId();
                 modulo= modulos.getById(menu.getPgeMenusPK().getMenId());
                 submenu=new DefaultSubMenu(modulo.getModDesc());
+                submenu.setId(String.valueOf(modulo.getModId()));
             }
             item=new DefaultMenuItem(menu.getMenDescripcion());
+            item.setId(String.valueOf(menu.getPgeMenusPK().getMenId())+"-"+String.valueOf(menu.getPgeMenusPK().getMenSubId()));
             item.setUrl(serverip);
             submenu.addElement(item);   
         }

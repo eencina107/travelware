@@ -5,15 +5,21 @@
  */
 package com.fpuna.py.travelware.bean;
 
+import com.fpuna.py.travelware.dao.ModuloDao;
 import com.fpuna.py.travelware.dao.PermisoDao;
 import com.fpuna.py.travelware.dao.RolDao;
 import com.fpuna.py.travelware.dao.UsuarioDao;
+import com.fpuna.py.travelware.model.PgeMenus;
+import com.fpuna.py.travelware.model.PgeModulos;
 import com.fpuna.py.travelware.model.PgeRoles;
 import com.fpuna.py.travelware.model.PgeUsuarios;
+import com.fpuna.py.travelware.util.Config;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
@@ -23,6 +29,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  *
@@ -43,6 +53,16 @@ public class LoginBean implements Serializable{
     
     private  PgeUsuarios usuario;
     private List<PgeRoles> roles;
+    private MenuModel model= new DefaultMenuModel();
+
+    public MenuModel getModel() {
+        return model;
+    }
+
+    public void setModel(MenuModel model) {
+        this.model = model;
+    }
+    private List<PgeMenus> menus;
     
      private static final Logger logger = Logger.getLogger(LoginBean.class);
     
@@ -55,10 +75,10 @@ public class LoginBean implements Serializable{
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         logger.info("Cerró la sessión");
         loggedIn = false;
-        return "index";
+        return "login";
     }
     
-    public String login() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public String login() throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
         usuario = usuarioEjb.autenticate(username, password);
         
         loggedIn = usuario != null;
@@ -66,8 +86,9 @@ public class LoginBean implements Serializable{
         if (loggedIn) {
             logger.info("Se inició sesión como " + username);
             roles = rolDaoEJB.getRolesByUsuario(usuario);
+            cargarMenu();
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("Pais.xhtml");
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -102,6 +123,44 @@ public class LoginBean implements Serializable{
     public boolean getPermisoPantalla(List<String> roles) {
         //revisar 
         return true;
+    }
+    
+    public void cargarMenu() throws IOException{
+        ModuloDao modulos = null;
+        PgeModulos modulo= null;
+        menus = usuario.getPgeMenus();
+        int n=1; //numero de modulo, al cambiar se crea un nuevo submenu
+        Collections.sort(menus);
+        Iterator i = menus.iterator();
+        String serverip=null;
+        try{
+            serverip= Config.getProperties("serverip");
+        }
+        catch(Exception e){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, 
+                                                    "Error.", 
+                                                    "No se encontró el Archivo de Configuración del Sistema."+
+                                                            "Excepcion:"+e);
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+        
+        PgeMenus menu;
+        DefaultSubMenu submenu = null;
+        DefaultMenuItem item;
+        while (i.hasNext()){
+            menu= (PgeMenus) i.next();
+            if (menu.getPgeMenusPK().getMenId()!= n){
+                model.addElement(submenu);
+                n=menu.getPgeMenusPK().getMenId();
+                modulo= modulos.getById(menu.getPgeMenusPK().getMenId());
+                submenu=new DefaultSubMenu(modulo.getModDesc());
+                submenu.setId(String.valueOf(modulo.getModId()));
+            }
+            item=new DefaultMenuItem(menu.getMenDescripcion());
+            item.setId(String.valueOf(menu.getPgeMenusPK().getMenId())+"-"+String.valueOf(menu.getPgeMenusPK().getMenSubId()));
+            item.setUrl(serverip);
+            submenu.addElement(item);   
+        }
     }
     
     //Getters && Setters

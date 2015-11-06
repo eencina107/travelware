@@ -15,13 +15,13 @@ import java.util.Properties;
 public class Config {
     public static String getProperties(String clave) throws IOException{
         Properties prop = new Properties();
-        prop.load(Config.class.getResourceAsStream("Config.properties"));
+        prop.load(Config.class.getResourceAsStream("/src/main/DatosGenerales.properties"));
         return prop.getProperty(clave);
     }
     
     public static String setProperties(String clave, String valor) throws IOException{
         Properties prop= new Properties();
-        prop.load(Config.class.getResourceAsStream("Config.properties"));
+        prop.load(Config.class.getResourceAsStream("/src/main/DatosGenerales.properties"));
         prop.setProperty(clave, valor);
         return prop.getProperty(clave);
     }
