@@ -64,7 +64,7 @@ public class MenuBean {
             }
             item=new DefaultMenuItem(menu.getMenDescripcion());
             item.setId(String.valueOf(menu.getPgeMenusPK().getMenId())+"-"+String.valueOf(menu.getPgeMenusPK().getMenSubId()));
-            item.setUrl(serverip);
+            item.setUrl(serverip+menu.getMenUbicacion());
             submenu.addElement(item);   
         }
         model.addElement(submenu);

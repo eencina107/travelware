@@ -8,7 +8,7 @@
 }
 
 #bottom {
-    position: relative;
+    float: bottom;
     background-color: #ff9933;
     padding: 5px;
     margin: 10px 0px 0px 0px;
@@ -16,32 +16,33 @@
 
 #left {
     float: left;
-    background-color: #ece3a5;
+    background-color: #FFC700;
     padding: 5px;
-    width: 150px;
+    width: 210px;
+    height: 25%;
 }
 
 #right {
     float: right;
-    background-color: #ece3a5;
+    background-color: #ffffff;
     padding: 5px;
-    width: 150px;
+    width: 50%;
 }
 
 .center_content {
     position: relative;
-    background-color: #dddddd;
+    background-color: #FFC700;
     padding: 5px;
 }
 
 .left_content {
-    background-color: #dddddd;
+    background-color: #FFC700;
     padding: 5px;
-    margin-left: 170px;
+    margin-left:200px;
 }
 
 .right_content {
-    background-color: #dddddd;
+    background-color: #FFC700;
     padding: 5px;
     margin: 0px 170px 0px 170px;
 }

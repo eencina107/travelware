@@ -18,15 +18,16 @@
 
         <div id="top">
             <ui:insert name="top">
-                <img src="resources/logo.png"/>
+                <img src="../resources/logo.png" width="542" height="124" alt="San Rafael Peregrinaciones"/>
+
             </ui:insert>
         </div>
         <div>
             <div id="left">
                 <p:growl id="messages" showDetail="false"/>
-                <ui:insert name="left">
+                <ui:insert name="left" >
                     <p:slideMenu id="menuPrincipal" 
-                                 model="#{loginBean.model}"/>
+                                 model="#{loginBean.model}" backLabel="Atrás" style="width:200px; height: 300px" overlay="false"/>
                 </ui:insert>
                 
             </div>
@@ -38,8 +39,8 @@
             <ui:insert name="bottom">
                 <h:form>
                     <p:stack icon="/resources/stack.png" expanded="true">
-                        <p:menuitem value="Home" icon="/resources/home_icon.png" url="/home.xhtml"/>
-                        <p:menuitem value="Salir" icon="/resources/logout_icon.png" url="#{loginBean.logout()}" />
+                        <p:menuitem value="Salir" icon="/resources/logout.png" action="#{loginBean.logout}"  />
+                        <p:menuitem value="Inicio" icon="/resources/home_icon.png" url="/secure/index.xhtml"/>
                     </p:stack>    
                 </h:form>
                   

@@ -11,7 +11,7 @@
                 <p:growl id="growl" showDetail="true" sticky="true">
                     <p:dataTable id="dtPais" var="pais" 
                                  value="#{paisBean.paises}" editable="true" 
-                                 editMode="cell" widgetVar="cellCars">
+                                 editMode="cell" widgetVar="cellCars" style="background-color: #FFC700">
                         <f:facet name="header">
                             Listado de Paises
                         </f:facet>
@@ -39,15 +39,17 @@
                         </p:column>
                         <p:column headerText="Ubicación">
                             <p:cellEditor>
-                                <f:facet name="input">
-                                    <p:gmap id="gmap" center="-25.282400,-57.635004" zoom="15" type="ROADMAP" style="width:100%;height:400px">
-                                        <p:ajax event="pointSelect" listener="#{paisBean.onPointSelect}" update="messages" />
-                                    </p:gmap>
+                                <f:facet name="input"><p:inputText id="ubiInput" 
+                                                                   value="#{pais.paiUbi}" 
+                                                                   label="Ubicación"/>
                                 </f:facet>
                                 <f:facet name="output">
-                                    <p:gmap center="#{pais.paiUbi}" zoom="13" type="HYBRID" style="width:350px;height:250px" model="#{paisBean.paisUbiModel}" />
+                                    <h:outputText value="#{pais.paiUbi}"/>
                                 </f:facet>
                             </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton value="Select Car" icon="ui-icon-extlink" actionListener="#{paisBean.verUbicacion()}"/>
                         </p:column>
                     </p:dataTable>
                 </p:growl>

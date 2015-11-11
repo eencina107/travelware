@@ -8,7 +8,9 @@ package com.fpuna.py.travelware.bean;
 import com.fpuna.py.travelware.dao.PaisDao;
 import com.fpuna.py.travelware.model.PgePaises;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -120,8 +122,20 @@ public class PaisBean {
     }
     
     public void onPointSelect(PointSelectEvent event){
-        LatLng latlng = event.getLatLng(); //objeto Latitud-Longitud propio de primefaces
-        this.paiUbi=latlng.toString();
+         LatLng latlng = null;//objeto Latitud-Longitud propio de primefaces
+        if (event!=null){
+            latlng= event.getLatLng();
+            this.paiUbi=latlng.toString();
+        }
+        
+    }
+    
+    public void verUbicacion() {
+        Map<String,Object> options = new HashMap<String, Object>();
+        options.put("resizable", false);
+        options.put("draggable", false);
+        options.put("modal", true);
+        RequestContext.getCurrentInstance().openDialog("ubicacionDialog", options, null);
     }
     
     public int getPaiId(){

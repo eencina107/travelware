@@ -5,20 +5,25 @@
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
     
     <navigation-rule>
+        <!--<from-view-id>/login.xhtml</from-view-id>-->
         <navigation-case>
             <from-outcome>login</from-outcome>
-                <from-action>
-                    #{loginBean.logout}
-                </from-action>
             <to-view-id>/login.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/secure/index.xhtml</to-view-id>
+        </navigation-case>
+        
     </navigation-rule>
+   <managed-bean>
+       <managed-bean-name>loginBean</managed-bean-name>
+       <managed-bean-class>
+           com.fpuna.py.travelware.bean.LoginBean
+       </managed-bean-class>
+       <managed-bean-scope>session</managed-bean-scope>
+   </managed-bean>
     <application>
-        <resource-bundle>
-            <base-name>/TravelwareBundle</base-name>
-            <var>travelwareBundle</var>
-        </resource-bundle>
-        <navigation-handler>org.primefaces.mobile.application.MobileNavigationHandler</navigation-handler>
         <resource-bundle>
             <base-name>/Bundle</base-name>
             <var>bundle</var>

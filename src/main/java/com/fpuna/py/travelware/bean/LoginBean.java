@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +26,9 @@ import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.menu.DefaultMenuItem;
@@ -80,15 +82,17 @@ public class LoginBean implements Serializable{
     
     public String login() throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
         usuario = usuarioEjb.autenticate(username, password);
-        
+        String contextPath=null;
         loggedIn = usuario != null;
         
         if (loggedIn) {
             logger.info("Se inició sesión como " + username);
             roles = rolDaoEJB.getRolesByUsuario(usuario);
+            model=new DefaultMenuModel();
             cargarMenu();
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("Pais.xhtml");
+                contextPath =FacesContext.getCurrentInstance().getExternalContext().getApplicationContextPath();
+                FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath+"/secure/index.xhtml");
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -116,8 +120,8 @@ public class LoginBean implements Serializable{
      * @throws IOException
      */
     public void redirect() throws IOException {
-        //FacesContext.getCurrentInstance().getExternalContext().redirect("secure/index.html");
-        FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/secure/index.html");
+        
     }
     
     public boolean getPermisoPantalla(List<String> roles) {
@@ -146,21 +150,31 @@ public class LoginBean implements Serializable{
         
         PgeMenus menu;
         DefaultSubMenu submenu = null;
-        DefaultMenuItem item;
-        while (i.hasNext()){
+        DefaultMenuItem item = null;
+        int mod;//bandera del numero de modulo
+        
+        if (menus!=null){
             menu= (PgeMenus) i.next();
-            if (menu.getPgeMenusPK().getMenId()!= n){
+            mod=menu.getPgeMenusPK().getMenId();
+            submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
+            while (i.hasNext()){
+                while(mod==menu.getPgeMenusPK().getMenId()){
+                    item=new DefaultMenuItem(menu.getMenDescripcion());
+                    item.setUrl(serverip+menu.getMenUbicacion());
+                    submenu.addElement(item);
+                    menu= (PgeMenus) i.next();
+                }
                 model.addElement(submenu);
-                n=menu.getPgeMenusPK().getMenId();
-                modulo= modulos.getById(menu.getPgeMenusPK().getMenId());
-                submenu=new DefaultSubMenu(modulo.getModDesc());
-                submenu.setId(String.valueOf(modulo.getModId()));
+                mod=menu.getPgeMenusPK().getMenId();
+                submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
             }
             item=new DefaultMenuItem(menu.getMenDescripcion());
-            item.setId(String.valueOf(menu.getPgeMenusPK().getMenId())+"-"+String.valueOf(menu.getPgeMenusPK().getMenSubId()));
-            item.setUrl(serverip);
-            submenu.addElement(item);   
+            item.setUrl(serverip+menu.getMenUbicacion());
+            submenu.addElement(item);
+            model.addElement(submenu);
         }
+        
+
     }
     
     //Getters && Setters
