@@ -8,21 +8,15 @@ package com.fpuna.py.travelware.bean;
 import com.fpuna.py.travelware.dao.PaisDao;
 import com.fpuna.py.travelware.model.PgePaises;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.map.PointSelectEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.Marker;
 
 /**
  *
@@ -37,17 +31,10 @@ public class PaisBean {
     private String paiUbi;
     private List<PgePaises> paises;
     private PgePaises paisSelected;
-    private DefaultMapModel paisUbiModel;
-
-    public DefaultMapModel getPaisUbiModel() {
-        return paisUbiModel;
-    }
-
-    public void setPaisUbiModel(DefaultMapModel paisUbiModel) {
-        this.paisUbiModel = paisUbiModel;
-    }
     @EJB
     private PaisDao paisEJB;
+    private LoginBean loginBean;
+
     
     //crear nueva instancia de PaisBean
     public PaisBean(){
@@ -55,8 +42,10 @@ public class PaisBean {
     
     @PostConstruct
     private void init(){
+        FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        loginBean =(LoginBean) session.getAttribute("loginBean");
         paisSelected = new PgePaises();
-        paisUbiModel = new DefaultMapModel();
         paises= paisEJB.getAll();
     }
     
@@ -65,7 +54,6 @@ public class PaisBean {
         this.paiNac = null;
         this.paiUbi = null;
         this.paisSelected= null;
-        this.paisUbiModel=null;
     }
     
     public void addPais(){
@@ -104,40 +92,22 @@ public class PaisBean {
         pais.setPaiDesc(paiDesc);
         pais.setPaiNac(paiNac);
         pais.setPaiUbi(paiUbi);
+        pais.setPaiUsuMod(loginBean.getUsername());
+        pais.setPaiFecMod(new Date());
         paisEJB.update(pais);
-        context.addMessage(null, new FacesMessage("Mensaje", "El pais "+
-                                paiDesc+" fue modificado con éxito!"));
+        context.addMessage(null, new FacesMessage("Mensaje", "El pais  fue modificado con éxito!"));
         
         paises= paisEJB.getAll();
         
         this.clean();
     }
     
-    public void onRowSelect(SelectEvent event) {
-        this.paisSelected = ((PgePaises) event.getObject());
-        this.paiDesc = this.getPaisSelected().getPaiDesc();
-        this.paiNac = this.getPaisSelected().getPaiNac();
-        this.paiUbi = this.getPaisSelected().getPaiUbi();
-        RequestContext.getCurrentInstance().update("pais-form:dtPais");
+    public PgePaises prepareCreate() {
+        this.paisSelected = new PgePaises();
+        return this.paisSelected;
     }
-    
-    public void onPointSelect(PointSelectEvent event){
-         LatLng latlng = null;//objeto Latitud-Longitud propio de primefaces
-        if (event!=null){
-            latlng= event.getLatLng();
-            this.paiUbi=latlng.toString();
-        }
+      
         
-    }
-    
-    public void verUbicacion() {
-        Map<String,Object> options = new HashMap<String, Object>();
-        options.put("resizable", false);
-        options.put("draggable", false);
-        options.put("modal", true);
-        RequestContext.getCurrentInstance().openDialog("ubicacionDialog", options, null);
-    }
-    
     public int getPaiId(){
         return paiId;
     }
@@ -168,9 +138,6 @@ public class PaisBean {
     
     public void setPaiUbi(String paiUbi){
         this.paiUbi= paiUbi;
-        this.paisUbiModel= new DefaultMapModel();
-        LatLng coord1= new LatLng(Double.parseDouble(paiUbi.substring(0, paiUbi.indexOf(",")-1)),Double.parseDouble(paiUbi.substring(paiUbi.indexOf(",")+1)));
-        this.paisUbiModel.addOverlay(new Marker(coord1));
     }
         
     public List<PgePaises> getPaises(){
@@ -187,6 +154,18 @@ public class PaisBean {
     
     public void setPaisSelected(PgePaises paisSelected){
         this.paisSelected=paisSelected;
+        this.paiDesc = this.getPaisSelected().getPaiDesc();
+        this.paiNac = this.getPaisSelected().getPaiNac();
+        this.paiUbi = this.getPaisSelected().getPaiUbi();
+        RequestContext.getCurrentInstance().update("pais-form:dtPais");
+    }
+        
+    public LoginBean getLoginBean() {
+        return loginBean;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 }
 

@@ -40,7 +40,7 @@ import org.primefaces.model.menu.MenuModel;
  *
  * @author eencina
  */
-@ManagedBean
+@ManagedBean(name="loginBean")
 @SessionScoped
 public class LoginBean implements Serializable{
     private String username;
@@ -120,7 +120,7 @@ public class LoginBean implements Serializable{
      * @throws IOException
      */
     public void redirect() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/secure/index.html");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/secure/index.xhtml");
         
     }
     
