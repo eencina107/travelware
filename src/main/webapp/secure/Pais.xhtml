@@ -6,33 +6,45 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
     <script src="http://maps.google.com/maps/api/js?sensor=false"
-        type="text/javascript"></script>
+    type="text/javascript"></script>
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="pais-form">
                 <p:growl id="growl" showDetail="true" sticky="false">
-                    <p:dataTable id="dtPais" var="pais" 
-                                 value="#{paisBean.paises}" editable="true" 
-                                 editMode="cell" selection="#{paisBean.paisSelected}" selectionMode="single" style="border-color: #FFC700" rowKey="#{paisBean.paiId}">
+                    <p:dataTable id="dtPais" 
+                                 var="pais" 
+                                 value="#{paisBean.paises}" 
+                                 editable="true" 
+                                 editMode="row"  
+                                 selectionMode="single"
+                                 selection="#{paisBean.paisSelected}"
+                                 style="border-color: #FFC700" 
+                                 rowKey="#{paisBean.paiId}">
                         <f:facet name="header">
                             Listado de Paises
                         </f:facet>
-                        <p:ajax event="cellEdit" listener="#{paisBean.editPais()}" update=":messages" />
+                        <p:ajax event="rowEdit" listener="#{paisBean.editPais()}" update=":messages" />
+                        <p:ajax event="rowSelect" listener="#{paisBean.paisSelected}" update=":messages" />
+                        <p:ajax event="rowEditCancel" listener="#{paisBean.onCancel()}" update=":messages" />
                         <p:column headerText="Nombre">
                             <p:cellEditor>
                                 <f:facet name="input">
                                     <p:inputText id="descInput" value="#{pais.paiDesc}" label="Nombre"/>
                                 </f:facet>
                                 <f:facet name="output">
-                                    <h:outputText value="#{pais.paiDesc}"/>
+                                    <span style="display: inline-block; width: 100%; height: 100%">
+                                        <h:outputText value="#{pais.paiDesc}"/>
+                                    </span>
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
                         <p:column headerText="Nacionalidad">
                             <p:cellEditor>
                                 <f:facet name="output">
+                                    <span style="display: inline-block; width: 100%; height: 100%">
                                         <h:outputText value="#{pais.paiNac}"/>
+                                    </span>
                                 </f:facet>
                                 <f:facet name="input">
                                     <p:inputText id="nacInput" value="#{pais.paiNac}" label="Nacionalidad"/>
@@ -45,19 +57,26 @@
                                     <p:inputText id="ubiInput" value="#{pais.paiUbi}" label="Ubicación"/>
                                 </f:facet>
                                 <f:facet name="output">
-                                    <h:outputText value="#{pais.paiUbi}"/>
+                                    <span style="display: inline-block; width: 100%; height: 100%">
+                                        <h:outputText value="#{pais.paiUbi}"/>
+                                    </span>
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
+                        <p:column style="width:32px">
+                            <p:rowEditor />
+                        </p:column>
                         <f:facet name="footer">
-                            <p:commandButton icon="ui-icon-plus" actionListener="#{paisBean.prepareCreate}" update=":pais-form" value="Agregar" oncomplete="PF('paisCreateDialog').show()" >
-<!--                                <p:ajax event="dialogReturn"/>-->
-                            </p:commandButton>
+                            <p:commandButton icon="ui-icon-plus" 
+                                             actionListener="#{paisBean.prepareCreate}" 
+                                             update=":pais-form" 
+                                             value="Agregar" 
+                                             oncomplete="PF('paisCreateDlg').show()" />
                         </f:facet>
                     </p:dataTable>
                 </p:growl>
             </h:form>
-            <ui:include src="/secure/paisCreateDialog.xhtml"/>
+            <ui:include src="paisCreateDialog.xhtml"/>
         </ui:define>
     </ui:composition>
 </html>

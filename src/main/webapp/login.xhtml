@@ -15,7 +15,8 @@ and open the template in the editor.
     <h:body>
         <p:growl id="mensajes" showDetail="true" life="2000"></p:growl>
         <h:form>
-            <p:panel header="Login" style="width:400px;alignment-adjust: central" >
+            <p:panel id="panel" header="Login" style="width:400px;alignment-adjust: central" >
+                <p:focus context="panel"/>
                 <p:panelGrid columns="2" >
                     <p:outputLabel id="userLabel" value="Usuario:"/>
                     <p:inputText id="userNameInput" label="userLabel"  value="#{loginBean.username}" onblur="alert('se ingreso el usuario: '+#{loginBean.username})" required="true" requiredMessage="Debe ingresar el usuario."></p:inputText>

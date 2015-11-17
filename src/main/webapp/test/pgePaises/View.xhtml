@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PgePaisesViewDlg" widgetVar="PgePaisesViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewPgePaisesTitle}">
+            <h:form id="PgePaisesViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{pgePaisesController.selected != null}">
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiId}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiId}" title="#{bundle.ViewPgePaisesTitle_paiId}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiDesc}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiDesc}" title="#{bundle.ViewPgePaisesTitle_paiDesc}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiNac}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiNac}" title="#{bundle.ViewPgePaisesTitle_paiNac}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiUbi}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiUbi}" title="#{bundle.ViewPgePaisesTitle_paiUbi}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiUsuIns}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiUsuIns}" title="#{bundle.ViewPgePaisesTitle_paiUsuIns}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiFecIns}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiFecIns}" title="#{bundle.ViewPgePaisesTitle_paiFecIns}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiUsuMod}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiUsuMod}" title="#{bundle.ViewPgePaisesTitle_paiUsuMod}"/>
+                        <h:outputText value="#{bundle.ViewPgePaisesLabel_paiFecMod}"/>
+                        <h:outputText value="#{pgePaisesController.selected.paiFecMod}" title="#{bundle.ViewPgePaisesTitle_paiFecMod}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="PgePaisesViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
