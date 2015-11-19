@@ -17,7 +17,7 @@
 
         <div id="top">
             <ui:insert name="top">
-                <img src="../resources/logo.png" width="542" height="124" alt="San Rafael Peregrinaciones"/>
+                <img src="../resources/logo.png" width="342" height="110" alt="San Rafael Peregrinaciones"/>
 
             </ui:insert>
         </div>
@@ -26,7 +26,7 @@
                 <p:growl id="messages" showDetail="false"/>
                 <ui:insert name="left" >
                     <p:slideMenu id="menuPrincipal" 
-                                 model="#{loginBean.model}" backLabel="Atrás" style="width:200px; height: 300px" overlay="false"/>
+                                model="#{loginBean.model}"   backLabel="Atrás"  style="width:200px; height: 300px; line-break: auto; padding: auto; display: inline-block"/>
                 </ui:insert>
                 
             </div>

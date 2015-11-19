@@ -131,9 +131,7 @@ public class LoginBean implements Serializable{
     
     public void cargarMenu() throws IOException{
         ModuloDao modulos = null;
-        PgeModulos modulo= null;
         menus = usuario.getPgeMenus();
-        int n=1; //numero de modulo, al cambiar se crea un nuevo submenu
         Collections.sort(menus);
         Iterator i = menus.iterator();
         String serverip=null;
@@ -151,26 +149,41 @@ public class LoginBean implements Serializable{
         PgeMenus menu;
         DefaultSubMenu submenu = null;
         DefaultMenuItem item = null;
-        int mod;//bandera del numero de modulo
+        int mod=0;//bandera del numero de modulo
         
         if (menus!=null){
-            menu= (PgeMenus) i.next();
-            mod=menu.getPgeMenusPK().getMenId();
-            submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
-            while (i.hasNext()){
-                while(mod==menu.getPgeMenusPK().getMenId()){
-                    item=new DefaultMenuItem(menu.getMenDescripcion());
-                    item.setUrl(serverip+menu.getMenUbicacion());
-                    submenu.addElement(item);
-                    menu= (PgeMenus) i.next();
+//            menu= (PgeMenus) i.next();
+//            mod=menu.getPgeMenusPK().getMenId();
+//            submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
+//            while (i.hasNext()){
+//                while(mod==menu.getPgeMenusPK().getMenId()){
+//                    item=new DefaultMenuItem(menu.getMenDescripcion());
+//                    item.setUrl(serverip+menu.getMenUbicacion());
+//                    submenu.addElement(item);
+//                    if (i.hasNext()){
+//                        menu= (PgeMenus) i.next();
+//                    }
+//                }
+//                model.addElement(submenu);
+//                mod=menu.getPgeMenusPK().getMenId();
+//                submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
+//            }
+//            item=new DefaultMenuItem(menu.getMenDescripcion());
+//            item.setUrl(serverip+menu.getMenUbicacion());
+//            submenu.addElement(item);
+//            model.addElement(submenu);
+            while(i.hasNext()){
+                menu=(PgeMenus) i.next();
+                if ((null == submenu) || (mod!= menu.getPgeMenusPK().getMenId())){
+                    if (submenu!=null){
+                        model.addElement(submenu);
+                    }
+                    mod=menu.getPgeMenusPK().getMenId();
+                    submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
                 }
-                model.addElement(submenu);
-                mod=menu.getPgeMenusPK().getMenId();
-                submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
+                item=new DefaultMenuItem(menu.getMenDescripcion(),"",serverip+menu.getMenUbicacion());
+                submenu.addElement(item);
             }
-            item=new DefaultMenuItem(menu.getMenDescripcion());
-            item.setUrl(serverip+menu.getMenUbicacion());
-            submenu.addElement(item);
             model.addElement(submenu);
         }
         

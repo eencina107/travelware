@@ -24,7 +24,7 @@
                         <f:facet name="header">
                             Listado de Paises
                         </f:facet>
-                        <p:ajax event="rowEdit" listener="#{paisBean.editPais()}" update=":messages" />
+                        <p:ajax event="rowEdit" listener="@@@" update=":messages" />
                         <p:ajax event="rowSelect" listener="#{paisBean.paisSelected}" update=":messages" />
                         <p:ajax event="rowEditCancel" listener="#{paisBean.onCancel()}" update=":messages" />
                         <p:column headerText="Nombre">
