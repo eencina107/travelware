@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+    type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="ciudad-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtCiudad" var="ciudad" value="#{ciudadBean.ciudades}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{ciudadBean.ciudadSelected}" rowKey="#{ciudad}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{ciudadBean.onRowSelect}" />
+
+<!--                        <p:column headerText="ID" sortBy="#{pais.paiId}">
+                            <h:outputText value="#{pais.paiId}" />
+                        </p:column>-->
+                    <p:column headerText="Nombre" style="width: 250px"
+                              sortBy="#{ciudad.ciuDesc}">
+                        <h:outputText value="#{ciudad.ciuDesc}" />
+                    </p:column>
+                    <p:column headerText="Ubicación" style="width: 250px"
+                              sortBy="#{ciudad.ciuUbi}">
+                        <h:outputText value="#{ciudad.ciuUbi}" />
+                    </p:column>
+                    <p:column headerText="País" style="width:32px;text-align: center">
+                        <h:outputText value="#{ciudad.paiId.paiDesc}"></h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtCiudad" icon="ui-icon-document"
+                                         value="Agregar"  oncomplete="PF('dlgCiudadAdd').show()" />
+                        <p:commandButton process="dtCiudad" icon="ui-icon-pencil"
+                                         value="Editar" oncomplete="PF('dlgCiudadUpd').show()"
+                                         update=":form-upd:ciudadGrUpd"
+                                         />
+                        <p:commandButton process="dtCiudad" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{ciudadBean.deleteCiudad}">
+                            <p:confirm header="Borrar Ciudad"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Ciudades" widgetVar="dlgCiudadAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="ciudadGr">                           
+                        <p:outputLabel value="Descripcion" for="descripcion" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{ciudadBean.ciudadNuevo.ciuDesc}" />
+                            <h:inputHidden value="#{ciudadBean.ciudadNuevo.ciuId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="País" for="pais" />
+                        <p:selectOneMenu id="pais" required="true"
+                                         value="#{ciudadBean.ciudadNuevo.paiId}" converter="paisConverter">
+                            
+                            <f:selectItems value="#{ciudadBean.paises}" 
+                                           var="pais" 
+                                           itemLabel="#{pais.paiDesc}" 
+                                           itemValue="#{pais}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Ubicacion" for="ubicacion" />
+                        <p:inputText id="ubicacion" required="true"
+                                     value="#{ciudadBean.ciudadNuevo.ciuUbi}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="ciudadGr,:ciudad-form:dtCiudad"
+                            action="#{ciudadBean.addCiudad}"
+                            />
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog header="Ciudades" widgetVar="dlgCiudadUpd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-upd">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="ciudadGrUpd">                           
+                        <p:outputLabel value="Descripcion" for="descripcion2" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion2" required="true"
+                                         value="#{ciudadBean.ciudadSelected.ciuDesc}" />
+                            <h:inputHidden value="#{ciudadBean.ciudadSelected.ciuId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="País" for="pais2" />
+                        <p:selectOneMenu id="pais2" required="true"
+                                         value="#{ciudadBean.ciudadSelected.paiId}" converter="paisConverter">
+                            
+                            <f:selectItems value="#{ciudadBean.paises}" 
+                                           var="pais" 
+                                           itemLabel="#{pais.paiDesc}" 
+                                           itemValue="#{pais}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Ubicacion" for="ubicacion2" />
+                        <p:inputText id="ubicacion2" required="true"
+                                     value="#{ciudadBean.ciudadSelected.ciuUbi}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Guardar"
+                            update="ciudadGrUpd,:ciudad-form:dtCiudad"
+                            action="#{ciudadBean.editCiudad}"
+                            />
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+            
+                
+                    
+                
+            
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

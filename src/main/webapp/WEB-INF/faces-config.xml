@@ -23,18 +23,5 @@
        </managed-bean-class>
        <managed-bean-scope>session</managed-bean-scope>
    </managed-bean>
-    <application>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-        <resource-bundle>
-            <base-name>/test/Bundle</base-name>
-            <var>bundle</var>
-        </resource-bundle>
-    </application>
+    
 </faces-config>
