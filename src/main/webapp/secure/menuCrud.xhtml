@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="menu-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtMenu" var="menu" value="#{menuCrudBean.menus}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{menuCrudBean.menuSelected}" rowKey="#{menu}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{menuCrudBean.onRowSelect}" />
+
+<!--                        <p:column headerText="ID" sortBy="#{pais.paiId}">
+                            <h:outputText value="#{pais.paiId}" />
+                        </p:column>-->
+                    <p:column headerText="Menú" style="width:32px;text-align: center">
+                        <h:outputText value="#{menu.menId}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="SubMenú" style="width:32px;text-align: center">
+                        <h:outputText value="#{menu.menSubId}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Nombre" style="width: 250px"
+                              sortBy="#{menu.menDescripcion}">
+                        <h:outputText value="#{menu.menDescripcion}" />
+                    </p:column>
+                    <p:column headerText="Ubicación" style="width: 250px"
+                              sortBy="#{menu.menUbicacion}">
+                        <h:outputText value="#{menu.menUbicacion}" />
+                    </p:column>
+                    <p:column headerText="Tipo" style="width:32px;text-align: center">
+                        <h:outputText value="#{menu.menTipo}"></h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtMenu" icon="ui-icon-document"
+                                         value="Agregar"  oncomplete="PF('dlgMenuAdd').show()" />
+                        <p:commandButton process="dtMenu" icon="ui-icon-pencil"
+                                         value="Editar" oncomplete="PF('dlgMenuUpd').show()"
+                                         update=":form-upd:menuGrUpd"
+                                         />
+                        <p:commandButton process="dtMenu" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{menuCrudBean.deleteMenu()}">
+                            <p:confirm header="Borrar Menú"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Menús" widgetVar="dlgMenuAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="menuGr">                           
+                        <p:outputLabel value="Descripcion" for="descripcion" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{menuCrudBean.menuNuevo.menDescripcion}" />
+                            <h:inputHidden value="#{menuCrudBean.menuNuevo.menCod}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Menú" for="menuId" />
+                        <p:inputText id="menuId" required="true"
+                                     value="#{menuCrudBean.menuNuevo.menId}" />
+                        <p:outputLabel value="SubMenú" for="subMenuId" />
+                        <p:inputText id="subMenuId" required="true"
+                                     value="#{menuCrudBean.menuNuevo.menSubId}" />
+                        <p:outputLabel value="Tipo" for="tipo" />
+                        <p:selectOneMenu id="tipo" value="#{menuCrudBean.menuNuevo.menTipo}" style="width:125px">
+                            <f:selectItem itemLabel="Mantenimiento" itemValue="M" />
+                            <f:selectItem itemLabel="Transacción" itemValue="T" />
+                            <f:selectItem itemLabel="Reporte" itemValue="R" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Ubicacion" for="ubicacion" />
+                        <p:inputText id="ubicacion" required="true"
+                                     value="#{menuCrudBean.menuNuevo.menUbicacion}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="menuGr,:menu-form:dtMenu"
+                            action="#{menuCrudBean.addMenu}"
+                            />
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog header="Menús" widgetVar="dlgMenuUpd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-upd">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="menuGrUpd">                           
+                        <p:outputLabel value="Descripcion" for="descripcion2" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion2" required="true"
+                                         value="#{menuCrudBean.menuSelected.menDescripcion}" />
+                            <h:inputHidden value="#{menuCrudBean.menuSelected.menCod}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Menú" for="menuId" />
+                        <p:inputText id="menuId" required="true"
+                                     value="#{menuCrudBean.menuSelected.menId}" />
+                        <p:outputLabel value="SubMenú" for="subMenuId" />
+                        <p:inputText id="subMenuId" required="true"
+                                     value="#{menuCrudBean.menuSelected.menSubId}" />
+                        <p:outputLabel value="Tipo" for="tipo" />
+                        <p:selectOneMenu id="tipo" value="#{menuCrudBean.menuSelected.menTipo}" style="width:125px">
+                            <f:selectItem itemLabel="Mantenimiento" itemValue="M" />
+                            <f:selectItem itemLabel="Transacción" itemValue="T" />
+                            <f:selectItem itemLabel="Reporte" itemValue="R" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Ubicacion" for="ubicacion2" />
+                        <p:inputText id="ubicacion2" required="true"
+                                     value="#{menuCrudBean.menuSelected.menUbicacion}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Guardar"
+                            update="menuGrUpd,:menu-form:dtMenu"
+                            action="#{menuCrudBean.editMenu}"
+                            />
+
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+
+
+
+
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

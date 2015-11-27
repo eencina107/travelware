@@ -52,6 +52,8 @@ public class LoginBean implements Serializable{
     private RolDao rolDaoEJB;
     @EJB
     private PermisoDao permisoEJB;
+    @EJB
+    private ModuloDao moduloEJB;
     
     private  PgeUsuarios usuario;
     private List<PgeRoles> roles;
@@ -174,12 +176,12 @@ public class LoginBean implements Serializable{
 //            model.addElement(submenu);
             while(i.hasNext()){
                 menu=(PgeMenus) i.next();
-                if ((null == submenu) || (mod!= menu.getPgeMenusPK().getMenId())){
+                if ((null == submenu) || (mod!= menu.getMenId())){
                     if (submenu!=null){
                         model.addElement(submenu);
                     }
-                    mod=menu.getPgeMenusPK().getMenId();
-                    submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
+                    mod=menu.getMenId();
+                    submenu=new DefaultSubMenu(moduloEJB.getById(menu.getMenId()).getModDesc());
                 }
                 item=new DefaultMenuItem(menu.getMenDescripcion(),"",serverip+menu.getMenUbicacion());
                 submenu.addElement(item);
