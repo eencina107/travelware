@@ -5,8 +5,8 @@
  */
 package com.fpuna.py.travelware.converters;
 
-import com.fpuna.py.travelware.dao.PaisDao;
-import com.fpuna.py.travelware.model.PgePaises;
+import com.fpuna.py.travelware.dao.CiudadDao;
+import com.fpuna.py.travelware.model.PgeCiudades;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -18,23 +18,21 @@ import org.jboss.logging.Logger;
  *
  * @author eencina
  */
-@FacesConverter(value = "paisConverter")
-public class PaisConverter implements Converter{
+@FacesConverter(value = "ciudadConverter")
+public class CiudadConverter implements Converter{
     @EJB
-    private PaisDao paisEJB;
-    final static Logger logger = Logger.getLogger(PaisConverter.class);
+    private CiudadDao ciudadEJB;
+    final static Logger logger = Logger.getLogger(CiudadConverter.class);
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (value == null || value.equals("")){
-            return null;
+        if (value== null || value.equals("")){
+        return null;
         }
-        
         try {
-            PgePaises pais = paisEJB.getByName(value);
-            return pais;
-        }
-        catch (Exception e){
+            PgeCiudades ciudad = ciudadEJB.getByName(value);
+            return ciudad;
+        } catch (Exception e) {
             logger.error("CLASS "+this.getClass().getName()+" METHOD: getAsObject ", e);
             return null;
         }
@@ -42,12 +40,12 @@ public class PaisConverter implements Converter{
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        if( value == null){
+        if (value == null){
             return null;
         }
-        PgePaises pais = (PgePaises) value;
+        PgeCiudades ciudad= (PgeCiudades) value;
         try {
-            return pais.getPaiDesc();
+            return ciudad.getCiuDesc();
         } catch (Exception e) {
             logger.error("CLASS "+this.getClass().getName()+" METHOD: getAsString ", e);
             return null;

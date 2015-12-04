@@ -22,11 +22,13 @@
             </ui:insert>
         </div>
         <div>
-            <div id="left">
+            <div id="left" style="width: 210px; height: 360px;">
                 <p:growl id="messages" showDetail="false"/>
                 <ui:insert name="left" >
-                    <p:slideMenu id="menuPrincipal" 
-                                model="#{loginBean.model}"   backLabel="Atrás"  style="width:200px; height: 300px; line-break: auto; padding: auto; display: inline-block"/>
+                    <div id="prueba">
+                    <p:slideMenu id="menuPrincipal"  style="width: 205px; height: 350px; line-break: strict; "
+                                    model="#{loginBean.model}"   backLabel="Atrás"   />                        
+                    </div>
                 </ui:insert>
                 
             </div>

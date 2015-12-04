@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="moneda-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtMoneda" var="moneda" value="#{monedaBean.monedas}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{monedaBean.monedaSelected}" rowKey="#{moneda}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{monedaBean.onRowSelect}" />
+
+<!--                        <p:column headerText="ID" sortBy="#{pais.paiId}">
+                            <h:outputText value="#{pais.paiId}" />
+                        </p:column>-->
+                    <p:column headerText="Nombre" style="width: 250px"
+                              sortBy="#{moneda.monDesc}">
+                        <h:outputText value="#{moneda.monDesc}" />
+                    </p:column>
+                    <p:column headerText="País" style="width:32px;text-align: center">
+                        <h:outputText value="#{moneda.paiId.paiDesc}"></h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtMoneda" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:monedaGr" 
+                                         oncomplete="PF('dlgMonedaAdd').show()" 
+                                         actionListener="#{monedaBean.buttonAction}"/>
+                        <p:commandButton process="dtMoneda" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgMonedaAdd').show()"
+                                         update=":form-add:monedaGr"
+                                         />
+                        <p:commandButton process="dtMoneda" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{monedaBean.deleteMoneda}">
+                            <p:confirm header="Borrar Moneda"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Monedas" widgetVar="dlgMonedaAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="monedaGr">                           
+                        <p:outputLabel value="Descripcion" for="descripcion" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{monedaBean.monedaSelected.monDesc}" />
+                            <h:inputHidden value="#{monedaBean.monedaSelected.monId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="País" for="pais" />
+                        <p:selectOneMenu id="pais" required="true"
+                                         value="#{monedaBean.monedaSelected.paiId}" converter="paisConverter">
+
+                            <f:selectItems value="#{monedaBean.paises}" 
+                                           var="pais" 
+                                           itemLabel="#{pais.paiDesc}" 
+                                           itemValue="#{pais}" />
+                        </p:selectOneMenu>
+                        <p:spacer />
+                        <p:commandButton action="#{monedaBean.addMoneda}" update="monedaGr,:moneda-form:dtMoneda"
+                            value="Agregar" />
+
+                             
+                            
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

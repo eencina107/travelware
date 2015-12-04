@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="organizacion-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtOrganizacion" var="organizacion" value="#{organizacionBean.organizaciones}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{organizacionBean.organizacionSelected}" rowKey="#{organizacion}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{organizacionBean.onRowSelect}" />
+                    <p:column headerText="Nombre" style="width: 250px"
+                              sortBy="#{organizacion.orgDesc}">
+                        <h:outputText value="#{organizacion.orgDesc}" />
+                    </p:column>
+                    <p:column headerText="Ciudad" style="width:32px;text-align: center">
+                        <h:outputText value="#{organizacion.ciuId.ciuDesc}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Ubicación" style="width: 250px"
+                              sortBy="#{organizacion.orgUbi}">
+                        <h:outputText value="#{organizacion.orgUbi}" />
+                    </p:column>
+                    <p:column headerText="Dirección" style="text-align: center">
+                        <h:outputText value="#{organizacion.orgDir}"/>
+                    </p:column>
+                    <p:column headerText="Teléfono" style="text-align: center">
+                        <h:outputText value="#{organizacion.orgTel}"/>
+                    </p:column>
+                    <p:column headerText="Tipo" style="text-align: center">
+                        <h:outputText value="#{organizacion.orgTipo}"/>
+                    </p:column>
+                    <p:column headerText="SubTipo" style="text-align: center">
+                        <h:outputText value="#{organizacion.orgSubTipo}"/>
+                    </p:column>
+                    <p:column headerText="Página Web">
+                        <h:outputText value="#{organizacion.orgPagWeb}"/>
+                    </p:column>
+                    <p:column headerText="Logo">
+                        <p:graphicImage value="#{orgLogoBean.image}">
+                            <f:param name="orgId" value="#{organizacion.orgId.toString}" />
+                        </p:graphicImage>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:organizacionGr" 
+                                         oncomplete="PF('dlgOrganizacionAdd').show()" 
+                                         actionListener="#{organizacionBean.buttonAction}"/>
+                        <p:commandButton process="dtOrganizacion" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgOrganizacionAdd').show()"
+                                         update=":form-add:organizacionGr"
+                                         />
+                        <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{organizacionBean.deleteOrganizacion}">
+                            <p:confirm header="Borrar Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Organizaciones" widgetVar="dlgOrganizacionAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="organizacionGr">                           
+                        <p:outputLabel value="Descripcion" for="descripcion" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{organizacionBean.organizacionSelected.orgDesc}" />
+                            <h:inputHidden value="#{organizacionBean.organizacionSelected.orgId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="Ciudad" for="ciudad" />
+                        <p:selectOneMenu id="ciudad" required="true"
+                                         value="#{organizacionBean.organizacionSelected.ciuId}" converter="ciudadConverter">
+
+                            <f:selectItems value="#{organizacionBean.ciudades}" 
+                                           var="ciudad" 
+                                           itemLabel="#{ciudad.ciuDesc}" 
+                                           itemValue="#{ciudad}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Ubicacion" for="ubicacion" />
+                        <p:inputText id="ubicacion" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgUbi}" />
+                        <p:outputLabel value="Dirección" for="direccion" />
+                        <p:inputText id="direccion" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgDir}" />
+                        <p:outputLabel value="Teléfono" for="telefono" />
+                        <p:inputText id="telefono" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgTel}" />
+                        <p:outputLabel value="Tipo" for="tipo" />
+                        <p:inputText id="tipo" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgTipo}" />
+                        <p:outputLabel value="SubTipo" for="subtipo" />
+                        <p:inputText id="subtipo" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgSubTipo}" />
+                        <p:outputLabel value="Página Web" for="pagWeb" />
+                        <p:inputText id="pagWeb" required="true"
+                                     value="#{organizacionBean.organizacionSelected.orgPagWeb}" />
+                        <p:outputLabel value="Logo" for="logo" />
+                        <p:fileUpload id="logo" fileUploadListener="#{organizacionBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                                      update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="organizacionGr,:organizacion-form:dtOrganizacion"
+                            action="#{organizacionBean.addOrganizacion}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

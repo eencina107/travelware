@@ -60,4 +60,13 @@
   text-decoration : underline;
 }
 
+/*El menu no mostraba todos los submenus de una vez, se agrando el espacio del contenido */
+.ui-slidemenu-content{
+    height: 300px !important;
+}
 
+/*Al momento de agrandar el espacio del contenido el boton atras no se adaptaba*/
+.ui-slidemenu-backward {
+    position: relative;
+    margin-top: 290px;
+}
