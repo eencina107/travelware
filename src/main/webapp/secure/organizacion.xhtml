@@ -46,10 +46,11 @@
                     </p:column>
                     <p:column headerText="Página Web">
                         <h:outputText value="#{organizacion.orgPagWeb}"/>
+                        <!--<h:link value="#{organizacion.orgPagWeb}" onclick="#{organizacionBean.redireccionar(organizacion.orgPagWeb)}"></h:link>-->
                     </p:column>
-                    <p:column headerText="Logo">
-                        <p:graphicImage value="#{orgLogoBean.image}">
-                            <f:param name="orgId" value="#{organizacion.orgId.toString}" />
+                    <p:column headerText="Logo" >
+                        <p:graphicImage value="#{orgLogoBean.image}" style="height: 50px; width: 90px">
+                            <f:param value="#{organizacion.orgId}" name="orgId"></f:param>
                         </p:graphicImage>
                     </p:column>
                     <f:facet name="footer">
