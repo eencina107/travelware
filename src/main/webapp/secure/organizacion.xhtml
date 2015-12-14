@@ -21,14 +21,14 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{organizacionBean.onRowSelect}" />
-                    <p:column headerText="Nombre" style="width: 250px"
+                    <p:column headerText="Nombre" style="width: 250px; position: relative"
                               sortBy="#{organizacion.orgDesc}">
                         <h:outputText value="#{organizacion.orgDesc}" />
                     </p:column>
-                    <p:column headerText="Ciudad" style="width:32px;text-align: center">
+                    <p:column headerText="Ciudad" >
                         <h:outputText value="#{organizacion.ciuId.ciuDesc}"></h:outputText>
                     </p:column>
-                    <p:column headerText="Ubicación" style="width: 250px"
+                    <p:column headerText="Ubicación"
                               sortBy="#{organizacion.orgUbi}">
                         <h:outputText value="#{organizacion.orgUbi}" />
                     </p:column>
@@ -39,16 +39,12 @@
                         <h:outputText value="#{organizacion.orgTel}"/>
                     </p:column>
                     <p:column headerText="Tipo" style="text-align: center">
-                        <h:outputText value="#{organizacion.orgTipo}"/>
-                    </p:column>
-                    <p:column headerText="SubTipo" style="text-align: center">
-                        <h:outputText value="#{organizacion.orgSubTipo}"/>
+                        <h:outputText value="#{organizacion.orgTipo.tipDescripcion}"/>
                     </p:column>
                     <p:column headerText="Página Web">
                         <h:outputText value="#{organizacion.orgPagWeb}"/>
-                        <!--<h:link value="#{organizacion.orgPagWeb}" onclick="#{organizacionBean.redireccionar(organizacion.orgPagWeb)}"></h:link>-->
                     </p:column>
-                    <p:column headerText="Logo" >
+                    <p:column headerText="Logo" style="width: 100px">
                         <p:graphicImage value="#{orgLogoBean.image}" style="height: 50px; width: 90px">
                             <f:param value="#{organizacion.orgId}" name="orgId"></f:param>
                         </p:graphicImage>
@@ -69,7 +65,7 @@
                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
                         </p:commandButton>
                         <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
+                                         hideEffect="fade">
                             <p:commandButton value="Si" type="button"
                                              styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
                             <p:commandButton value="No" type="button"
@@ -110,12 +106,15 @@
                         <p:outputLabel value="Teléfono" for="telefono" />
                         <p:inputText id="telefono" required="true"
                                      value="#{organizacionBean.organizacionSelected.orgTel}" />
-                        <p:outputLabel value="Tipo" for="tipo" />
-                        <p:inputText id="tipo" required="true"
-                                     value="#{organizacionBean.organizacionSelected.orgTipo}" />
-                        <p:outputLabel value="SubTipo" for="subtipo" />
-                        <p:inputText id="subtipo" required="true"
-                                     value="#{organizacionBean.organizacionSelected.orgSubTipo}" />
+                        <p:outputLabel value="Tipo" for="tipoOrg" />
+                        <p:selectOneMenu id="tipoOrg" required="true"
+                                         value="#{organizacionBean.organizacionSelected.orgTipo}" converter="tipoOrgConverter">
+
+                            <f:selectItems value="#{organizacionBean.tiposOrg}" 
+                                           var="tipoOrg" 
+                                           itemLabel="#{tipoOrg.tipDescripcion}" 
+                                           itemValue="#{tipoOrg}" />
+                        </p:selectOneMenu>
                         <p:outputLabel value="Página Web" for="pagWeb" />
                         <p:inputText id="pagWeb" required="true"
                                      value="#{organizacionBean.organizacionSelected.orgPagWeb}" />

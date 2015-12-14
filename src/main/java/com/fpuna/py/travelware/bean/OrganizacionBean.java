@@ -7,8 +7,10 @@ package com.fpuna.py.travelware.bean;
 
 import com.fpuna.py.travelware.dao.CiudadDao;
 import com.fpuna.py.travelware.dao.OrganizacionDao;
+import com.fpuna.py.travelware.dao.TipoOrgDao;
 import com.fpuna.py.travelware.model.PgeCiudades;
 import com.fpuna.py.travelware.model.PgeOrganizaciones;
+import com.fpuna.py.travelware.model.PgeTipoOrg;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,13 +42,17 @@ import org.primefaces.event.SelectEvent;
 public class OrganizacionBean implements Serializable{
     private List<PgeOrganizaciones> organizaciones;
     private List<PgeCiudades> ciudades;
+    private List<PgeTipoOrg> tiposOrg;
     private PgeOrganizaciones organizacionSelected;
     @EJB
     private OrganizacionDao organizacionEJB;
     @EJB
     private CiudadDao ciudadEJB;
+    @EJB
+    private TipoOrgDao tipoOrgEJB;
     private LoginBean loginBean;
     private PgeCiudades ciudad;
+    private PgeTipoOrg tipoOrg;
     String nombreArchivo;
     String nombreCarpetaImg;
     
@@ -63,9 +69,11 @@ public class OrganizacionBean implements Serializable{
         loginBean = (LoginBean) session.getAttribute("loginBean");
         organizacionSelected = new PgeOrganizaciones();
         ciudad = new PgeCiudades();
+        tipoOrg = new PgeTipoOrg();
         organizacionSelected.setCiuId(ciudad);
         organizaciones = organizacionEJB.getAll();
         ciudades = ciudadEJB.getAll();
+        tiposOrg = tipoOrgEJB.getAll();
         
     }
 
@@ -95,35 +103,28 @@ public class OrganizacionBean implements Serializable{
             organizacion.setOrgUsuMod(loginBean.getUsername());
             organizacion.setOrgUsuIns(this.organizacionSelected.getOrgUsuIns());
             organizacion.setOrgFecIns(this.organizacionSelected.getOrgFecIns());
+            organizacion.setOrgLogo(this.organizacionSelected.getOrgLogo());
             organizacion.setOrgId(this.organizacionSelected.getOrgId());
             mensaje = organizacion.getOrgDesc()+" fue modificado con éxito!";
         }
         else{
+            organizacion.setOrgLogo(this.nombreArchivo);
             organizacion.setOrgFecIns(new Date());
             organizacion.setOrgUsuIns(loginBean.getUsername());
             mensaje = organizacion.getOrgDesc()+" fue creado con éxito!";
         }
         organizacion.setCiuId(this.organizacionSelected.getCiuId());
         organizacion.setOrgDir(this.organizacionSelected.getOrgDir());
-        organizacion.setOrgLogo(this.nombreArchivo);
         organizacion.setOrgPagWeb(this.organizacionSelected.getOrgPagWeb());
-        organizacion.setOrgSubTipo(this.organizacionSelected.getOrgSubTipo());
+        organizacion.setOrgSubTipo("NN");
         organizacion.setOrgTel(this.organizacionSelected.getOrgTel());
         organizacion.setOrgTipo(this.organizacionSelected.getOrgTipo());
         organizacion.setOrgUbi(this.organizacionSelected.getOrgUbi());
         organizacionEJB.update(organizacion);
         context.addMessage("Mensaje", new FacesMessage("Felicidades!"+mensaje));
         organizaciones = organizacionEJB.getAll();
+        RequestContext.getCurrentInstance().update("organizacion-form:dtOrganizacion");
         this.clean();        
-    }
-    
-    public void redireccionar(String url) throws IOException{
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Advertencia", "Error al abrir Página"));
-        }
-        
     }
     
     public void deleteOrganizacion(){
@@ -216,6 +217,7 @@ public class OrganizacionBean implements Serializable{
 
     public void setOrganizacionSelected(PgeOrganizaciones organizacionSelected) {
         this.organizacionSelected = organizacionSelected;
+         RequestContext.getCurrentInstance().update("organizacion-form:dtOrganizacion");
     }
 
     public OrganizacionDao getOrganizacionEJB() {
@@ -245,6 +247,23 @@ public class OrganizacionBean implements Serializable{
     public String getNombreCarpetaImg(String nombreArchivo) {
         return nombreCarpetaImg+nombreArchivo;
     }
+
+    public List<PgeTipoOrg> getTiposOrg() {
+        return tiposOrg;
+    }
+
+    public void setTiposOrg(List<PgeTipoOrg> tiposOrg) {
+        this.tiposOrg = tiposOrg;
+    }
+
+    public PgeTipoOrg getTipoOrg() {
+        return tipoOrg;
+    }
+
+    public void setTipoOrg(PgeTipoOrg tipoOrg) {
+        this.tipoOrg = tipoOrg;
+    }
+    
     
     
 }
