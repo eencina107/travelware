@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="tipoOrg-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtTipoOrg" var="tipoOrg" value="#{tipoOrgBean.tiposOrg}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{tipoOrgBean.tipoOrgSelected}" rowKey="#{tipoOrg}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{tipoOrgBean.onRowSelect}" />
+
+                    <p:column headerText="Código" style="width: 10%"
+                              sortBy="#{tipoOrg.tipCodigo}">
+                        <h:outputText value="#{tipoOrg.tipCodigo}" />
+                    </p:column>
+                    <p:column headerText="Nombre" >
+                        <h:outputText value="#{tipoOrg.tipDescripcion}"></h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:tipoOrgGr" 
+                                         oncomplete="PF('dlgTipoOrgAdd').show()" 
+                                         actionListener="#{tipoOrgBean.buttonAction}"/>
+                        <p:commandButton process="dtTipoOrg" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgTipoOrgAdd').show()"
+                                         update=":form-add:tipoOrgGr"
+                                         />
+                        <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{tipoOrgBean.deleteTipoOrg}">
+                            <p:confirm header="Borrar Tipo de Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Tipos de Organización" widgetVar="dlgTipoOrgAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="tipoOrgGr">                           
+                        <p:outputLabel value="Código" for="codigo" />
+                        <h:panelGroup>
+                            <p:inputText id="codigo" required="true"
+                                         value="#{tipoOrgBean.tipCodigo}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Descripción" for="descripcion" />
+                        <p:inputText id="descripcion" required="true"
+                                     value="#{tipoOrgBean.tipDescripcion}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
+                            action="#{tipoOrgBean.addTipoOrg}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

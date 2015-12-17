@@ -118,7 +118,7 @@ public class OrganizacionBean implements Serializable{
         organizacion.setOrgPagWeb(this.organizacionSelected.getOrgPagWeb());
         organizacion.setOrgSubTipo("NN");
         organizacion.setOrgTel(this.organizacionSelected.getOrgTel());
-        organizacion.setOrgTipo(this.organizacionSelected.getOrgTipo());
+        organizacion.setTipOrgId(this.organizacionSelected.getTipOrgId());
         organizacion.setOrgUbi(this.organizacionSelected.getOrgUbi());
         organizacionEJB.update(organizacion);
         context.addMessage("Mensaje", new FacesMessage("Felicidades!"+mensaje));

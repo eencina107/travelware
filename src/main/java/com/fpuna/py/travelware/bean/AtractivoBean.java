@@ -115,25 +115,6 @@ public class AtractivoBean implements Serializable{
         RequestContext.getCurrentInstance().update("atractivo-form:dtAtractivo");
     }
     
-//    public void editCiudad(){
-//        if(this.atractivoSelected.getAtrId() == null){
-//            addAtractivo();
-//            return;
-//        }
-//        
-//        PgeAtractivos atractivo = atractivoEJB.getById(this.atractivoSelected.getAtrId());
-//        FacesContext context =  FacesContext.getCurrentInstance();
-//        atractivo.setAtrDesc(this.atractivoSelected.getAtrDesc());
-//        atractivo.setAtrImg(this.atractivoSelected.getAtrImg());
-//        atractivo.setAtrUbi(this.atractivoSelected.getAtrUbi());
-//        atractivo.setAtrUsuMod(loginBean.getUsername());
-//        atractivo.setAtrFecMod(new Date());
-//        atractivoEJB.update(atractivo);
-//        context.addMessage(null, new FacesMessage("Felicidades!", this.atractivoSelected.getAtrDesc()+" fue actualizado con éxito!"));
-//        atractivos = atractivoEJB.getAll();
-//        this.clean();
-//    }
-    
     public void onRowSelect(SelectEvent event){
         this.atractivoSelected= (PgeAtractivos) event.getObject();
         RequestContext.getCurrentInstance().update("atractivo-form:dtAtractivo");
