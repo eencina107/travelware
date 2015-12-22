@@ -5,8 +5,8 @@
  */
 package com.fpuna.py.travelware.converters;
 
-import com.fpuna.py.travelware.dao.CiudadDao;
-import com.fpuna.py.travelware.model.PgeCiudades;
+import com.fpuna.py.travelware.dao.MenuDao;
+import com.fpuna.py.travelware.model.PgeMenus;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -18,20 +18,21 @@ import org.apache.log4j.Logger;
  *
  * @author eencina
  */
-@FacesConverter(value = "ciudadConverter")
-public class CiudadConverter implements Converter{
+@FacesConverter(value = "menuConverter")
+public class MenuConverter implements Converter{
     @EJB
-    private CiudadDao ciudadEJB;
-    final static Logger logger = Logger.getLogger(CiudadConverter.class);
+    private MenuDao menuEJB;
+    
+    final static Logger logger = Logger.getLogger(MenuConverter.class);
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (value== null || value.equals("")){
-        return null;
+        if (value == null || value.equals("")){
+            return null;
         }
         try {
-            PgeCiudades ciudad = ciudadEJB.getByName(value);
-            return ciudad;
+            PgeMenus menu= menuEJB.getByName(value);
+            return menu;
         } catch (Exception e) {
             logger.error("CLASS "+this.getClass().getName()+" METHOD: getAsObject ", e);
             return null;
@@ -40,12 +41,12 @@ public class CiudadConverter implements Converter{
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        if (value == null){
-            return null;
-        }
-        PgeCiudades ciudad= (PgeCiudades) value;
-        try {
-            return ciudad.getCiuDesc();
+         if (value == null) {
+             return null;
+         }
+         PgeMenus menu = (PgeMenus) value;
+         try {
+            return menu.getMenDescripcion();
         } catch (Exception e) {
             logger.error("CLASS "+this.getClass().getName()+" METHOD: getAsString ", e);
             return null;

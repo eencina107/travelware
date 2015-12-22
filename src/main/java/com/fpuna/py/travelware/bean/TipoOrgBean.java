@@ -78,7 +78,7 @@ public class TipoOrgBean implements Serializable{
         tipoOrg.setTipCodigo(tipCodigo);
         tipoOrg.setTipDescripcion(tipDescripcion);
         tipoOrgEJB.update(tipoOrg);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades", tipoOrg.getTipDescripcion()+" fue guardado con éxito"));
+        context.addMessage("Mensaje", new  FacesMessage("Felicidades", tipoOrg.getTipDescripcion()+" fue guardado con éxito"));
         tiposOrg = tipoOrgEJB.getAll();
         this.clean();
     }
