@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="persona-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtPersona" var="persona" value="#{personaBean.personas}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{personaBean.personaSelected}" rowKey="#{persona}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{personaBean.onRowSelect}" />
+                    <p:column headerText="Nro. Doc." 
+                              sortBy="#{persona.perNroDoc}">
+                        <h:outputText value="#{persona.perNroDoc}" />
+                    </p:column>
+                    <p:column headerText="Nombre" 
+                              sortBy="#{persona.perNom}">
+                        <h:outputText value="#{persona.perNom}" />
+                    </p:column>
+                    <p:column headerText="Apellido" >
+                        <h:outputText value="#{persona.perApe}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Nacionalidad"
+                              sortBy="#{persona.paiId.paiNac}">
+                        <h:outputText value="#{persona.paiId.paiNac}" />
+                    </p:column>
+                    <p:column headerText="Profesión">
+                        <h:outputText value="#{persona.prfId.prfDesc}"/>
+                    </p:column>
+                    <p:column headerText="Fecha de Nacimiento" >
+                        <h:outputText value="#{persona.perFecNac}"/>
+                    </p:column>
+                    <p:column headerText="Lugar de Nacimiento" >
+                        <h:outputText value="#{persona.perLugNac}"/>
+                    </p:column>
+                    <p:column headerText="eMail">
+                        <h:outputText value="#{persona.perEmail}"/>
+                    </p:column>
+                    <p:column headerText="Documento">
+                        <p:rowToggler/>
+                    </p:column>
+                    <p:rowExpansion>
+                        <p:graphicImage value="#{perDocBean.image}" style="height: 300px; width: 450px">
+                            <f:param value="#{persona.perId}" name="perId"></f:param>
+                        </p:graphicImage>
+                    </p:rowExpansion>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtPersona" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:personaGr" 
+                                         oncomplete="PF('dlgPersonaAdd').show()" 
+                                         actionListener="#{personaBean.buttonAction}"/>
+                        <p:commandButton process="dtPersona" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgPersonaAdd').show()"
+                                         update=":form-add:personaGr"
+                                         />
+                        <p:commandButton process="dtPersona" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{personaBean.deletePersona}">
+                            <p:confirm header="Borrar Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Personas" widgetVar="dlgPersonaAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="personaGr">                           
+                        <p:outputLabel value="Nro. de Doc." for="nroDoc" />
+                        <h:panelGroup>
+                            <p:inputText id="nroDoc" required="true"
+                                         value="#{personaBean.personaSelected.perNroDoc}" />
+                            <h:inputHidden value="#{personaBean.personaSelected.perId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="Nombre" for="nombre" />
+                        <p:inputText id="nombre" required="true"
+                                     value="#{personaBean.personaSelected.perNom}" />
+                        <p:outputLabel value="Apellido" for="apellido" />
+                        <p:inputText id="apellido" required="true"
+                                     value="#{personaBean.personaSelected.perApe}" />
+                        <p:outputLabel value="Nacionalidad" for="nacionalidad" />
+                        <p:selectOneMenu id="nacionalidad" required="true"
+                                         value="#{personaBean.personaSelected.paiId}" converter="paisConverter">
+
+                            <f:selectItems value="#{personaBean.paises}" 
+                                           var="pais" 
+                                           itemLabel="#{pais.paiNac}" 
+                                           itemValue="#{pais}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Profesion" for="profesion" />
+                        <p:selectOneMenu id="profesion" required="true"
+                                         value="#{personaBean.personaSelected.prfId}" converter="profesionConverter">
+
+                            <f:selectItems value="#{personaBean.profesiones}" 
+                                           var="profesion" 
+                                           itemLabel="#{profesion.prfDesc}" 
+                                           itemValue="#{profesion}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Fecha de Nacimiento" for="fecNac" />
+                        <p:calendar id="fecNac" value="#{personaBean.personaSelected.perFecNac}" pattern="dd/MM/yyyy" mask="true" />
+                        <p:outputLabel value="Lugar de Nacimiento" for="lugNac" />
+                        <p:inputText id="lugNac" required="true"
+                                     value="#{personaBean.personaSelected.perLugNac}" />
+                        <p:outputLabel value="eMail" for="email" />
+                        <p:inputText id="email" required="true"
+                                     value="#{personaBean.personaSelected.perEmail}" />
+                        <p:outputLabel value="Documento" for="perDoc" />
+                        <p:fileUpload id="perDoc" fileUploadListener="#{personaBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                                      update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="personaGr,:persona-form:dtPersona"
+                            action="#{personaBean.addPersona}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>
