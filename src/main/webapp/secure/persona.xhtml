@@ -40,7 +40,10 @@
                         <h:outputText value="#{persona.prfId.prfDesc}"/>
                     </p:column>
                     <p:column headerText="Fecha de Nacimiento" >
-                        <h:outputText value="#{persona.perFecNac}"/>
+                        <h:outputText value="#{persona.perFecNac}">
+                             <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                        
                     </p:column>
                     <p:column headerText="Lugar de Nacimiento" >
                         <h:outputText value="#{persona.perLugNac}"/>
