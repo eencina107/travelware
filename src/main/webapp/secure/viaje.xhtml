@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="viaje-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtViaje" var="viaje" value="#{viajeBean.viajes}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{viajeBean.viajeSelected}" rowKey="#{viaje}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{viajeBean.onRowSelect}" />
+
+                    <p:column headerText="Nombre" sortBy="#{viaje.viaDesc}">
+                        <h:outputText value="#{viaje.viaDesc}" />
+                    </p:column>
+                    <p:column headerText="Fecha de Salida" sortBy="#{viaje.viaFecSali}">
+                        <h:outputText value="#{viaje.viaFecSali}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha de Regreso" sortBy="#{viaje.viaFecReg}">
+                        <h:outputText value="#{viaje.viaFecReg}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtViaje" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:viajeGr" 
+                                         oncomplete="PF('dlgViajeAdd').show()" 
+                                         actionListener="#{viajeBean.buttonAction}"/>
+                        <p:commandButton process="dtViaje" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgViajeAdd').show()"
+                                         update=":form-add:viajeGr"
+                                         />
+                        <p:commandButton process="dtViaje" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{viajeBean.deleteViaje}">
+                            <p:confirm header="Borrar Tipo de Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Tipos de Organización" widgetVar="dlgViajeAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="viajeGr">                           
+                        <p:outputLabel value="Nombre" for="nombre" />
+                        <h:panelGroup>
+                            <p:inputText id="nombre" required="true"
+                                         value="#{viajeBean.viajeSelected.viaDesc}" />
+                            <h:inputHidden value="#{viajeBean.viajeSelected.viaId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Fecha de Salida" for="fecSali" />
+                        <p:calendar id="fecSali" 
+                                    value="#{viajeBean.viajeSelected.viaFecSali}" 
+                                    pattern="dd/MM/yyyy" 
+                                    mask="true" />
+                        <p:outputLabel value="Fecha de Regreso" for="fecReg" />
+                        <p:calendar id="fecReg" 
+                                    value="#{viajeBean.viajeSelected.viaFecReg}" 
+                                    pattern="dd/MM/yyyy" 
+                                    mask="true" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="viajeGr,:viaje-form:dtViaje"
+                            action="#{viajeBean.addViaje}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>
