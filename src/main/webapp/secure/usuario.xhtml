@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="usuario-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtUsuario" var="usuario" value="#{usuarioBean.usuarios}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{usuarioBean.usuarioSelected}" rowKey="#{usuario}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{usuarioBean.onRowSelect}" />
+                    <p:column headerText="Código" 
+                              sortBy="#{usuario.usuCod}">
+                        <h:outputText value="#{usuario.usuCod}" />
+                    </p:column>
+                    <p:column headerText="Nombre" 
+                              sortBy="#{usuario.perId.perNom}">
+                        <h:outputText value="#{usuario.perId.perNom}" />
+                    </p:column>
+                    <p:column headerText="Apellido" >
+                        <h:outputText value="#{usuario.perId.perApe}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha de Ingreso"
+                              sortBy="#{usuario.usuFecIng}">
+                        <h:outputText value="#{usuario.usuFecIng}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText> 
+                    </p:column>
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{usuario.usuCargo}"/>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtUsuario" icon="ui-icon-document"
+                                         value="Agregar"   
+                                         oncomplete="PF('dlgUsuarioAdd').show()" 
+                                         actionListener="#{usuarioBean.buttonAction}"
+                                         update=":form-add:usuarioGr"
+                                         />
+                        <p:commandButton process="dtUsuario" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgUsuarioAdd').show()"
+                                         update=":form-add:usuarioGr"
+                                         />
+                        <p:commandButton process="dtUsuario" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{usuarioBean.deleteUsuario}">
+                            <p:confirm header="Borrar Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Usuarios" widgetVar="dlgUsuarioAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="usuarioGr">                           
+                        <p:outputLabel value="Código" for="codigo" />
+                        <h:panelGroup>
+                            <p:inputText id="codigo" required="true"
+                                         value="#{usuarioBean.usuarioSelected.usuCod}" />
+                            <h:inputHidden value="#{usuarioBean.usuarioSelected.usuId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="Persona" for="persona" />
+                        <p:selectOneMenu id="persona" required="true"
+                                         value="#{usuarioBean.usuarioSelected.perId}" converter="personaConverter">
+
+                            <f:selectItems value="#{usuarioBean.personas}" 
+                                           var="persona" 
+                                           itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
+                                           itemValue="#{persona}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Cargo" for="cargo" />
+                        <p:inputText id="cargo" required="true"
+                                     value="#{usuarioBean.usuarioSelected.usuCargo}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="usuarioGr,:usuario-form:dtUsuario"
+                            actionListener="#{usuarioBean.addUsuario}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>
