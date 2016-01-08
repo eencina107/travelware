@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="pasaporte-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtPasaporte" var="pasaporte" value="#{pasaporteBean.pasaportes}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{pasaporteBean.pasaporteSelected}" rowKey="#{pasaporte}"
+                             selectionMode="single" rowExpandMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{pasaporteBean.onRowSelect}" />
+                    <p:ajax event="rowToggle" listener="#{visaBean.onRowToggle(pasaporte)}"  update=":pasaporte-form:growl" />
+                    <p:column headerText="Persona" sortBy="#{pasaporte.patNroPas}">
+                        <h:outputText value="(#{pasaporte.perId.perNroDoc}) #{pasaporte.perId.perNom} #{pasaporte.perId.perApe}" 
+                                      style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}"/>
+                    </p:column>
+                    <p:column headerText="Nro. de Pasaporte" sortBy="#{pasaporte.patNroPas}">
+                        <h:outputText value="#{pasaporte.patNroPas}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}" />
+                    </p:column>
+                    <p:column headerText="Fecha de Emisión" sortBy="#{pasaporte.patFecEmi}">
+                        <h:outputText value="#{pasaporte.patFecEmi}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha de Vencimiento" sortBy="#{pasaporte.patFecVen}">
+                        <h:outputText value="#{pasaporte.patFecVen}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Visas" style="width: 3%">
+                        <p:rowToggler />
+                    </p:column>
+                    <p:rowExpansion>
+                        <p:dataTable id="dtVisa" var="visa" value="#{visaBean.visas}"
+                                             rows="10" paginator="true" paginatorPosition="bottom" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,15,20"
+                                             selection="#{visaBean.visaSelected}" rowKey="#{visa}"
+                                             selectionMode="single" >
+
+                                    <p:ajax event="rowSelect" listener="#{visaBean.onRowSelect}" />
+
+                                    <p:column headerText="Número" sortBy="#{visa.visNro}">
+                                        <h:outputText value="#{visa.visNro}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}" />
+                                    </p:column>
+                                    <p:column headerText="País" sortBy="#{visa.paiId.paiDesc}">
+                                        <h:outputText value="#{visa.paiId.paiDesc}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}"/>
+                                    </p:column>
+                                    <p:column headerText="Fecha de Vencimiento" sortBy="#{visa.visFecVenc}">
+                                        <h:outputText value="#{visa.visFecVenc}" style="color: #{pasaporteBean.getValidezVenc(pasaporte.patFecVen)}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="dtVisa" icon="ui-icon-document"
+                                                         value="Agregar Visa"  update=":form-add-visa:visaGr" 
+                                                         oncomplete="PF('dlgVisaAdd').show()" 
+                                                         actionListener="#{visaBean.buttonAction}"/>
+                                        <p:commandButton process="dtVisa" icon="ui-icon-pencil"
+                                                         value="Editar Visa" 
+                                                         oncomplete="PF('dlgVisaAdd').show()"
+                                                         update=":form-add-visa:visaGr"
+                                                         />
+                                        <p:commandButton process="dtVisa" icon="ui-icon-document"
+                                                         value="Borrar Visa" actionListener="#{visaBean.deleteVisa}">
+                                            <p:confirm header="Borrar Visa"
+                                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:confirmDialog global="true" showEffect="fade"
+                                                         hideEffect="fade">
+                                            <p:commandButton value="Si" type="button"
+                                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                            <p:commandButton value="No" type="button"
+                                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>
+
+                                    </f:facet>
+                                </p:dataTable>
+                    </p:rowExpansion>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtPasaporte" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:pasaporteGr" 
+                                         oncomplete="PF('dlgPasaporteAdd').show()" 
+                                         actionListener="#{pasaporteBean.buttonAction}"/>
+                        <p:commandButton process="dtPasaporte" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgPasaporteAdd').show()"
+                                         update=":form-add:pasaporteGr"
+                                         />
+                        <p:commandButton process="dtPasaporte" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{pasaporteBean.deletePasaporte}">
+                            <p:confirm header="Borrar Pasaporte"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Pasaportes" widgetVar="dlgPasaporteAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="pasaporteGr">                           
+                        <p:outputLabel value="Pasaporte Nro." for="nroPasaporte" />
+                        <h:panelGroup>
+                            <p:inputText id="nroPasaporte" required="true"
+                                         value="#{pasaporteBean.pasaporteSelected.patNroPas}" />
+                            <h:inputHidden value="#{pasaporteBean.pasaporteSelected.patId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Fecha de Emisión" for="fecEmis" />
+                        <p:calendar id="fecEmis" 
+                                    value="#{pasaporteBean.pasaporteSelected.patFecEmi}" 
+                                    pattern="dd/MM/yyyy" 
+                                    mask="true" />
+                        <p:outputLabel value="Fecha de Vencimiento" for="fecVenc" />
+                        <p:calendar id="fecVenc" 
+                                    value="#{pasaporteBean.pasaporteSelected.patFecVen}" 
+                                    pattern="dd/MM/yyyy" 
+                                    mask="true" />
+                        <p:outputLabel value="Persona" for="persona" />
+                        <p:selectOneMenu id="persona" required="true"
+                                         value="#{pasaporteBean.pasaporteSelected.perId}" converter="personaConverter">
+
+                            <f:selectItems value="#{pasaporteBean.personas}" 
+                                           var="persona" 
+                                           itemLabel="#{persona.perNroDoc} - #{persona.perNom} #{persona.perApe}" 
+                                           itemValue="#{persona}" />
+                        </p:selectOneMenu>
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="pasaporteGr,:pasaporte-form:dtPasaporte"
+                            action="#{pasaporteBean.addPasaporte}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>     
+            
+            <p:dialog header="Visas" widgetVar="dlgVisaAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add-visa">
+                    <p:messages id="messages2" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="visaGr">                           
+                        <p:outputLabel value="Visa Nro." for="nroVisa" />
+                        <h:panelGroup>
+                            <p:inputText id="nroVisa" required="true"
+                                         value="#{visaBean.visaSelected.visNroSec}" />
+                            <h:inputHidden value="#{visaBean.visaSelected.visId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Fecha de Vencimiento" for="fecVenc" />
+                        <p:calendar id="fecVenc" 
+                                    value="#{visaBean.visaSelected.visFecVenc}" 
+                                    pattern="dd/MM/yyyy" 
+                                    mask="true" />
+                        <p:outputLabel value="País" for="pais" />
+                        <p:selectOneMenu id="pais" required="true"
+                                         value="#{visaBean.visaSelected.paiId}" converter="paisConverter">
+
+                            <f:selectItems value="#{visaBean.paises}" 
+                                           var="pais" 
+                                           itemLabel="#{pais.paiDesc}" 
+                                           itemValue="#{pais}" />
+                        </p:selectOneMenu>
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="visaGr,:pasaporte-form:dtPasaporte:dtVisa"
+                            action="#{visaBean.addVisa}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>
