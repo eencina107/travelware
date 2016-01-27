@@ -15,18 +15,25 @@ and open the template in the editor.
     <h:body>
         <p:growl id="mensajes" showDetail="true" life="2000"></p:growl>
         <h:form>
-            <p:panel id="panel" header="Login" style="width:400px;alignment-adjust: central" >
-                <p:focus context="panel"/>
-                <p:panelGrid columns="2" >
-                    <p:outputLabel id="userLabel" value="Usuario:"/>
-                    <p:inputText id="userNameInput" label="userLabel"  value="#{loginBean.username}" onblur="alert('se ingreso el usuario: '+#{loginBean.username})" required="true" requiredMessage="Debe ingresar el usuario."></p:inputText>
-                    <p:outputLabel id="passLabel" value="Contraseña:"/>
-                    <p:password id="passwordInput" label="passLabel" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
-                    <f:facet name="footer">
-                        <p:commandButton id="loginButton" value="Ingresar" actionListener="#{loginBean.login}" update=":mensajes"/>
-                    </f:facet>
-                </p:panelGrid>
-            </p:panel>
+            <p:panelGrid columns="2" style="width: 100%; margin-top: 12%; text-align: center;">
+                <p:column>
+                    <p:graphicImage value="/resources/logo.png"/>
+                </p:column>
+                <p:column>
+                    <p:panel id="panel" header="Login" style="width:400px;alignment-adjust: central" >
+                        <p:focus context="panel"/>
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel id="userLabel" value="Usuario:"/>
+                            <p:inputText id="userNameInput" label="userLabel"  value="#{loginBean.username}" onblur="alert('se ingreso el usuario: ' +#{loginBean.username})" required="true" requiredMessage="Debe ingresar el usuario."></p:inputText>
+                            <p:outputLabel id="passLabel" value="Contraseña:"/>
+                            <p:password id="passwordInput" label="passLabel" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
+                            <f:facet name="footer">
+                                <p:commandButton id="loginButton" value="Ingresar" actionListener="#{loginBean.login}" update=":mensajes"/>
+                            </f:facet>
+                        </p:panelGrid>
+                    </p:panel>    
+                </p:column>
+            </p:panelGrid>
         </h:form>
     </h:body>
 </html>

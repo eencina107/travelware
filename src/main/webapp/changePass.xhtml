@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Ingreso al Sistema</title>
+    </h:head>
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="2000"></p:growl>
+        <h:form>
+            <p:panelGrid columns="1" style="margin-top: 12%; margin-left: 35%">
+                <p:panel id="panel" header="Cambiar Contraseña" style="width:400px;alignment-adjust: central" >
+                    <p:focus context="panel"/>
+                    <p:panelGrid columns="2" >
+                        <p:outputLabel id="userLabel" value="Usuario:"/>
+                        <p:inputText id="userNameInput" label="userLabel"  value="#{loginBean.username}" onblur="alert('se ingreso el usuario: ' +#{loginBean.username})" required="true" requiredMessage="Debe ingresar el usuario."></p:inputText>
+                        <p:outputLabel id="passLabel" value="Contraseña:"/>
+                        <p:password id="passwordInput" label="passLabel" value="#{loginBean.password}" required="true" requiredMessage="Debe ingresar la contraseña."/>
+                        <p:outputLabel id="newPassLabel" value="Nueva Contraseña:"/>
+                        <p:password id="newPasswordInput" label="passLabel" value="#{loginBean.newPassword}" required="true" requiredMessage="Debe ingresar la nueva contraseña."/>
+                        <f:facet name="footer">
+                            <p:commandButton id="changePassButton" value="Cambiar Contraseña" actionListener="#{loginBean.cambiarConstrasenha}" update=":mensajes"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </p:panel>    
+            </p:panelGrid>
+                    <p:stack icon="/resources/stack.png" expanded="true">
+                        <p:menuitem value="Inicio" icon="/resources/home_icon.png" url="/secure/index.xhtml"/>
+                    </p:stack>  
+        </h:form>
+    </h:body>
+</html>
+

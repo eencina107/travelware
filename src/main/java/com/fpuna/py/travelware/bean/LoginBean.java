@@ -45,6 +45,7 @@ import org.primefaces.model.menu.MenuModel;
 public class LoginBean implements Serializable{
     private String username;
     private String password;
+    private String newPassword;
     private boolean loggedIn;
     @EJB
     private UsuarioDao usuarioEjb;
@@ -154,26 +155,6 @@ public class LoginBean implements Serializable{
         int mod=0;//bandera del numero de modulo
         
         if (menus!=null){
-//            menu= (PgeMenus) i.next();
-//            mod=menu.getPgeMenusPK().getMenId();
-//            submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
-//            while (i.hasNext()){
-//                while(mod==menu.getPgeMenusPK().getMenId()){
-//                    item=new DefaultMenuItem(menu.getMenDescripcion());
-//                    item.setUrl(serverip+menu.getMenUbicacion());
-//                    submenu.addElement(item);
-//                    if (i.hasNext()){
-//                        menu= (PgeMenus) i.next();
-//                    }
-//                }
-//                model.addElement(submenu);
-//                mod=menu.getPgeMenusPK().getMenId();
-//                submenu=new DefaultSubMenu(menu.getPgeModulos().getModDesc());
-//            }
-//            item=new DefaultMenuItem(menu.getMenDescripcion());
-//            item.setUrl(serverip+menu.getMenUbicacion());
-//            submenu.addElement(item);
-//            model.addElement(submenu);
             while(i.hasNext()){
                 menu=(PgeMenus) i.next();
                 if ((null == submenu) || (mod!= menu.getMenId())){
@@ -190,6 +171,32 @@ public class LoginBean implements Serializable{
         }
         
 
+    }
+    
+    public void cambiarConstrasenha(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            PgeUsuarios userAutenticate = usuarioEjb.autenticate(username, password);
+            if (userAutenticate == null){
+                context.addMessage(null, new FacesMessage("Advertencia", "Usuario o Contraseña Incorrectos."));
+            }
+            else
+            {
+                userAutenticate = usuarioEjb.changePass(username, newPassword);
+                if (userAutenticate == null) {
+                    context.addMessage(null, new FacesMessage("Advertencia", "Ocurrió un error al cambiar la contraseña"));
+                }
+                else
+                {
+                    context.addMessage(null, new FacesMessage("Felicidades!", "Contraseña cambiada con éxito"));
+                }
+            }
+            
+        } catch (UnsupportedEncodingException ex) {
+            System.out.println("ERROR. CLASS: "+this.getClass().getName()+" METHOD: cambiarContrasenha "+ex);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("ERROR. CLASS: "+this.getClass().getName()+" METHOD: cambiarContrasenha "+ex);
+        }
     }
     
     //Getters && Setters
@@ -232,4 +239,14 @@ public class LoginBean implements Serializable{
     public void setUsuario(PgeUsuarios usuario) {
         this.usuario = usuario;
     }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+    
+    
 }
