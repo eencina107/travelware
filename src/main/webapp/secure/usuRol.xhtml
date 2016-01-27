@@ -29,7 +29,7 @@
                               sortBy="#{usuRol.rolId.rolDesc}">
                         <h:outputText value="#{usuRol.rolId.rolDesc}" />
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtUsuRol" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:usuRolGr" 
                                          oncomplete="PF('dlgUsuRolAdd').show()" 

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="pasajero-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:dataTable id="dtPasajero" var="pasajero" value="#{pasajeroBean.pasajeros}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{pasajeroBean.pasajeroSelected}" rowKey="#{pasajero}"
+                             selectionMode="single" rowExpandMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{pasajeroBean.onRowSelect}" />
+                    <p:ajax event="rowToggle" listener="#{gastoBean.onRowToggle(pasajero)}"  update=":pasajero-form:growl" />
+                    <p:column headerText="Viaje" filterBy="#{pasajero.viaId}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu id="viaje" required="true" onchange="PF('dtPasajero').filter()" 
+                                             value="#{pasajeroBean.viajeSelected}" converter="viajeConverter" >
+                                <f:selectItems value="#{pasajeroBean.viajes}" 
+                                               var="viaje" 
+                                               itemLabel="#{viaje.viaDesc} - #{pasajeroBean.getSimpleDateFormat(viaje.viaFecSali)}" 
+                                               itemValue="#{viaje}">
+                                </f:selectItems>
+                            </p:selectOneMenu>    
+                        </f:facet>         
+                        <h:outputText value="#{pasajero.viaId.viaDesc}"/>
+                    </p:column>
+                    <p:column headerText="Persona" sortBy="#{pasajero.perId.perNroDoc}">
+                        <h:outputText value="(#{pasajero.perId.perNroDoc}) #{pasajero.perId.perNom} #{pasajero.perId.perApe}"/>
+                    </p:column>
+                    <p:column headerText="Relación" sortBy="#{pasajero.pasRel}">
+                        <h:outputText value="#{pasajero.pasRel}" />
+                    </p:column>
+                    <p:column headerText="Preferencia de Asiento" sortBy="#{pasajero.pasPrefAsi}">
+                        <h:outputText value="#{pasajero.pasPrefAsi}" />
+                    </p:column>
+                    <p:column headerText="Preferencia de Comida" sortBy="#{pasajero.pasPrefComi}">
+                        <h:outputText value="#{pasajero.pasPrefComi}"/>
+                    </p:column>
+                    <p:column headerText="Gastos" style="width: 3%">
+                        <p:rowToggler />
+                    </p:column>
+                    <p:rowExpansion>
+                        <p:dataTable id="dtGasto" var="gasto" value="#{gastoBean.gastos}"
+                                     rows="10" paginator="true" paginatorPosition="bottom" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,20"
+                                     selection="#{gastoBean.gastoSelected}" rowKey="#{gasto}"
+                                     selectionMode="single" >
+
+                            <p:ajax event="rowSelect" listener="#{gastoBean.onRowSelect}" />
+
+                            <p:column headerText="Tipo de Gasto" sortBy="#{gasto.gasTip}">
+                                <h:outputText value="#{gasto.gasTip}" />
+                            </p:column>
+                            <p:column headerText="Moneda" sortBy="#{gasto.monId.monDesc}">
+                                <h:outputText value="#{gasto.monId.monDesc}"/>
+                            </p:column>
+                            <p:column headerText="Monto" sortBy="#{gasto.gasMonto}">
+                                <h:outputText value="#{gasto.gasMonto}"/>
+                            </p:column>
+                            <f:facet name="header">
+                                <p:commandButton process="dtGasto" icon="ui-icon-document"
+                                                 value="Agregar Gasto"  update=":form-add-gasto:gastoGr" 
+                                                 oncomplete="PF('dlgGastoAdd').show()" 
+                                                 actionListener="#{gastoBean.buttonAction}"/>
+                                <p:commandButton process="dtGasto" icon="ui-icon-pencil"
+                                                 value="Editar Gasto" 
+                                                 oncomplete="PF('dlgGastoAdd').show()"
+                                                 update=":form-add-gasto:gastoGr"
+                                                 />
+                                <p:commandButton process="dtGasto" icon="ui-icon-document"
+                                                 value="Borrar Gasto" actionListener="#{gastoBean.deleteGasto}">
+                                    <p:confirm header="Borrar Gasto"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:confirmDialog global="true" showEffect="fade"
+                                                 hideEffect="fade">
+                                    <p:commandButton value="Si" type="button"
+                                                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                    <p:commandButton value="No" type="button"
+                                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
+
+                            </f:facet>
+                        </p:dataTable>
+                    </p:rowExpansion>
+                    <f:facet name="header">
+                        <p:commandButton process="dtPasajero" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:pasajeroGr" 
+                                         oncomplete="PF('dlgPasajeroAdd').show()" 
+                                         actionListener="#{pasajeroBean.buttonAction}"/>
+                        <p:commandButton process="dtPasajero" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgPasajeroAdd').show()"
+                                         update=":form-add:pasajeroGr"
+                                         />
+                        <p:commandButton process="dtPasajero" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{pasajeroBean.deletePasajero}">
+                            <p:confirm header="Borrar Pasajero"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Pasajeros" widgetVar="dlgPasajeroAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="pasajeroGr">  
+                        <p:outputLabel value="Viaje" for="viaje" />
+                        <h:panelGroup>
+                            <p:selectOneMenu id="viaje" required="true"
+                                             value="#{pasajeroBean.pasajeroSelected.viaId}" converter="viajeConverter">
+                                <f:selectItems value="#{pasajeroBean.viajes}" 
+                                               var="viaje" 
+                                               itemLabel="#{viaje.viaDesc} - #{pasajeroBean.getSimpleDateFormat(viaje.viaFecSali)} - #{viaje.viaCost} US$" 
+                                               itemValue="#{viaje}" />
+                            </p:selectOneMenu>
+                            <h:inputHidden value="#{pasajeroBean.pasajeroSelected.pviId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Persona" for="persona" />
+                        <p:selectOneMenu id="persona" required="true"
+                                         value="#{pasajeroBean.pasajeroSelected.perId}" converter="personaConverter">
+
+                            <f:selectItems value="#{pasajeroBean.personas}" 
+                                           var="persona" 
+                                           itemLabel="#{persona.perNroDoc} - #{persona.perNom} #{persona.perApe}" 
+                                           itemValue="#{persona}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Relación" for="relacion" />
+                        <p:selectOneMenu id="relacion" value="#{pasajeroBean.pasajeroSelected.pasRel}" >
+                            <f:selectItem itemLabel="Pasajero" itemValue="P" />
+                            <f:selectItem itemLabel="Acompañante" itemValue="A" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Preferencia de Asiento" for="prefAsi" />
+                        <p:selectOneMenu id="prefAsi" value="#{pasajeroBean.pasajeroSelected.pasPrefAsi}" >
+                            <f:selectItem itemLabel="Pasillo" itemValue="P" />
+                            <f:selectItem itemLabel="Ventanilla" itemValue="V" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Preferencia de Comida" for="prefComi" />
+                        <p:inputText id="prefComi" required="true"
+                                     value="#{pasajeroBean.pasajeroSelected.pasPrefComi }" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="pasajeroGr,:pasajero-form:dtPasajero"
+                            action="#{pasajeroBean.addPasajero}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>     
+
+            <p:dialog header="Gastos" widgetVar="dlgGastoAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add-gasto">
+                    <p:messages id="messages2" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="gastoGr">                           
+                        <p:outputLabel value="Gasto Nro." for="nroGasto" />
+                        <h:panelGroup>
+                            <p:inputText id="nroGasto" required="true"
+                                         value="#{gastoBean.gastoSelected.gasNro}" />
+                            <h:inputHidden value="#{gastoBean.gastoSelected.gasId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Tipo de Gasto" for="tipGas" />
+                        <p:inputText id="tipGas" required="true"
+                                     value="#{gastoBean.gastoSelected.gasTip}" maxlength="3"/>
+                        <p:outputLabel value="Moneda" for="moneda" />
+                        <p:selectOneMenu id="moneda" required="true"
+                                         value="#{gastoBean.gastoSelected.monId}" converter="monedaConverter">
+
+                            <f:selectItems value="#{gastoBean.monedas}" 
+                                           var="moneda" 
+                                           itemLabel="#{moneda.monDesc}" 
+                                           itemValue="#{moneda}" />
+                        </p:selectOneMenu>
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="gastoGr,:pasajero-form:dtPasajero:dtGasto"
+                            action="#{gastoBean.addGasto}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

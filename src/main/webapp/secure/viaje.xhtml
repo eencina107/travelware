@@ -33,7 +33,10 @@
                             <f:convertDateTime pattern="dd/MM/yyyy" />
                         </h:outputText>
                     </p:column>
-                    <f:facet name="footer">
+                    <p:column headerText="Costo" sortBy="#{viaje.viaCost}">
+                        <h:outputText value="#{viaje.viaCost} US$" />
+                    </p:column>
+                    <f:facet name="header">
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:viajeGr" 
                                          oncomplete="PF('dlgViajeAdd').show()" 
@@ -81,6 +84,9 @@
                                     value="#{viajeBean.viajeSelected.viaFecReg}" 
                                     pattern="dd/MM/yyyy" 
                                     mask="true" />
+                        <p:outputLabel value="Costo" for="costo" />
+                        <p:inputText id="costo" required="true"
+                                     value="#{viajeBean.viajeSelected.viaCost}" />
                         <p:spacer />
                         <p:commandButton
                             value="Agregar"

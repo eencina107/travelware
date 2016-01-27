@@ -2,7 +2,7 @@
 #top {
     position: relative;
     background-color: #ffffff;
-    color: white;
+    color: black;
     padding: 5px;
     margin: 0px 0px 10px 0px;
 }
@@ -49,7 +49,7 @@
 }
 
 #top a:link, #top a:visited {
-  color: white;
+    color: #a75703; /*color de texto en menu*/
   font-weight : bold;
   text-decoration: none;
 }
@@ -65,8 +65,12 @@
     height: 300px !important;
 }
 
+.ui-menubar-content{
+    color: black;
+}
+
 /*Al momento de agrandar el espacio del contenido el boton atras no se adaptaba*/
 .ui-slidemenu-backward {
-    position: relative;
-    margin-top: 290px;
+    position: absolute;
+    margin-top: 270px;
 }

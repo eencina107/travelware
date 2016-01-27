@@ -5,8 +5,8 @@
  */
 package com.fpuna.py.travelware.converters;
 
-import com.fpuna.py.travelware.dao.ViajeDao;
-import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.dao.PrecioViajeDao;
+import com.fpuna.py.travelware.model.ViaPreViajes;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -17,10 +17,10 @@ import javax.faces.convert.FacesConverter;
  *
  * @author eencina
  */
-@FacesConverter(value = "viajeConverter")
-public class ViajeConverter implements Converter{
+@FacesConverter(value = "precViajeConverter")
+public class PreViajeConverter implements Converter{
     @EJB
-    private ViajeDao viajeEJB;
+    private PrecioViajeDao precioViajeEJB;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -28,26 +28,26 @@ public class ViajeConverter implements Converter{
             return null;
         }
         try {
-            ViaViajes viaje = viajeEJB.getByName(value);
-            return viaje;
+            ViaPreViajes precViaje = precioViajeEJB.getByName(value);
+            return precViaje;
         } catch (Exception e) {
-            System.out.println("CLASS "+this.getClass().getName()+" METHOD: getAsObject "+ e);
+            System.out.println("ERROR: "+"CLASS "+this.getClass().getName()+" METHOD: getAsObject "+ e);
             return null;
         }
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        if (value == null){
+        if (value == null) {
             return null;
         }
+        ViaPreViajes precViaje= (ViaPreViajes) value;
         try {
-            ViaViajes viaje= (ViaViajes) value;
-            return viaje.getViaDesc();
+            return precViaje.getPreDescripcion();
         } catch (Exception e) {
-            System.out.println("CLASS "+this.getClass().getName()+" METHOD: getAsString "+ e);
+            System.out.println("ERROR: "+"CLASS "+this.getClass().getName()+" METHOD: getAsString "+ e);
             return null;
         }
     }
-   
+    
 }

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="comprobante-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+                <h:panelGrid columns="4" columnClasses="column" id="comprobanteGr">
+                    <p:outputLabel value="Concepto" for="concepto"/>
+                    <p:inputText id="concepto" value="#{comprobanteBean.comprobante.comConc}"/>
+                    <p:outputLabel value="Nro. Doc." for="nroDoc"/>
+                    <p:inputText id="nroDoc" value="#{comprobanteBean.comprobante.comNumDoc}"/>
+                    <p:outputLabel value="Nro. Doc," for="nroDoc"/>
+                    <p:inputText id="nroDoc" value="#{comprobanteBean.comprobante.comNumDoc}"/>
+                </h:panelGrid>
+                <p:dataTable id="dtComprobanteDet" var="comprobanteDet" value="#{comprobanteBean.comprobantesDet}" widgetVar="dtComprobanteDet"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15" 
+                             selection="#{comprobanteBean.comprobanteDetSelected}" rowKey="#{comprobanteDet}"
+                             selectionMode="single" >
+
+                    <p:ajax event="rowSelect" listener="#{comprobanteBean.onRowSelect}" />
+                    <p:column headerText="Viaje" >
+                        <h:outputText value="#{comprobanteDet.viaId.viaDesc}"/>
+                    </p:column>
+                    <p:column headerText="Nro. de Cuota" sortBy="#{comprobanteDet.cdeNumCuota}">
+                        <h:outputText value="#{comprobanteDet.cdeNumCuota}"/>
+                    </p:column>
+                    <p:column headerText="% Rec. o Desc." >
+                        <h:outputText value="#{comprobanteDet.cdePorRde}" />
+                    </p:column>
+                    <p:column headerText="Precio Viaje">
+                        <h:outputText value="#{comprobanteDet.viaId.viaCost}" />
+                    </p:column>
+                    <p:column headerText="Gravadas" >
+                        <h:outputText value="#{comprobanteDet.cdeGra}"/>
+                    </p:column>
+                    <p:column headerText="Impuesto" >
+                        <h:outputText value="#{comprobanteDet.cdeIva}"/>
+                    </p:column>
+                    <p:column headerText="Exentas" >
+                        <h:outputText value="#{comprobanteDet.cdeExe}"/>
+                    </p:column>
+                    <p:column headerText="Totales" >
+                        <h:outputText value="#{comprobanteDet.cdeTot}" style="font-weight: bold"/>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="dtComprobanteDet" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:comprobanteGr" 
+                                         oncomplete="PF('dlgComprobanteDetAdd').show()" 
+                                         actionListener="#{comprobanteBean.buttonAction}"/>
+                        <p:commandButton process="dtComprobanteDet" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgComprobanteDetAdd').show()"
+                                         update=":form-add:comprobanteDetGr"
+                                         />
+                        <p:commandButton process="dtComprobanteDet" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{comprobanteBean.deleteComprobante}">
+                            <p:confirm header="Borrar Precio"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Precios de Viajes" widgetVar="dlgComprobanteDetAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="comprobanteDetGr">  
+                        <p:outputLabel value="Viaje" for="viaje" />
+                        <h:panelGroup>
+                            <p:selectOneMenu id="viaje" required="true"
+                                             value="#{precioViajeBean.viajeSelected}" converter="viajeConverter" >
+                                <f:selectItems value="#{precioViajeBean.viajes}" 
+                                               var="viaje" 
+                                               itemLabel="#{viaje.viaDesc} - #{precioViajeBean.getSimpleDateFormat(viaje.viaFecSali)}" 
+                                               itemValue="#{viaje}">
+                                </f:selectItems>
+                            </p:selectOneMenu>
+                            <h:inputHidden value="#{comprobanteBean.comprobanteDetSelected.comDetId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Monto a Pagar" for="monto" />
+                        <p:inputText id="monto" required="true"
+                                     value="#{comprobanteBean.comprobanteDetSelected.cdeTot}" />
+                        <p:outputLabel value="Nro. de Cuota" for="nroCuota" />
+                        <p:inputText id="nroCuota" required="true"
+                                     value="#{comprobanteBean.comprobanteDetSelected.cdeNumCuota}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Agregar"
+                            update="precioViajeGr,:precioViaje-form:dtPrecioViaje"
+                            action="#{precioViajeBean.addPrecioViaje}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>     
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

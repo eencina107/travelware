@@ -5,8 +5,8 @@
  */
 package com.fpuna.py.travelware.converters;
 
-import com.fpuna.py.travelware.dao.ViajeDao;
-import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.dao.MonedaDao;
+import com.fpuna.py.travelware.model.PgeMonedas;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -17,10 +17,10 @@ import javax.faces.convert.FacesConverter;
  *
  * @author eencina
  */
-@FacesConverter(value = "viajeConverter")
-public class ViajeConverter implements Converter{
+@FacesConverter(value = "monedaConverter")
+public class MonedaConverter implements Converter{
     @EJB
-    private ViajeDao viajeEJB;
+    private MonedaDao monedaEJB;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -28,8 +28,8 @@ public class ViajeConverter implements Converter{
             return null;
         }
         try {
-            ViaViajes viaje = viajeEJB.getByName(value);
-            return viaje;
+            PgeMonedas moneda = monedaEJB.getByName(value);
+            return moneda;
         } catch (Exception e) {
             System.out.println("CLASS "+this.getClass().getName()+" METHOD: getAsObject "+ e);
             return null;
@@ -41,13 +41,13 @@ public class ViajeConverter implements Converter{
         if (value == null){
             return null;
         }
+        PgeMonedas moneda = (PgeMonedas) value;
         try {
-            ViaViajes viaje= (ViaViajes) value;
-            return viaje.getViaDesc();
+            return moneda.getMonDesc();
         } catch (Exception e) {
             System.out.println("CLASS "+this.getClass().getName()+" METHOD: getAsString "+ e);
             return null;
         }
     }
-   
+    
 }

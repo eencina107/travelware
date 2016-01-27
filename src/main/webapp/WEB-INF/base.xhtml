@@ -17,22 +17,13 @@
 
         <div id="top">
             <ui:insert name="top">
-                <img src="../resources/logo.png" width="342" height="110" alt="San Rafael Peregrinaciones"/>
-
+                <img src="../resources/logo.png" width="600" height="110" alt="San Rafael Peregrinaciones"/>
+                <p:menubar id="menuPrincipal" style="color: black"
+                                    model="#{loginBean.model}"   /> 
             </ui:insert>
         </div>
         <div>
-            <div id="left" style="width: 210px; height: 360px;">
-                <p:growl id="messages" showDetail="false"/>
-                <ui:insert name="left" >
-                    <div id="prueba">
-                    <p:slideMenu id="menuPrincipal"  style="width: 205px; height: 350px; line-break: strict; "
-                                    model="#{loginBean.model}"   backLabel="Atrás"   />                        
-                    </div>
-                </ui:insert>
-                
-            </div>
-            <div id="content" class="left_content">
+            <div id="content" class="center_content">
                 <ui:insert name="content"></ui:insert>
             </div>
         </div>

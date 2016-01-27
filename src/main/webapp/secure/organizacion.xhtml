@@ -39,7 +39,7 @@
                         <h:outputText value="#{organizacion.orgTel}"/>
                     </p:column>
                     <p:column headerText="Tipo" style="text-align: center">
-                        <h:outputText value="#{organizacion.orgTipo.tipDescripcion}"/>
+                        <h:outputText value="#{organizacion.tipOrgId.tipDescripcion}"/>
                     </p:column>
                     <p:column headerText="Página Web">
                         <h:outputText value="#{organizacion.orgPagWeb}"/>
@@ -49,7 +49,7 @@
                             <f:param value="#{organizacion.orgId}" name="orgId"></f:param>
                         </p:graphicImage>
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:organizacionGr" 
                                          oncomplete="PF('dlgOrganizacionAdd').show()" 
@@ -108,7 +108,7 @@
                                      value="#{organizacionBean.organizacionSelected.orgTel}" />
                         <p:outputLabel value="Tipo" for="tipoOrg" />
                         <p:selectOneMenu id="tipoOrg" required="true"
-                                         value="#{organizacionBean.organizacionSelected.orgTipo}" converter="tipoOrgConverter">
+                                         value="#{organizacionBean.organizacionSelected.tipOrgId}" converter="tipoOrgConverter">
 
                             <f:selectItems value="#{organizacionBean.tiposOrg}" 
                                            var="tipoOrg" 

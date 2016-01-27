@@ -36,7 +36,7 @@
                     <p:column headerText="País" style="width:32px;text-align: center">
                         <h:outputText value="#{ciudad.paiId.paiDesc}"></h:outputText>
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtCiudad" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgCiudadAdd').show()" />
                         <p:commandButton process="dtCiudad" icon="ui-icon-pencil"

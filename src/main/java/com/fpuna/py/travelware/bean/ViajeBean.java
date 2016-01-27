@@ -83,6 +83,7 @@ public class ViajeBean implements Serializable{
         viaje.setViaDesc(this.viajeSelected.getViaDesc());
         viaje.setViaFecSali(this.viajeSelected.getViaFecSali());
         viaje.setViaFecReg(this.viajeSelected.getViaFecReg());
+        viaje.setViaCost(this.viajeSelected.getViaCost());
         viajeEJB.update(viaje);
         context.addMessage("Mensaje", new FacesMessage("Felicidades!", viaje.getViaDesc()+" fue agregado con éxito"));
         viajes = viajeEJB.getAll();

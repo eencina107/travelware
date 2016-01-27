@@ -18,9 +18,30 @@
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                              rowsPerPageTemplate="5,10,15"
                              selection="#{paisBean.paisSelected}" rowKey="#{pais}"
-                             selectionMode="single">
+                             selectionMode="single" >
 
                     <p:ajax event="rowSelect" listener="#{paisBean.onRowSelect}" />
+                    <f:facet name="header" >
+                        <p:commandButton process="dtPais" icon="ui-icon-document"
+                                         value="Agregar"  oncomplete="PF('dlgPaisAdd').show()" />
+                        <p:commandButton process="dtPais" icon="ui-icon-pencil" 
+                                         value="Editar" oncomplete="PF('dlgPaisUpd').show()" 
+                                         update=":form-upd:paisGrUpd" 
+                                         />
+                        <p:commandButton process="dtPais" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{paisBean.deletePais}">
+                            <p:confirm header="Borrar Pais"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
 
 <!--                        <p:column headerText="ID" sortBy="#{pais.paiId}">
                             <h:outputText value="#{pais.paiId}" />
@@ -37,27 +58,7 @@
                     <p:column style="width:32px;text-align: center">
                         <!--<p:gmap center="#{pais.paiUbi}" zoom="5" type="HYBRID" style="width:200px;height:200px" />-->
                     </p:column>
-                    <f:facet name="footer">
-                        <p:commandButton process="dtPais" icon="ui-icon-document"
-                                         value="Agregar"  oncomplete="PF('dlgPaisAdd').show()" />
-                        <p:commandButton process="dtPais" icon="ui-icon-pencil"
-                                         value="Editar" oncomplete="PF('dlgPaisUpd').show()"
-                                         update=":form-upd:paisGrUpd"
-                                         />
-                        <p:commandButton process="dtPais" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{paisBean.deletePais}">
-                            <p:confirm header="Borrar Pais"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
-
-                    </f:facet>
+                    
                 </p:dataTable>
             </h:form>
 

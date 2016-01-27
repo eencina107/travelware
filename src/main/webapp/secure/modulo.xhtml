@@ -5,8 +5,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
-<!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
-    type="text/javascript"></script>-->
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
@@ -21,17 +21,7 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{moduloBean.onRowSelect}" />
-
-                    <p:column headerText="Nombre" sortBy="#{modulo.modDesc}">
-                        <h:outputText value="#{modulo.modDesc}" />
-                    </p:column>
-                    <p:column headerText="Abrev." sortBy="#{modulo.modAbr}">
-                        <h:outputText value="#{modulo.modAbr}" />
-                    </p:column>
-                    <p:column headerText="Estado" sortBy="#{modulo.modEstado}">
-                        <h:outputText value="#{modulo.modEstado}" />
-                    </p:column>
-                                        <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgModuloAdd').show()" />
                         <p:commandButton process="dtModulo" icon="ui-icon-pencil"
@@ -52,6 +42,16 @@
                         </p:confirmDialog>
 
                     </f:facet>
+                    <p:column headerText="Nombre" sortBy="#{modulo.modDesc}">
+                        <h:outputText value="#{modulo.modDesc}" />
+                    </p:column>
+                    <p:column headerText="Abrev." sortBy="#{modulo.modAbr}">
+                        <h:outputText value="#{modulo.modAbr}" />
+                    </p:column>
+                    <p:column headerText="Estado" sortBy="#{modulo.modEstado}">
+                        <h:outputText value="#{modulo.modEstado}" />
+                    </p:column>
+
                 </p:dataTable>
             </h:form>
 
@@ -111,11 +111,11 @@
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
-            
-                
-                    
-                
-            
+
+
+
+
+
         </ui:define>
 
 

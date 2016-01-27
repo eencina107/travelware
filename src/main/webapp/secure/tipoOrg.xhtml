@@ -27,7 +27,7 @@
                     <p:column headerText="Nombre" >
                         <h:outputText value="#{tipoOrg.tipDescripcion}"></h:outputText>
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:tipoOrgGr" 
                                          oncomplete="PF('dlgTipoOrgAdd').show()" 

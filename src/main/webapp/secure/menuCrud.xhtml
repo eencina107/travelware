@@ -42,7 +42,7 @@
                     <p:column headerText="Tipo" style="width:32px;text-align: center">
                         <h:outputText value="#{menu.menTipo}"></h:outputText>
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtMenu" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgMenuAdd').show()" />
                         <p:commandButton process="dtMenu" icon="ui-icon-pencil"
@@ -55,7 +55,7 @@
                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
                         </p:commandButton>
                         <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
+                                         hideEffect="fade">
                             <p:commandButton value="Si" type="button"
                                              styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
                             <p:commandButton value="No" type="button"

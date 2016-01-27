@@ -28,7 +28,7 @@
                     <p:column headerText="Rol" >
                         <h:outputText value="#{permiso.rolId.rolDesc}"></h:outputText>
                     </p:column>
-                    <f:facet name="footer">
+                    <f:facet name="header">
                         <p:commandButton process="dtPermiso" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:permisoGr" 
                                          oncomplete="PF('dlgPermisoAdd').show()" 

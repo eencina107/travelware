@@ -21,7 +21,6 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.ToggleEvent;
 
 /**
  *
