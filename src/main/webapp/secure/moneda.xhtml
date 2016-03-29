@@ -29,6 +29,10 @@
                               sortBy="#{moneda.monDesc}">
                         <h:outputText value="#{moneda.monDesc}" />
                     </p:column>
+                    <p:column headerText="Abrev." style="width: 250px"
+                              sortBy="#{moneda.monAbreviatura}">
+                        <h:outputText value="#{moneda.monAbreviatura}" />
+                    </p:column>
                     <p:column headerText="País" style="width:32px;text-align: center">
                         <h:outputText value="#{moneda.paiId.paiDesc}"></h:outputText>
                     </p:column>
@@ -71,6 +75,9 @@
                             <h:inputHidden value="#{monedaBean.monedaSelected.monId}" />
 
                         </h:panelGroup>
+                        <p:outputLabel value="Abrev." for="abrev" />
+                        <p:inputText id="abrev" required="true"
+                                     value="#{monedaBean.monedaSelected.monAbreviatura}" />
                         <p:outputLabel value="País" for="pais" />
                         <p:selectOneMenu id="pais" required="true"
                                          value="#{monedaBean.monedaSelected.paiId}" converter="paisConverter">

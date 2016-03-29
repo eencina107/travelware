@@ -88,6 +88,7 @@ public class MonedaBean implements Serializable{
             moneda.setMonId(this.monedaSelected.getMonId());
         }
         moneda.setMonDesc(this.monedaSelected.getMonDesc());
+        moneda.setMonAbreviatura(this.monedaSelected.getMonAbreviatura());
         moneda.setPaiId(this.monedaSelected.getPaiId());
         moneda.setMonUsuIns(loginBean.getUsername());
         moneda.setMonFecIns(new Date());

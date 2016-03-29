@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reciboDinero" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4efb681e-ae3a-4c61-9aa9-59ea1860eebe">
+	<property name="ireport.zoom" value="0.8264462809917368"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cob_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from pag_cobros, pge_datos_generales, pge_personas, via_viajes, pge_monedas
+WHEre pag_cobros.per_id=pge_personas.per_id
+and pag_cobros.via_id=via_viajes.via_id
+and pag_cobros.mon_id=pge_monedas.mon_id
+and cob_id= $P{cob_id}]]>
+	</queryString>
+	<field name="cob_id" class="java.lang.Integer"/>
+	<field name="per_id" class="java.lang.Integer"/>
+	<field name="via_id" class="java.lang.Integer"/>
+	<field name="cob_tipo" class="java.lang.String"/>
+	<field name="cob_nro" class="java.lang.String"/>
+	<field name="mon_id" class="java.lang.Integer"/>
+	<field name="cob_cambio" class="java.math.BigDecimal"/>
+	<field name="cob_monto" class="java.math.BigDecimal"/>
+	<field name="cob_for_pago" class="java.lang.String"/>
+	<field name="cob_observacion" class="java.lang.String"/>
+	<field name="cob_anulado" class="java.lang.String"/>
+	<field name="cob_usu_ins" class="java.lang.String"/>
+	<field name="cob_fec_ins" class="java.sql.Timestamp"/>
+	<field name="cob_usu_mod" class="java.lang.String"/>
+	<field name="cob_fec_mod" class="java.sql.Timestamp"/>
+	<field name="cob_monto_letras" class="java.lang.String"/>
+	<field name="gral_nomb_ext" class="java.lang.String"/>
+	<field name="gral_nomb_abrev" class="java.lang.String"/>
+	<field name="gral_tel1" class="java.lang.String"/>
+	<field name="gral_tel2" class="java.lang.String"/>
+	<field name="gral_email1" class="java.lang.String"/>
+	<field name="gral_email2" class="java.lang.String"/>
+	<field name="gral_direccion" class="java.lang.String"/>
+	<field name="gral_ruc" class="java.lang.String"/>
+	<field name="gral_id" class="java.lang.Integer"/>
+	<field name="per_nom" class="java.lang.String"/>
+	<field name="per_ape" class="java.lang.String"/>
+	<field name="per_nro_doc" class="java.lang.String"/>
+	<field name="pai_id" class="java.lang.Integer"/>
+	<field name="prf_id" class="java.lang.Integer"/>
+	<field name="per_fec_nac" class="java.sql.Date"/>
+	<field name="per_lug_nac" class="java.lang.String"/>
+	<field name="per_email" class="java.lang.String"/>
+	<field name="per_usu_ins" class="java.lang.String"/>
+	<field name="per_fec_ins" class="java.sql.Timestamp"/>
+	<field name="per_usu_mod" class="java.lang.String"/>
+	<field name="per_fec_mod" class="java.sql.Timestamp"/>
+	<field name="per_doc" class="java.lang.String"/>
+	<field name="via_desc" class="java.lang.String"/>
+	<field name="via_fec_sali" class="java.sql.Date"/>
+	<field name="via_fec_reg" class="java.sql.Date"/>
+	<field name="via_usu_ins" class="java.lang.String"/>
+	<field name="via_fec_ins" class="java.sql.Timestamp"/>
+	<field name="via_usu_mod" class="java.lang.String"/>
+	<field name="via_fec_mod" class="java.sql.Timestamp"/>
+	<field name="via_cost" class="java.math.BigDecimal"/>
+	<field name="mon_desc" class="java.lang.String"/>
+	<field name="mon_usu_ins" class="java.lang.String"/>
+	<field name="mon_fec_ins" class="java.sql.Timestamp"/>
+	<field name="mon_usu_mod" class="java.lang.String"/>
+	<field name="mon_fec_mod" class="java.sql.Timestamp"/>
+	<variable name="via_cost_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{via_cost}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="418" splitType="Stretch">
+			<textField>
+				<reportElement x="662" y="10" width="111" height="20" uuid="1393eab2-88a7-4bbf-956c-1e42c120a734"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cob_monto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="662" y="73" width="111" height="20" uuid="14da43e8-8c68-4ee8-bbcd-eb72fe2e5d57"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cob_nro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="11" width="166" height="82" uuid="7c0437c6-7940-40f8-adcb-3d81b268ace2"/>
+				<textElement textAlignment="Left">
+					<font size="19"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gral_nomb_abrev}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="262" y="11" width="1" height="82" uuid="e95612d8-4c4a-4b6f-9d2b-f9baf5da5705"/>
+			</line>
+			<textField>
+				<reportElement x="268" y="11" width="340" height="20" uuid="7458972a-9ba2-45ac-898b-eb4842d8d2b7"/>
+				<textFieldExpression><![CDATA[$F{gral_direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="31" width="340" height="20" uuid="3f56e154-1fa7-4441-9a59-02a38af023ba"/>
+				<textFieldExpression><![CDATA[$F{gral_tel1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="51" width="340" height="20" uuid="02746879-5b00-4ec0-8aed-dcfb688c7938"/>
+				<textFieldExpression><![CDATA[$F{gral_tel2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="71" width="340" height="20" uuid="0ad98d33-5ad3-4205-acd3-d8596ad7226c"/>
+				<textFieldExpression><![CDATA[$F{gral_email1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="33" y="123" width="106" height="20" uuid="08e1b54f-057c-4ea3-b9fc-cbe2bde714c6"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Recibimos de ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="139" y="123" width="446" height="20" uuid="408bc775-9d74-4eb1-b4ee-289ee2b4a09f"/>
+				<textElement>
+					<font size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{per_nom}+$F{per_ape}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="585" y="123" width="88" height="20" uuid="0df4ede5-cc6b-435e-812b-a3ae25dc7fb4"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[ con R.U.C.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="673" y="123" width="100" height="20" uuid="2909b671-aa7a-4e50-9d24-5b52cc579e92"/>
+				<textElement>
+					<font size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{per_doc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="33" y="163" width="740" height="57" uuid="8b35d551-18e3-4ca3-9e5f-b59a6fc79abe"/>
+				<textElement textAlignment="Justified">
+					<font size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["la cantidad de Guaraníes "+$F{cob_monto_letras}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="33" y="236" width="740" height="57" uuid="e5905bec-ef60-448d-bb6b-d00bb77deadd"/>
+				<textElement textAlignment="Justified">
+					<font size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["en concepto de "+ $F{cob_observacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="614" y="31" width="159" height="20" uuid="44bf14d9-41df-44dc-beb5-9579c82a8ba0"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Recibo de Dinero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="614" y="11" width="48" height="20" uuid="15ae1e18-8d56-4d92-b20e-5b93adf40650"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Gs.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="662" y="53" width="111" height="20" uuid="ea178f6f-791c-4540-a067-44c13b7f5c2c"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gral_ruc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="385" width="100" height="20" uuid="dbab556e-cc3d-4614-b163-b3aaf7163cb6"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Lugar y Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="585" y="385" width="100" height="20" uuid="a4b38981-a406-4b48-9e11-f5bf7bf1caae"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Firma]]></text>
+			</staticText>
+			<line>
+				<reportElement x="92" y="371" width="138" height="1" uuid="f3b89e34-2e96-46d0-a18b-e22326435a34"/>
+			</line>
+			<line>
+				<reportElement x="569" y="371" width="138" height="1" uuid="accbbd64-76b6-4a1e-95b6-e4b97b3f6b4f"/>
+			</line>
+			<staticText>
+				<reportElement x="614" y="73" width="48" height="20" uuid="5fc6aa37-45c1-492d-be3a-17066a994112"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Nro.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="614" y="51" width="48" height="20" uuid="2dd98171-501d-4d42-8443-0b29d834c604"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[R.U.C.]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>
