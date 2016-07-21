@@ -9,11 +9,19 @@ import com.fpuna.py.travelware.dao.PasajeroDao;
 import com.fpuna.py.travelware.dao.PersonaDao;
 import com.fpuna.py.travelware.dao.PrecioViajeDao;
 import com.fpuna.py.travelware.dao.ViajeDao;
+import com.fpuna.py.travelware.dao.PasaporteDao;
+import com.fpuna.py.travelware.dao.GastoDao;
+import com.fpuna.py.travelware.dao.ViajeDetDao;
 import com.fpuna.py.travelware.model.PgePersonas;
 import com.fpuna.py.travelware.model.ViaPasajeros;
 import com.fpuna.py.travelware.model.ViaPreViajes;
 import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.model.ViaPasaportes;
+import com.fpuna.py.travelware.model.ViaGastos;
+import com.fpuna.py.travelware.model.ViaViajesDet;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,8 +49,13 @@ public class PasajeroBean implements Serializable {
     private List<ViaViajes> viajes;
     private List<PgePersonas> personas;
     private List<ViaPreViajes> precViajes;
+    private List<ViaPasaportes> pasaportes;
+    private List<ViaGastos> gastos;
+    private List<ViaViajesDet> viajesDet;
+
     private ViaPasajeros pasajeroSelected;
     private ViaViajes viajeSelected;
+    
     @EJB
     private PasajeroDao pasajeroEJB;
     @EJB
@@ -51,9 +64,15 @@ public class PasajeroBean implements Serializable {
     private PersonaDao personaEJB;
     @EJB
     private PrecioViajeDao precViajeEJB;
+    @EJB
+    private PasaporteDao pasaporteEJB;
+    @EJB
+    private GastoDao gastoEJB;
+    @EJB
+    private ViajeDetDao viajeDetEJB;
 
     private LoginBean loginBean;
-
+    
     //crea una nueva instancia de Pasajero
     public PasajeroBean() {
 
@@ -68,8 +87,9 @@ public class PasajeroBean implements Serializable {
         this.pasajeroSelected = new ViaPasajeros();
         this.viajeSelected = new ViaViajes();
         this.pasajeros = pasajeroEJB.getAll();
-        this.viajes = viajeEJB.getAll();
+        this.viajes = viajeEJB.getAllDisp();
         this.personas = personaEJB.getAll();
+        this.gastos = gastoEJB.getAll(this.pasajeroSelected);
     }
 
     private void clean() {
@@ -82,24 +102,35 @@ public class PasajeroBean implements Serializable {
     }
 
     public void addPasajero() {
+        boolean nuevo = false;
         FacesContext context = FacesContext.getCurrentInstance();
         if (pasajeros != null) {
             for (ViaPasajeros pas : pasajeros) {
-                if (pas.getPerId() == this.pasajeroSelected.getPerId() && pas.getViaId().equals(this.pasajeroSelected.getViaId()) && this.pasajeroSelected.getPviId() != null) {
-                    context.addMessage(null, new FacesMessage("Advertencia", "Esta persona ya se encuentra registrada"));
+                if (pas.getPerId().equals(this.pasajeroSelected.getPerId()) && pas.getViaId().equals(this.pasajeroSelected.getViaId()) && this.pasajeroSelected.getPviId() == null ) {
+                    context.addMessage(null, new FacesMessage("Advertencia. Esta persona ya se encuentra registrada para el viaje "+pas.getViaId().getViaDesc()));
                     this.clean();
                     return;
                 }
             }
         }
+
+        this.pasaportes = pasaporteEJB.getAll();
+        Integer cantPas = pasaporteEJB.getCantPasaportes(this.pasajeroSelected.getPerId());
+        if (cantPas.equals(0)){
+            context.addMessage(null, new FacesMessage("Advertencia. "+ this.pasajeroSelected.getPerId().getPerNom()+" "+this.pasajeroSelected.getPerId().getPerApe()+" no posee pasaporte. Verifique."));
+            //this.clean();
+            return;
+        }
+
         ViaPasajeros pasajero = new ViaPasajeros();
-        if (this.pasajeroSelected.getPviId() != null) {
+        if (this.pasajeroSelected.getPviId() != null) { //modificado
             pasajero.setPviId(this.pasajeroSelected.getPviId());
             pasajero.setPviUsuIns(this.pasajeroSelected.getPviUsuIns());
             pasajero.setPviFecIns(this.pasajeroSelected.getPviFecIns());
             pasajero.setPviUsuMod(loginBean.getUsername());
             pasajero.setPviFecMod(new Date());
         } else {
+            nuevo = true;
             pasajero.setPviUsuIns(loginBean.getUsername());
             pasajero.setPviFecIns(new Date());
         }
@@ -109,14 +140,54 @@ public class PasajeroBean implements Serializable {
         pasajero.setPasPrefComi(this.pasajeroSelected.getPasPrefComi());
         pasajero.setPasRel(this.pasajeroSelected.getPasRel());
         pasajeroEJB.update(pasajero);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "El pasajero fue guardado con éxito"));
+
+        if (nuevo) {
+            //Actualizamos la cantidad de pasajes vendidos en el viaje
+            Integer cantVend = pasajero.getViaId().getViaCantVend() + 1;
+            pasajero.getViaId().setViaCantVend(cantVend);
+            viajeEJB.update(pasajero.getViaId());
+
+            //Agregamos los gastos del pasajero
+            pasajero = pasajeroEJB.getByViaIdPerId(pasajero.getViaId(), pasajero.getPerId());
+            this.viajesDet = viajeDetEJB.getAll(pasajero.getViaId());
+            for (ViaViajesDet vd :this.viajesDet) {
+                if (vd.getVidTip() == 'I') {
+                    ViaGastos gasto = new ViaGastos();
+                    gasto.setPviId(pasajero);
+                    gasto.setGasMonto(vd.getVidMonto());
+                    gasto.setGasNro(vd.getVidId());
+                    gasto.setConId(vd.getConId());
+                    gasto.setGasTip(vd.getConId().getConDesc().substring(0, 3));
+                    gasto.setMonId(vd.getMonId());
+                    gastoEJB.update(gasto);
+                }
+            }
+        }
+        
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasajero fue guardado con éxito"));
         pasajeros = pasajeroEJB.getAll();
+        viajes = viajeEJB.getAllDisp();
         this.clean();
     }
 
     public void deletePasajero() {
+        //Borramos los gastos del pasajero
+        this.gastos = gastoEJB.getAll(this.pasajeroSelected);
+        for (ViaGastos gasto :this.getGastos()) {
+            gastoEJB.delete(gasto);
+        }
+        this.gastos = gastoEJB.getAll(this.pasajeroSelected);
+
+        //Borramos el pasajero
         pasajeroEJB.delete(this.pasajeroSelected);
+
+        //Actualizamos la cantidad de pasajes vendidos en el viaje
+        Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend() - 1;
+        this.pasajeroSelected.getViaId().setViaCantVend(cantVend);
+        viajeEJB.update(this.pasajeroSelected.getViaId());
+
         pasajeros = pasajeroEJB.getAll();
+        viajes = viajeEJB.getAllDisp();
         RequestContext.getCurrentInstance().update("pasajero-form:dtPasajero");
     }
 
@@ -139,6 +210,14 @@ public class PasajeroBean implements Serializable {
 
     public void setViajes(List<ViaViajes> viajes) {
         this.viajes = viajes;
+    }
+
+    public List<ViaGastos> getGastos() {
+        return gastos;
+    }
+
+    public void setGastos(List<ViaGastos> gastos) {
+        this.gastos = gastos;
     }
 
     public ViaPasajeros getPasajeroSelected() {

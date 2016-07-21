@@ -63,7 +63,7 @@ public class ProfesionBean implements Serializable{
         FacesContext context= FacesContext.getCurrentInstance();
         for (PgeProfesiones prof: profesiones){
             if (prof.getPrfDesc().toUpperCase().equals(this.profesionNuevo.getPrfDesc().toUpperCase())){
-                context.addMessage(null, new FacesMessage("Advertencia", "La profesión "+this.profesionNuevo.getPrfDesc()+" ya existe."));
+                context.addMessage(null, new FacesMessage("Advertencia. La profesión "+this.profesionNuevo.getPrfDesc()+" ya existe."));
                 this.clean();
                 return;
             }
@@ -75,7 +75,7 @@ public class ProfesionBean implements Serializable{
         profesion.setPrfUsuIns(loginBean.getUsername());
         profesion.setPrfFecIns(new Date());
         profesionEJB.create(profesion);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", profesion.getPrfDesc()+" fue creado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + profesion.getPrfDesc()+" fue creado con éxito!"));
         profesiones= profesionEJB.getAll();
         this.clean();
     }

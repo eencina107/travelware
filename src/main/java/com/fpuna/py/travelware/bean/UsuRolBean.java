@@ -85,7 +85,7 @@ public class UsuRolBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeUsuRoles ur:usuRoles){
             if (ur.getRolId().equals(rol) && ur.getUsuId().equals(usuario)){
-                context.addMessage("Mensaje", new FacesMessage("Advertencia", "Este usuario ya se encuentra en este rol"));
+                context.addMessage("Mensaje", new FacesMessage("Advertencia. Este usuario ya se encuentra en este rol"));
                 this.clean();
                 return;
             }
@@ -107,7 +107,7 @@ public class UsuRolBean implements Serializable{
         usuRol.setRolId(this.usuRolSelected.getRolId());
         usuRol.setUsuId(this.usuRolSelected.getUsuId());
         usuRolEJB.update(usuRol);
-        context.addMessage(null, new FacesMessage("Felicidades!", "La relación fue guardada con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! La relación fue guardada con éxito"));
         usuRoles = usuRolEJB.getAll();
         RequestContext.getCurrentInstance().update("usuRol-form");
         this.clean();

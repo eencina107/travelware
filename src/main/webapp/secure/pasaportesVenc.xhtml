@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Pasaportes</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:dataTable var="pasaporte" value="#{pantallaInicioBean.listaPasaportesVencidos}">
+                <p:column headerText="Nro. Pasaporte">
+                    <h:outputText value="#{pasaporte.patNroPas}" />
+                </p:column>
+
+                <p:column headerText="Pasajero">
+                    <h:outputText value="#{pasaporte.perId.perNom} #{pasaporte.perId.perApe}" />
+                </p:column>
+
+                <p:column headerText="Cédula Id.">
+                    <h:outputText value="#{pasaporte.perId.perNroDoc}" />
+                </p:column>
+
+                <p:column headerText="Fecha Venc.">
+                    <h:outputText value="#{pasaporte.patFecVen}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+
+            </p:dataTable>
+        </h:form>
+    </h:body>
+
+</html>

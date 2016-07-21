@@ -73,17 +73,17 @@ public class MenuCrudBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeMenus men:menus){
             if (men.getMenDescripcion().toUpperCase().equals(this.menuNuevo.getMenDescripcion())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El menú "+this.menuNuevo.getMenDescripcion()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El menú "+this.menuNuevo.getMenDescripcion()+" ya existe"));
                 this.clean();
                 return;
             }
             if (men.getMenUbicacion().toUpperCase().equals(this.menuNuevo.getMenUbicacion())){
-                context.addMessage(null, new FacesMessage("Advertencia", "Ya hay un menu que utiliza la ubicación "+this.menuNuevo.getMenUbicacion()));
+                context.addMessage(null, new FacesMessage("Advertencia. Ya hay un menu que utiliza la ubicación "+this.menuNuevo.getMenUbicacion()));
                 this.clean();
                 return;
             }
             if (men.getMenId() == this.menuNuevo.getMenId() && men.getMenSubId()== this.menuNuevo.getMenSubId()){
-                context.addMessage(null, new FacesMessage("Advertencia", "El menú "+this.menuNuevo.getMenId()+"-"+this.menuNuevo.getMenSubId()+" ya existe."));
+                context.addMessage(null, new FacesMessage("Advertencia. El menú "+this.menuNuevo.getMenId()+"-"+this.menuNuevo.getMenSubId()+" ya existe."));
                 this.clean();
                 return;
             }
@@ -98,7 +98,7 @@ public class MenuCrudBean implements Serializable{
         menu.setMenUsuIns(this.loginBean.getUsername());
         menu.setMenFecIns(new Date());
         menuEJB.create(menu);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", menu.getMenDescripcion()+" fue creado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ menu.getMenDescripcion()+" fue creado con éxito!"));
         menus= menuEJB.getAll();
         this.clean();
     }
@@ -125,7 +125,7 @@ public class MenuCrudBean implements Serializable{
         menu.setMenUsuMod(loginBean.getUsername());
         menu.setMenFecMod(new Date());
         menuEJB.update(menu);
-        context.addMessage(null, new FacesMessage("Felicidades!", this.menuSelected.getMenDescripcion()+" fue modificado con éxito!"));
+        context.addMessage(null, new FacesMessage("Felicidades! "+ this.menuSelected.getMenDescripcion()+" fue modificado con éxito!"));
         menus = menuEJB.getAll();
         this.clean();
     }

@@ -57,7 +57,7 @@
             <p:dialog header="Tipos de Organización" widgetVar="dlgTipoOrgAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="tipoOrgGr">                           
                         <p:outputLabel value="Código" for="codigo" />
                         <h:panelGroup>
@@ -69,7 +69,7 @@
                                      value="#{tipoOrgBean.tipDescripcion}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
                             action="#{tipoOrgBean.addTipoOrg}"
                             />

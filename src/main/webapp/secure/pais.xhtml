@@ -65,7 +65,7 @@
             <p:dialog header="Paises" widgetVar="dlgPaisAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="paisGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
                         <h:panelGroup>
@@ -82,18 +82,17 @@
                                      value="#{paisBean.paisNuevo.paiUbi}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="paisGr,:pais-form:dtPais"
                             action="#{paisBean.addPais}"
                             />
-
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
             <p:dialog header="Paises" widgetVar="dlgPaisUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="paisGrUpd">                           
                         <p:outputLabel value="Descripcion" for="descripcion2" />
                         <h:panelGroup>
@@ -110,22 +109,15 @@
                                      value="#{paisBean.paisSelected.paiUbi}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Guardar"
+                            value="Grabar"
                             update="paisGrUpd,:pais-form:dtPais"
                             action="#{paisBean.editPais}"
                             />
-
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
             
-                
-                    
-                
-            
         </ui:define>
-
-
 
     </ui:composition>
 </html>

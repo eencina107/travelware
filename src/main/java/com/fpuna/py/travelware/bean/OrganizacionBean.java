@@ -90,7 +90,7 @@ public class OrganizacionBean implements Serializable{
         String mensaje;
         for (PgeOrganizaciones org:organizaciones){
             if (org.getOrgDesc().toUpperCase().equals(this.organizacionSelected.getOrgDesc().toUpperCase()) && !Objects.equals(org.getOrgId(), this.organizacionSelected.getOrgId())){
-                context.addMessage(null, new FacesMessage("Advertencia", "La organización "+this.organizacionSelected.getOrgDesc()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. La organización "+this.organizacionSelected.getOrgDesc()+" ya existe"));
                 this.clean();
                 return;
             }

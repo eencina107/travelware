@@ -79,7 +79,7 @@
             <p:dialog header="Datos Generales" widgetVar="dlgDatosGeneralesAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="datosGeneralesGr">                           
                         <p:outputLabel value="Nombre de Empresa (Extendido)" for="nombExt" />
                         <h:panelGroup>
@@ -110,11 +110,9 @@
                         <p:inputText id="ruc" required="true"
                                      value="#{datosGeneralesBean.datoSelected.gralRuc}" />
                         <p:spacer />
-                        <p:commandButton action="#{datosGeneralesBean.saveDatos}" update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
-                            value="Agregar" />
-
-                             
-                            
+                        <p:commandButton action="#{datosGeneralesBean.saveDatos}"
+                                         update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
+                                         value="Grabar" />  
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

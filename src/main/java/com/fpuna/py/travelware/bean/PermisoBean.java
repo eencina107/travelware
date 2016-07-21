@@ -77,7 +77,7 @@ public class PermisoBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgePermisos per:permisos){
             if (per.getPgeMenus().equals(this.menu) && per.getRolId().equals(this.rol)){
-                context.addMessage("Mensaje", new FacesMessage("Advertencia", "El permiso ya existe"));
+                context.addMessage("Mensaje", new FacesMessage("Advertencia. El permiso ya existe"));
                 this.clean();
                 return;
             }
@@ -90,7 +90,7 @@ public class PermisoBean implements Serializable{
         permiso.setPgeMenus(this.permisoSelected.getPgeMenus());
         permiso.setRolId(this.permisoSelected.getRolId());
         permisoEJB.update(permiso);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "El permiso fue guardado con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El permiso fue guardado con éxito"));
         permisos = permisoEJB.getAll();
         RequestContext.getCurrentInstance().update("permiso-form:dtPermiso");
         this.clean();

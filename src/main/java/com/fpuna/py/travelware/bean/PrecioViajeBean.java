@@ -73,13 +73,13 @@ public class PrecioViajeBean implements Serializable{
         if (preciosViajes!=null){
             for (ViaPreViajes pre:preciosViajes){
                 if (pre.getPreNombre().equals(this.precioViajeSelected.getPreNombre()) && this.precioViajeSelected.getPreId()==null){
-                    context.addMessage(null, new FacesMessage("Advertencia", this.precioViajeSelected.getPreNombre()+" ya existe"));
+                    context.addMessage(null, new FacesMessage("Advertencia. "+ this.precioViajeSelected.getPreNombre()+" ya existe"));
                     this.clean();
                     return;
                 }
 
                 if (pre.getMonId().equals(this.precioViajeSelected.getMonId()) && pre.getPrePrecio().equals(this.precioViajeSelected.getPrePrecio()) && this.precioViajeSelected.getPreId()==null){
-                    context.addMessage(null, new FacesMessage("Advertencia", "Ya existe este precio para este viaje"));
+                    context.addMessage(null, new FacesMessage("Advertencia. Ya existe este precio para este viaje"));
                     this.clean();
                     return;
                 }
@@ -97,7 +97,7 @@ public class PrecioViajeBean implements Serializable{
         precio.setPrePrecio(this.precioViajeSelected.getPrePrecio());
         precio.setViaId(viajeSelected);
         precioViajeEJB.update(precio);
-        context.addMessage(null, new FacesMessage("Felicidades!", "El precio fue guardado con éxito!"));
+        context.addMessage(null, new FacesMessage("Felicidades! El precio fue guardado con éxito!"));
         preciosViajes = precioViajeEJB.getAll(this.viajeSelected);
         this.clean();
     }

@@ -45,9 +45,9 @@ public class PersonaConverter implements Converter{
         if (value == null) {
             return null;
         }
-        PgePersonas persona = (PgePersonas) value;
         
         try {
+            PgePersonas persona = (PgePersonas) value;
             return persona.getPerNroDoc();
         } catch (Exception e) {
             logger.error("CLASS "+this.getClass().getName()+" METHOD: getAsString ", e);

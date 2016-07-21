@@ -54,7 +54,7 @@ public class PerDocBean implements Serializable{
             per= perEJB.getById(Integer.parseInt(perId));
             nombreArch = per.getPerDoc();
             if (nombreArch==null || nombreArch.equals("")){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Mensaje", "No se encontro archivo asociado"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Mensaje. No se encontro archivo asociado"));
                 System.out.println("No se encontro nombre de archivo para la persona con ci:"+per.getPerNroDoc());
             }
             else
@@ -64,7 +64,7 @@ public class PerDocBean implements Serializable{
                    stream = new FileInputStream(new File("/opt/py.travelware/perDoc/"+per.getPerDoc()));
                } catch (FileNotFoundException ex) {
                    Logger.getLogger(OrgLogoBean.class.getName()).log(Level.SEVERE, null, ex);
-                   FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error", "No se encuentra el archivo"));
+                   FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error. No se encuentra el archivo"));
                }
                image = new DefaultStreamedContent(stream);
             }

@@ -64,8 +64,7 @@ public class VisaBean implements Serializable{
             for (ViaVisas visa:visas){
                 if (visa.getVisNroSec().equals(this.visaSelected.getVisNroSec()) && 
                         visa.getPaiId().equals(this.visaSelected.getPaiId()) && this.visaSelected.getVisId()==null){
-                    context.addMessage(null, new FacesMessage("Advertencia", 
-                            this.visaSelected.getVisNro()+" ya exste"));
+                    context.addMessage(null, new FacesMessage("Advertencia. " + this.visaSelected.getVisNro()+" ya exste"));
                     this.clean();
                     return;
                 }
@@ -91,7 +90,7 @@ public class VisaBean implements Serializable{
         visa.setVisNro(nroSec);
         visa.setVisFecVenc(this.visaSelected.getVisFecVenc());
         visaEJB.update(visa);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "La visa ha sido guardada con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! La visa ha sido guardada con éxito"));
         visas = visaEJB.getAll(pasaporteSelected);
         this.clean();
     }

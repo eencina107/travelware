@@ -102,7 +102,7 @@ public class ComprobanteBean implements Serializable{
                     com.getComTimbrado().equals(this.comprobante.getComTimbrado()) &&
                     com.getComNumDoc() == this.comprobante.getComNumDoc() &&
                     com.getComEstado().equals(this.comprobante.getComEstado().equals('A'))){
-                context.addMessage(null, new FacesMessage("Advertencia", "Este Nro. de Documento ya fue registrado"));
+                context.addMessage(null, new FacesMessage("Advertencia. Este Nro. de Documento ya fue registrado"));
                 this.clean();
                 return;
             }
@@ -136,7 +136,7 @@ public class ComprobanteBean implements Serializable{
         comp.setPerId(this.comprobante.getPerId());
         comp.setPagComprobantesDetList(this.comprobantesDet);
         comprobanteEJB.create(comp);
-        context.addMessage(null, new FacesMessage("Felicidades!", "La transacción fue guardada con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! La transacción fue guardada con éxito"));
         comprobantesDet = new ArrayList<>();
         RequestContext.getCurrentInstance().update("comprobantesDet-form:dtComprobanteDet");
         this.clean();
@@ -149,7 +149,7 @@ public class ComprobanteBean implements Serializable{
         this.comprobanteDetSelected.setCdeNroDet(cant+1);
         for (PagComprobantesDet comDet:this.comprobantesDet){
             if(comDet.getViaId().equals(this.comprobanteDetSelected.getViaId()) && comDet.getCdeNumCuota() == this.comprobanteDetSelected.getCdeNumCuota()){
-                context.addMessage(null, new FacesMessage("Advertencia", "La cuota "+comDet.getCdeNumCuota()+" del viaje "+comDet.getViaId().getViaDesc()+" ya fue registrada"));
+                context.addMessage(null, new FacesMessage("Advertencia. La cuota "+comDet.getCdeNumCuota()+" del viaje "+comDet.getViaId().getViaDesc()+" ya fue registrada"));
                 this.clean();
                 return;
             }
@@ -195,11 +195,11 @@ public class ComprobanteBean implements Serializable{
         detalle.setCdeTot(this.comprobanteDetSelected.getCdeTot());
         boolean exito= comprobantesDet.add(detalle);
         if (!exito){
-            context.addMessage(null, new FacesMessage("Error", "No se pudo guardar el detalle"));
+            context.addMessage(null, new FacesMessage("Error. No se pudo guardar el detalle"));
         }
         else
         {
-            context.addMessage(null, new FacesMessage("Felicidades!", "Se ha agregado el detalle con éxito"));
+            context.addMessage(null, new FacesMessage("Felicidades! Se ha agregado el detalle con éxito"));
         }
         RequestContext.getCurrentInstance().update("comprobantesDet-form:dtComprobanteDet");
         this.cleanDet(this.comprobante.getPerId());

@@ -73,7 +73,7 @@
             <p:dialog header="Precios de Viajes" widgetVar="dlgPrecioViajeAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="precioViajeGr">  
                         <p:outputLabel value="Nombre" for="nombre" />
                         <h:panelGroup>
@@ -108,7 +108,7 @@
                                      value="#{precioViajeBean.precioViajeSelected.prePrecio}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="precioViajeGr,:precioViaje-form:dtPrecioViaje"
                             action="#{precioViajeBean.addPrecioViaje}"
                             />
