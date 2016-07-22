@@ -75,7 +75,7 @@ public class CiudadBean implements Serializable{
        FacesContext context = FacesContext.getCurrentInstance();
        for (PgeCiudades ciu: ciudades){
            if (ciu.getCiuDesc().toUpperCase().equals(this.ciudadNuevo.getCiuDesc().toUpperCase())){
-               context.addMessage(null, new FacesMessage("Advertencia", "La ciudad "+this.ciudadNuevo.getCiuDesc()+" ya existe"));
+               context.addMessage(null, new FacesMessage("Advertencia. La ciudad "+this.ciudadNuevo.getCiuDesc()+" ya existe"));
                this.clean();
                return;
            }
@@ -88,7 +88,7 @@ public class CiudadBean implements Serializable{
        ciudad.setCiuUsuIns(loginBean.getUsername());
        ciudad.setCiuFecIns(new Date());
        ciudadEJB.create(ciudad);
-       context.addMessage("Mensaje", new FacesMessage("Felcicidades!", ciudad.getCiuDesc()+" fue creada con éxito!"));
+       context.addMessage("Mensaje", new FacesMessage("Felcicidades! "+ ciudad.getCiuDesc()+" fue creada con éxito!"));
        ciudades = ciudadEJB.getAll();
        this.clean();
    }
@@ -112,7 +112,7 @@ public class CiudadBean implements Serializable{
        ciudad.setCiuUsuIns(loginBean.getUsername());
        ciudad.setCiuFecIns(new Date());
        ciudadEJB.update(ciudad);
-       context.addMessage(null, new FacesMessage("Felicidades!", ciudad.getCiuDesc()+" fue modificado con éxito!"));
+       context.addMessage(null, new FacesMessage("Felicidades! "+ ciudad.getCiuDesc()+" fue modificado con éxito!"));
        ciudades = ciudadEJB.getAll();
        this.clean();
    }

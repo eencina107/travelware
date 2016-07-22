@@ -133,7 +133,7 @@ public class CobroBean implements Serializable{
         cobro.setCobAnulado('N');
         cobro.setPerId(persona);
         cobroEJB.update(cobro);
-        context.addMessage(null, new FacesMessage("Felicidades!", "El cobro fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! El cobro fue guardado con éxito"));
         cobros = cobroEJB.getAll();
         RequestContext.getCurrentInstance().update("cobros-form:dtCobros");
         this.clean();

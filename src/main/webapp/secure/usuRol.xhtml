@@ -59,7 +59,7 @@
             <p:dialog header="Usuarios-Roles" widgetVar="dlgUsuRolAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="usuRolGr">                           
                         <p:outputLabel value="Usuario" for="usuario" />
                         <h:panelGroup>
@@ -85,7 +85,7 @@
                         </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="usuRolGr,:usuRol-form:dtUsuRol"
                             action="#{usuRolBean.addUsuRol}"
                             />
@@ -93,8 +93,6 @@
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>

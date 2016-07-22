@@ -58,7 +58,7 @@
             <p:dialog header="Permisos" widgetVar="dlgPermisoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="permisoGr">
                         <p:outputLabel value="Menú" for="menu" />
                         <p:selectOneMenu id="menu" required="true"
@@ -79,7 +79,7 @@
                         </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="permisoGr,:permiso-form:dtPermiso"
                             action="#{permisoBean.addPermiso}"
                             />

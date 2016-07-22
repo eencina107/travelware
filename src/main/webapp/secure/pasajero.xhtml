@@ -36,10 +36,10 @@
                         <h:outputText value="(#{pasajero.perId.perNroDoc}) #{pasajero.perId.perNom} #{pasajero.perId.perApe}"/>
                     </p:column>
                     <p:column headerText="Relación" sortBy="#{pasajero.pasRel}">
-                        <h:outputText value="#{pasajero.pasRel}" />
+                        <h:outputText value="#{pasajero.pasRel eq  'P' ? 'Pasajero':'Acompañante'}" />
                     </p:column>
                     <p:column headerText="Preferencia de Asiento" sortBy="#{pasajero.pasPrefAsi}">
-                        <h:outputText value="#{pasajero.pasPrefAsi}" />
+                        <h:outputText value="#{pasajero.pasPrefAsi eq  'P' ? 'Pasillo':'Ventanilla'}" />
                     </p:column>
                     <p:column headerText="Preferencia de Comida" sortBy="#{pasajero.pasPrefComi}">
                         <h:outputText value="#{pasajero.pasPrefComi}"/>
@@ -57,6 +57,10 @@
 
                             <p:ajax event="rowSelect" listener="#{gastoBean.onRowSelect}" />
 
+                            <p:column headerText="Concepto"
+                                      sortBy="#{gasto.conId.conDesc}">
+                                <h:outputText value="#{gasto.conId.conDesc}" />
+                            </p:column>
                             <p:column headerText="Tipo de Gasto" sortBy="#{gasto.gasTip}">
                                 <h:outputText value="#{gasto.gasTip}" />
                             </p:column>
@@ -122,7 +126,7 @@
             <p:dialog header="Pasajeros" widgetVar="dlgPasajeroAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="pasajeroGr">  
                         <p:outputLabel value="Viaje" for="viaje" />
                         <h:panelGroup>
@@ -130,7 +134,7 @@
                                              value="#{pasajeroBean.pasajeroSelected.viaId}" converter="viajeConverter">
                                 <f:selectItems value="#{pasajeroBean.viajes}" 
                                                var="viaje" 
-                                               itemLabel="#{viaje.viaDesc} - #{pasajeroBean.getSimpleDateFormat(viaje.viaFecSali)} - #{viaje.viaCost} US$" 
+                                               itemLabel="#{viaje.viaDesc} - #{pasajeroBean.getSimpleDateFormat(viaje.viaFecSali)} - #{viaje.viaCost} #{viaje.monId.monAbreviatura}" 
                                                itemValue="#{viaje}" />
                             </p:selectOneMenu>
                             <h:inputHidden value="#{pasajeroBean.pasajeroSelected.pviId}" />
@@ -159,7 +163,7 @@
                                      value="#{pasajeroBean.pasajeroSelected.pasPrefComi }" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="pasajeroGr,:pasajero-form:dtPasajero"
                             action="#{pasajeroBean.addPasajero}"
                             />
@@ -170,17 +174,31 @@
             <p:dialog header="Gastos" widgetVar="dlgGastoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add-gasto">
-                    <p:messages id="messages2" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages2" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="gastoGr">                           
+
                         <p:outputLabel value="Gasto Nro." for="nroGasto" />
                         <h:panelGroup>
                             <p:inputText id="nroGasto" required="true"
                                          value="#{gastoBean.gastoSelected.gasNro}" />
                             <h:inputHidden value="#{gastoBean.gastoSelected.gasId}" />
                         </h:panelGroup>
+
+                        <p:outputLabel value="Concepto" for="concepto" />
+                        <p:selectOneMenu id="concepto" required="true"
+                                         value="#{gastoBean.gastoSelected.conId}" converter="conceptoConverter">
+
+                            <f:selectItem itemLabel=" " itemValue="" />
+                            <f:selectItems value="#{gastoBean.conceptos}" 
+                                           var="concepto" 
+                                           itemLabel="#{concepto.conDesc}" 
+                                           itemValue="#{concepto}" />
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="Tipo de Gasto" for="tipGas" />
                         <p:inputText id="tipGas" required="true"
                                      value="#{gastoBean.gastoSelected.gasTip}" maxlength="3"/>
+
                         <p:outputLabel value="Moneda" for="moneda" />
                         <p:selectOneMenu id="moneda" required="true"
                                          value="#{gastoBean.gastoSelected.monId}" converter="monedaConverter">
@@ -190,9 +208,14 @@
                                            itemLabel="#{moneda.monDesc}" 
                                            itemValue="#{moneda}" />
                         </p:selectOneMenu>
+
+                       <p:outputLabel value="Monto" for="montoD" />
+                        <p:inputText id="montoD"
+                                     value="#{gastoBean.gastoSelected.gasMonto}" />
+
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="gastoGr,:pasajero-form:dtPasajero:dtGasto"
                             action="#{gastoBean.addGasto}"
                             />

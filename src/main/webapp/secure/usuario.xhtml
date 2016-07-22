@@ -73,7 +73,7 @@
             <p:dialog header="Usuarios" widgetVar="dlgUsuarioAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="usuarioGr">                           
                         <p:outputLabel value="Código" for="codigo" />
                         <h:panelGroup>
@@ -96,7 +96,7 @@
                                      value="#{usuarioBean.usuarioSelected.usuCargo}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="usuarioGr,:usuario-form:dtUsuario"
                             actionListener="#{usuarioBean.addUsuario}"
                             />
@@ -104,8 +104,6 @@
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>

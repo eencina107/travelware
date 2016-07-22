@@ -72,14 +72,14 @@ public class PasaporteBean implements Serializable{
     public void addPasaporte(){
         FacesContext context = FacesContext.getCurrentInstance();
         for (ViaPasaportes pas:pasaportes){
-            if (pas.getPatNroPas().equals(this.pasaporteSelected.getPatNroPas()) && this.pasaporteSelected==null){
-                context.addMessage(null, new FacesMessage("Advertencia", this.pasaporteSelected.getPatNroPas()+" ya existe!"));
+            if (pas.getPatNroPas().equals(this.pasaporteSelected.getPatNroPas()) && this.pasaporteSelected!=null){
+                context.addMessage(null, new FacesMessage("Advertencia. Pasaporte "+this.pasaporteSelected.getPatNroPas()+" ya existe!"));
                 this.clean();
                 return;
             }
             
-            if (pas.getPerId().equals(this.pasaporteSelected.getPerId()) && this.pasaporteSelected==null){
-                context.addMessage(null, new FacesMessage("Advertencia", this.pasaporteSelected.getPerId().getPerNom()+" "+this.pasaporteSelected.getPerId().getPerApe()+" ya posee pasaporte."));
+            if (pas.getPerId().equals(this.pasaporteSelected.getPerId()) && this.pasaporteSelected!=null){
+                context.addMessage(null, new FacesMessage("Advertencia. "+ this.pasaporteSelected.getPerId().getPerNom()+" "+this.pasaporteSelected.getPerId().getPerApe()+" ya posee pasaporte."));
                 this.clean();
                 return;
             }
@@ -103,7 +103,7 @@ public class PasaporteBean implements Serializable{
         pasaporte.setPatFecVen(this.pasaporteSelected.getPatFecVen());
         pasaporte.setPerId(this.pasaporteSelected.getPerId());
         pasaporteEJB.update(pasaporte);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "El pasaporte "+this.pasaporteSelected.getPatNroPas()+" fue guardado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasaporte "+this.pasaporteSelected.getPatNroPas()+" fue guardado con éxito!"));
         pasaportes = pasaporteEJB.getAll();
         this.clean();
     }

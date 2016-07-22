@@ -19,23 +19,109 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{viajeBean.onRowSelect}" />
+                    <p:ajax event="rowToggle" listener="#{viajeDetBean.onRowToggle(viaje)}"  update=":viaje-form:growl" />
 
-                    <p:column headerText="Nombre" sortBy="#{viaje.viaDesc}">
+                    <p:column headerText="Nombre" style="width: 30%"
+                              sortBy="#{viaje.viaDesc}">
                         <h:outputText value="#{viaje.viaDesc}" />
                     </p:column>
+
                     <p:column headerText="Fecha de Salida" sortBy="#{viaje.viaFecSali}">
                         <h:outputText value="#{viaje.viaFecSali}">
                             <f:convertDateTime pattern="dd/MM/yyyy" />
                         </h:outputText>
                     </p:column>
+
                     <p:column headerText="Fecha de Regreso" sortBy="#{viaje.viaFecReg}">
                         <h:outputText value="#{viaje.viaFecReg}" >
                             <f:convertDateTime pattern="dd/MM/yyyy" />
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Costo" sortBy="#{viaje.viaCost}">
-                        <h:outputText value="#{viaje.viaCost} US$" />
+
+                    <p:column headerText="Moneda">
+                        <h:outputText value="#{viaje.monId.monDesc}" />
                     </p:column>
+
+                    <p:column headerText="Costo" sortBy="#{viaje.viaCost}">
+                        <h:outputText value="#{viaje.viaCost}" />
+                    </p:column>
+
+                    <p:column headerText="Cant. Total" style="width: 8%"
+                              sortBy="#{viaje.viaCantTot}">
+                        <h:outputText value="#{viaje.viaCantTot}" />
+                    </p:column>
+
+                    <p:column headerText="Cant. Vendida" style="width: 8%"
+                              sortBy="#{viaje.viaCantVend}">
+                        <h:outputText value="#{viaje.viaCantVend}" />
+                    </p:column>
+
+                    <p:column headerText="Detalles" style="width: 3%">
+                        <p:rowToggler />
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <p:dataTable id="dtViajeDet" var="viajeDet" value="#{viajeDetBean.viajesDet}"
+                                             rows="10" paginator="true" paginatorPosition="bottom" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,15,20"
+                                             selection="#{viajeDetBean.viajeDetSelected}" rowKey="#{viajeDet}"
+                                             selectionMode="single" >
+
+                                    <p:ajax event="rowSelect" listener="#{viajeDetBean.onRowSelect}" />
+
+                                    <p:column headerText="Concepto"
+                                              sortBy="#{viajeDet.conId.conDesc}">
+                                        <h:outputText value="#{viajeDet.conId.conDesc}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descripción" style="width: 30%">
+                                        <h:outputText value="#{viajeDet.vidDesc}"  />
+                                    </p:column>
+
+                                    <p:column headerText="Cant. Total" style="width: 8%">
+                                        <h:outputText value="#{viajeDet.vidCantTot}" />
+                                    </p:column>
+
+                                    <p:column headerText="Moneda">
+                                        <h:outputText value="#{viajeDet.monId.monDesc}" />
+                                    </p:column>
+
+                                    <p:column headerText="Monto">
+                                        <h:outputText value="#{viajeDet.vidMonto}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value="#{viajeDet.vidTip eq  'I' ? 'Incluido':'No Incluido'}" />
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        <p:commandButton process="dtViajeDet" icon="ui-icon-document"
+                                                         value="Agregar Detalle"  update=":form-add-viajeDet:viajeDetGr" 
+                                                         oncomplete="PF('dlgViajeDetAdd').show()" 
+                                                         actionListener="#{viajeDetBean.buttonAction}"/>
+                                        <p:commandButton process="dtViajeDet" icon="ui-icon-pencil"
+                                                         value="Editar Detalle" disabled="true"
+                                                         oncomplete="PF('dlgViajeDetAdd').show()"
+                                                         update=":form-add-viajeDet:viajeDetGr"
+                                                         />
+                                        <p:commandButton process="dtViajeDet" icon="ui-icon-document"
+                                                         value="Borrar Detalle" actionListener="#{viajeDetBean.deleteViajeDet}">
+                                            <p:confirm header="Borrar Detalle de Viaje"
+                                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:confirmDialog global="true" showEffect="fade"
+                                                         hideEffect="fade">
+                                            <p:commandButton value="Si" type="button"
+                                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                            <p:commandButton value="No" type="button"
+                                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>
+
+                                    </f:facet>
+                                </p:dataTable>
+                    </p:rowExpansion>
+
                     <f:facet name="header">
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:viajeGr" 
@@ -51,6 +137,11 @@
                             <p:confirm header="Borrar Tipo de Organización"
                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
                         </p:commandButton>
+
+                        <p:commandButton icon="ui-icon-document" value="Listado Pasajeros"
+                                         onclick="window.location='/py.travelware/repviaje?id=#{viajeBean.viajeSelected.viaId}';"
+                                         />
+
                         <p:confirmDialog global="true" showEffect="fade"
                                          hideEffect="fade">
                             <p:commandButton value="Si" type="button"
@@ -63,42 +154,127 @@
                 </p:dataTable>
             </h:form>
 
-            <p:dialog header="Tipos de Organización" widgetVar="dlgViajeAdd"
+            <p:dialog header="Viaje" widgetVar="dlgViajeAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="viajeGr">                           
+
                         <p:outputLabel value="Nombre" for="nombre" />
                         <h:panelGroup>
                             <p:inputText id="nombre" required="true"
                                          value="#{viajeBean.viajeSelected.viaDesc}" />
                             <h:inputHidden value="#{viajeBean.viajeSelected.viaId}" />
                         </h:panelGroup>
+
                         <p:outputLabel value="Fecha de Salida" for="fecSali" />
-                        <p:calendar id="fecSali" 
+                        <p:calendar id="fecSali" required="true"
                                     value="#{viajeBean.viajeSelected.viaFecSali}" 
                                     pattern="dd/MM/yyyy" 
                                     mask="true" />
+
                         <p:outputLabel value="Fecha de Regreso" for="fecReg" />
-                        <p:calendar id="fecReg" 
+                        <p:calendar id="fecReg" required="true"
                                     value="#{viajeBean.viajeSelected.viaFecReg}" 
                                     pattern="dd/MM/yyyy" 
                                     mask="true" />
+
+                        <p:outputLabel value="Moneda" for="moneda" />
+                        <p:selectOneMenu id="moneda" required="true"
+                                         value="#{viajeBean.viajeSelected.monId}" converter="monedaConverter">
+
+                            <f:selectItems value="#{viajeBean.monedas}" 
+                                           var="moneda" 
+                                           itemLabel="#{moneda.monDesc} " 
+                                           itemValue="#{moneda}" />
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="Costo" for="costo" />
                         <p:inputText id="costo" required="true"
                                      value="#{viajeBean.viajeSelected.viaCost}" />
+
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="viajeGr,:viaje-form:dtViaje"
                             action="#{viajeBean.addViaje}"
                             />
                     </p:panelGrid>
                 </h:form>
-            </p:dialog>          
+            </p:dialog> 
+            
+            <p:dialog header="Detalle de Viaje" widgetVar="dlgViajeDetAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add-viajeDet">
+                    <p:messages id="messages2" showDetail="false" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="viajeDetGr">
+
+                        <p:outputLabel value="Descripción" for="descripD" />
+                        <h:panelGroup>
+                            <p:inputText id="descripD" required="true"
+                                         value="#{viajeDetBean.viajeDetSelected.vidDesc}" />
+                            <h:inputHidden value="#{viajeDetBean.viajeDetSelected.vidId}" />
+                        </h:panelGroup>
+                        
+                        <p:outputLabel value="Concepto" for="concepto" />
+                        <p:selectOneMenu id="concepto" required="true" immediate="true"
+                                         value="#{viajeDetBean.viajeDetSelected.conId}" converter="conceptoConverter">
+
+                            <f:selectItem itemLabel=" " itemValue="" />
+                            <f:selectItems value="#{viajeDetBean.conceptos}" 
+                                           var="concepto" 
+                                           itemLabel="#{concepto.conDesc}" 
+                                           itemValue="#{concepto}" />
+                                <p:ajax update="fadId" />
+                                <p:ajax update="monedaD" />
+                                <p:ajax update="montoD" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Det. Factura" for="fadId" />
+                        <p:selectOneMenu id="fadId" disabled="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
+                                         value="#{viajeDetBean.viajeDetSelected.fadId}" converter="facturaDetConverter">
+
+                            <f:selectItem itemLabel=" " itemValue="" />
+                            <f:selectItems value="#{viajeDetBean.facturasDet}" 
+                                           var="facturaDet" 
+                                           itemLabel="#{facturaDet.fadDesc} (#{facturaDet.conId.conDesc} - #{facturaDet.facId.monId.monAbreviatura})" 
+                                           itemValue="#{facturaDet}" />
+                        </p:selectOneMenu>
+
+                       <p:outputLabel value="Moneda" for="monedaD" />
+                        <p:selectOneMenu id="monedaD" required="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
+                                         disabled="#{viajeDetBean.viajeDetSelected.conId.conReq == 'S'}"
+                                         value="#{viajeDetBean.viajeDetSelected.monId}" converter="monedaConverter">
+
+                            <f:selectItems value="#{viajeDetBean.monedas}" 
+                                           var="moneda" 
+                                           itemLabel="#{moneda.monDesc} " 
+                                           itemValue="#{moneda}" />
+                        </p:selectOneMenu>
+ 
+                       <p:outputLabel value="Monto" for="montoD" />
+                        <p:inputText id="montoD" required="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
+                                     disabled="#{viajeDetBean.viajeDetSelected.conId.conReq == 'S'}"
+                                     value="#{viajeDetBean.viajeDetSelected.vidMonto}" />
+
+                        <p:outputLabel value="Tipo" for="tipoD" />
+                        <p:selectOneMenu id="tipoD" 
+                                         value="#{viajeDetBean.viajeDetSelected.vidTip}">
+                            <f:selectItem itemLabel="Incluido" itemValue="I" />
+                            <f:selectItem itemLabel="No Incluido" itemValue="N" />
+                        </p:selectOneMenu>
+
+                        <p:spacer />
+                        <p:commandButton
+                            value="Grabar"
+                            update="viajeDetGr,:viaje-form:dtViaje:dtViajeDet"
+                            action="#{viajeDetBean.addViajeDet()}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
         </ui:define>
-
-
 
     </ui:composition>
 </html>

@@ -69,29 +69,39 @@
             <p:dialog header="Menús" widgetVar="dlgMenuAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="menuGr">                           
+
                         <p:outputLabel value="Descripcion" for="descripcion" />
                         <h:panelGroup>
                             <p:inputText id="descripcion" required="true"
                                          value="#{menuCrudBean.menuNuevo.menDescripcion}" />
                             <h:inputHidden value="#{menuCrudBean.menuNuevo.menCod}" />
                         </h:panelGroup>
-                        <p:outputLabel value="Menú" for="menuId" />
-                        <p:inputText id="menuId" required="true"
-                                     value="#{menuCrudBean.menuNuevo.menId}" />
+
+                        <p:outputLabel value="Mrnú" for="menuId" />
+                        <p:selectOneMenu id="menuId" required="true" value="#{menuCrudBean.menuNuevo.menId}">
+                            <f:selectItem itemLabel="Parametros Generales" itemValue="1" />
+                            <f:selectItem itemLabel="Viajes" itemValue="2" />
+                            <f:selectItem itemLabel="Pagos" itemValue="3" />
+                            <f:selectItem itemLabel="Compras" itemValue="4" />
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="SubMenú" for="subMenuId" />
                         <p:inputText id="subMenuId" required="true"
                                      value="#{menuCrudBean.menuNuevo.menSubId}" />
+
                         <p:outputLabel value="Tipo" for="tipo" />
                         <p:selectOneMenu id="tipo" value="#{menuCrudBean.menuNuevo.menTipo}" style="width:125px">
                             <f:selectItem itemLabel="Mantenimiento" itemValue="M" />
                             <f:selectItem itemLabel="Transacción" itemValue="T" />
                             <f:selectItem itemLabel="Reporte" itemValue="R" />
                         </p:selectOneMenu>
+
                         <p:outputLabel value="Ubicacion" for="ubicacion" />
                         <p:inputText id="ubicacion" required="true"
                                      value="#{menuCrudBean.menuNuevo.menUbicacion}" />
+
                         <p:spacer />
                         <p:commandButton
                             value="Agregar"
@@ -105,32 +115,42 @@
             <p:dialog header="Menús" widgetVar="dlgMenuUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="menuGrUpd">                           
+ 
                         <p:outputLabel value="Descripcion" for="descripcion2" />
                         <h:panelGroup>
                             <p:inputText id="descripcion2" required="true"
                                          value="#{menuCrudBean.menuSelected.menDescripcion}" />
                             <h:inputHidden value="#{menuCrudBean.menuSelected.menCod}" />
                         </h:panelGroup>
+
                         <p:outputLabel value="Menú" for="menuId" />
-                        <p:inputText id="menuId" required="true"
-                                     value="#{menuCrudBean.menuSelected.menId}" />
+                        <p:selectOneMenu id="menuId" required="true" value="#{menuCrudBean.menuSelected.menId}">
+                            <f:selectItem itemLabel="Parámetros Generales" itemValue="1" />
+                            <f:selectItem itemLabel="Viajes" itemValue="2" />
+                            <f:selectItem itemLabel="Pagos" itemValue="3" />
+                            <f:selectItem itemLabel="Compras" itemValue="4" />
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="SubMenú" for="subMenuId" />
                         <p:inputText id="subMenuId" required="true"
                                      value="#{menuCrudBean.menuSelected.menSubId}" />
+
                         <p:outputLabel value="Tipo" for="tipo" />
                         <p:selectOneMenu id="tipo" value="#{menuCrudBean.menuSelected.menTipo}" style="width:125px">
                             <f:selectItem itemLabel="Mantenimiento" itemValue="M" />
                             <f:selectItem itemLabel="Transacción" itemValue="T" />
                             <f:selectItem itemLabel="Reporte" itemValue="R" />
                         </p:selectOneMenu>
+
                         <p:outputLabel value="Ubicacion" for="ubicacion2" />
                         <p:inputText id="ubicacion2" required="true"
                                      value="#{menuCrudBean.menuSelected.menUbicacion}" />
+
                         <p:spacer />
                         <p:commandButton
-                            value="Guardar"
+                            value="Grabar"
                             update="menuGrUpd,:menu-form:dtMenu"
                             action="#{menuCrudBean.editMenu}"
                             />

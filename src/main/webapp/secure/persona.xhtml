@@ -21,7 +21,7 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{personaBean.onRowSelect}" />
-                    <p:column headerText="Nro. Doc." 
+                    <p:column headerText="Nro. Doc." style="width: 5%"
                               sortBy="#{persona.perNroDoc}">
                         <h:outputText value="#{persona.perNroDoc}" />
                     </p:column>
@@ -51,7 +51,10 @@
                     <p:column headerText="eMail">
                         <h:outputText value="#{persona.perEmail}"/>
                     </p:column>
-                    <p:column headerText="Documento">
+                    <p:column headerText="Sexo" style="width: 5%">
+                        <h:outputText value="#{persona.perSex eq  'M' ? 'Masculino':'Femenino'}" />
+                    </p:column>
+                    <p:column headerText="Documento" style="width: 5%">
                         <p:rowToggler/>
                     </p:column>
                     <p:rowExpansion>
@@ -89,7 +92,7 @@
             <p:dialog header="Personas" widgetVar="dlgPersonaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="personaGr">                           
                         <p:outputLabel value="Nro. de Doc." for="nroDoc" />
                         <h:panelGroup>
@@ -113,6 +116,12 @@
                                            itemLabel="#{pais.paiNac}" 
                                            itemValue="#{pais}" />
                         </p:selectOneMenu>
+                        <p:outputLabel value="Sexo" for="sexo" />
+                        <p:selectOneMenu id="sexo" required="true"
+                                         value="#{personaBean.personaSelected.perSex}">
+                            <f:selectItem itemLabel="Masculino" itemValue="M" />
+                            <f:selectItem itemLabel="Femenino" itemValue="F" />
+                        </p:selectOneMenu>
                         <p:outputLabel value="Profesion" for="profesion" />
                         <p:selectOneMenu id="profesion" required="true"
                                          value="#{personaBean.personaSelected.prfId}" converter="profesionConverter">
@@ -135,7 +144,7 @@
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="personaGr,:persona-form:dtPersona"
                             action="#{personaBean.addPersona}"
                             />

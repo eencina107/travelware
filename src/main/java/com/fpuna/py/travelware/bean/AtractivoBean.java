@@ -82,7 +82,7 @@ public class AtractivoBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
             for (PgeAtractivos atr:atractivos){
                 if (atr.getAtrDesc().toUpperCase().equals(this.atractivoSelected.getAtrDesc().toUpperCase()) && (this.atractivoSelected.getAtrId()!=null && !Objects.equals(this.atractivoSelected.getAtrId(), atr.getAtrId()))){
-                    context.addMessage(null, new FacesMessage("Advertencia", "El atractivo "+this.atractivoSelected.getAtrDesc()+" ya existe"));
+                    context.addMessage(null, new FacesMessage("Advertencia. El atractivo "+this.atractivoSelected.getAtrDesc()+" ya existe"));
                     this.clean();
                     return;
                 }
@@ -100,10 +100,10 @@ public class AtractivoBean implements Serializable{
         atractivo.setAtrUsuIns(loginBean.getUsername());
         atractivoEJB.update(atractivo);
         if (this.atractivoSelected.getAtrId()!=null){
-            context.addMessage("Mensaje", new FacesMessage("Felicidades!", atractivo.getAtrDesc()+" fue actualizado con éxito!"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ atractivo.getAtrDesc()+" fue actualizado con éxito!"));
         }
         else{
-            context.addMessage("Mensaje", new FacesMessage("Felicidades!", atractivo.getAtrDesc()+" fue creado con éxito!"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ atractivo.getAtrDesc()+" fue creado con éxito!"));
         }
         atractivos = atractivoEJB.getAll();
         this.clean();
@@ -128,7 +128,7 @@ public class AtractivoBean implements Serializable{
             FacesMessage message = new FacesMessage("Error!", event.getFile().getFileName() + e);
             return;
         }
-        FacesMessage message = new FacesMessage("Felicidades!", event.getFile().getFileName() + " fue subido con éxito.");
+        FacesMessage message = new FacesMessage("Felicidades! "+ event.getFile().getFileName() + " fue subido con éxito.");
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
     

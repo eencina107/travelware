@@ -121,12 +121,12 @@ public class ModuloBean implements Serializable{
         FacesContext context= FacesContext.getCurrentInstance();
         for (PgeModulos mod: modulos){
             if(mod.getModDesc().equals(this.moduloNuevo.getModDesc())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El módulo "+this.moduloNuevo.getModDesc()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El módulo "+this.moduloNuevo.getModDesc()+" ya existe"));
                 this.clean();
                 return;
             }
             if(mod.getModAbr().equals(this.moduloNuevo.getModAbr())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El módulo "+this.moduloNuevo.getModAbr()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El módulo "+this.moduloNuevo.getModAbr()+" ya existe"));
                 this.clean();
                 return;
             }
@@ -134,7 +134,7 @@ public class ModuloBean implements Serializable{
         this.moduloNuevo.setModEstado(Character.toUpperCase(this.moduloNuevo.getModEstado()));
         this.moduloNuevo.setModAbr(this.moduloNuevo.getModAbr().toUpperCase());
         if ((!this.moduloNuevo.getModEstado().toString().equals("A")) && (!this.moduloNuevo.getModEstado().toString().equals("I"))){
-            context.addMessage(null, new FacesMessage("Advertencia", "Estado inválido, introduzca A para activo o I para inactivo"));
+            context.addMessage(null, new FacesMessage("Advertencia. Estado inválido, introduzca A para activo o I para inactivo"));
             this.clean();
             return;
         }
@@ -147,7 +147,7 @@ public class ModuloBean implements Serializable{
         modulo.setModUsuIns(loginBean.getUsername());
         modulo.setModFecIns(new Date());
         moduloEJB.create(modulo);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", modulo.getModDesc() + " fue creado con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ modulo.getModDesc() + " fue creado con éxito"));
         modulos = moduloEJB.getAll();
         this.clean();
     }
@@ -171,7 +171,7 @@ public class ModuloBean implements Serializable{
         modulo.setModFecMod(new Date());
         modulo.setModUsuMod(loginBean.getUsername());
         moduloEJB.update(modulo);
-        context.addMessage(null, new FacesMessage("Felicidades!", this.moduloSelected.getModDesc()+" fue modificado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! "+ this.moduloSelected.getModDesc()+" fue modificado con éxito"));
         modulos= moduloEJB.getAll();
         this.clean();
     }

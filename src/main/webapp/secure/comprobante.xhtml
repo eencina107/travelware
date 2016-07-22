@@ -80,7 +80,7 @@
             <p:dialog header="Precios de Viajes" widgetVar="dlgComprobanteDetAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="comprobanteDetGr">  
                         <p:outputLabel value="Viaje" for="viaje" />
                         <h:panelGroup>
@@ -102,7 +102,7 @@
                                      value="#{comprobanteBean.comprobanteDetSelected.cdeNumCuota}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="precioViajeGr,:precioViaje-form:dtPrecioViaje"
                             action="#{precioViajeBean.addPrecioViaje}"
                             />

@@ -117,7 +117,7 @@
             <p:dialog header="Pasaportes" widgetVar="dlgPasaporteAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="pasaporteGr">                           
                         <p:outputLabel value="Pasaporte Nro." for="nroPasaporte" />
                         <h:panelGroup>
@@ -146,7 +146,7 @@
                         </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="pasaporteGr,:pasaporte-form:dtPasaporte"
                             action="#{pasaporteBean.addPasaporte}"
                             />
@@ -157,7 +157,7 @@
             <p:dialog header="Visas" widgetVar="dlgVisaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add-visa">
-                    <p:messages id="messages2" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages2" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="visaGr">                           
                         <p:outputLabel value="Visa Nro." for="nroVisa" />
                         <h:panelGroup>
@@ -181,7 +181,7 @@
                         </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="visaGr,:pasaporte-form:dtPasaporte:dtVisa"
                             action="#{visaBean.addVisa}"
                             />

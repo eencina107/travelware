@@ -52,7 +52,7 @@
             <p:dialog header="Módulos" widgetVar="dlgRolAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="rolGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
                         <h:panelGroup>
@@ -63,7 +63,7 @@
                         </h:panelGroup>
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="rolGr,:rol-form:dtRol"
                             action="#{rolBean.addRol}"
                             />
@@ -74,7 +74,7 @@
             <p:dialog header="Roles" widgetVar="dlgRolUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="rolGrUpd">                           
                         <p:outputLabel value="Nombre" for="descripcion2" />
                         <h:panelGroup>
@@ -85,7 +85,7 @@
                         </h:panelGroup>
                         <p:spacer />
                         <p:commandButton
-                            value="Guardar"
+                            value="Grabar"
                             update="rolGrUpd,:rol-form:dtRol"
                             action="#{rolBean.editRol}"
                             />

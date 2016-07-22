@@ -38,9 +38,10 @@ public class MonedaConverter implements Converter{
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        if (value == null){
+        if (value == null || value == ""){
             return null;
         }
+        //System.out.println("Moneda "+value);
         PgeMonedas moneda = (PgeMonedas) value;
         try {
             return moneda.getMonDesc();

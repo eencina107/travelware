@@ -66,7 +66,7 @@
             <p:dialog header="Atractivos" widgetVar="dlgAtractivoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="atractivoGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
                         <h:panelGroup>
@@ -92,7 +92,7 @@
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="atractivoGr,:atractivo-form:dtAtractivo"
                             action="#{atractivoBean.addAtractivo}"
                             />

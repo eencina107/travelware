@@ -72,12 +72,12 @@ public class UsuarioBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeUsuarios usu:usuarios){
             if (usu.getPerId().equals(this.usuarioSelected.getPerId()) && this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())){
-                context.addMessage(null, new FacesMessage("Advertencia", "Ya existe un usuario para esta persona"));
+                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario para esta persona"));
                 this.clean();
                 return;
             }
             if (usu.getUsuCod().equals(this.usuarioSelected.getUsuCod()) && this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())){
-                context.addMessage(null, new FacesMessage("Advertencia", "Ya existe un usuario con éste codigo"));
+                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario con éste codigo"));
                 this.clean();
                 return;
             }
@@ -104,7 +104,7 @@ public class UsuarioBean implements Serializable{
         usuario.setUsuEst('A');
         usuario.setUsuPass(usuarioSelected.getUsuPass());
         usuarioEJB.update(usuario);
-        context.addMessage(null, new FacesMessage("Felicidades!", usuario.getUsuCod()+" fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! " + usuario.getUsuCod()+" fue guardado con éxito"));
         usuarios=usuarioEJB.getAll();
         RequestContext.getCurrentInstance().update("usuario-form:dtUsuario");
         this.clean();

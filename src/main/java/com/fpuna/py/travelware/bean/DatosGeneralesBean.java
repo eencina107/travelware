@@ -79,7 +79,7 @@ public class DatosGeneralesBean implements Serializable{
         datoGeneral.setGralTel1(this.datoSelected.getGralTel1());
         datoGeneral.setGralTel2(this.datoSelected.getGralTel2());
         datosGeneralesEJB.update(datoGeneral);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "Datos Guardados con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! Datos Guardados con éxito"));
         datosGenerales = datosGeneralesEJB.getAll();
         existeRegistro = datosGenerales.size()>0;
         this.datoSelected = datosGenerales.get(0);

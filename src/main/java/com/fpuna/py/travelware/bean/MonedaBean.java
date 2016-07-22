@@ -76,7 +76,7 @@ public class MonedaBean implements Serializable{
         if (monedas !=null){
             for (PgeMonedas mon:monedas){
                 if (mon.getMonDesc().equalsIgnoreCase(this.monedaSelected.getMonDesc()) && mon.getPaiId().equals(this.monedaSelected.getPaiId())){
-                    context.addMessage(null, new FacesMessage("Advertencia", "El "+this.monedaSelected.getMonDesc()+" de "+this.monedaSelected.getPaiId().getPaiDesc()+" ya existe"));
+                    context.addMessage(null, new FacesMessage("Advertencia. El "+this.monedaSelected.getMonDesc()+" de "+this.monedaSelected.getPaiId().getPaiDesc()+" ya existe"));
                     this.clean();
                     return ;
                 }
@@ -94,11 +94,11 @@ public class MonedaBean implements Serializable{
         moneda.setMonFecIns(new Date());
         monedaEJB.update(moneda);
         if (this.monedaSelected.getMonId()!=null) {
-            context.addMessage("Mensaje", new FacesMessage("Felicidades!", moneda.getMonDesc()
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ moneda.getMonDesc()
                     +" fue actualizado con éxito"));
         }
         else{
-            context.addMessage("Mensaje", new FacesMessage("Felicidades!", moneda.getMonDesc()
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ moneda.getMonDesc()
                     +" fue creado con éxito"));
         }
         monedas = monedaEJB.getAll();

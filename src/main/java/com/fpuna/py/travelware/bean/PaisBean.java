@@ -65,12 +65,12 @@ public class PaisBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgePaises pai: paises){
             if (pai.getPaiDesc().equals(this.paisNuevo.getPaiDesc())){
-                context.addMessage(null, new FacesMessage("Advertencia","El pais "+this.paisNuevo.getPaiDesc()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El pais "+this.paisNuevo.getPaiDesc()+" ya existe"));
                 this.clean();
                 return;
             }
             if (pai.getPaiNac().equals(this.paisNuevo.getPaiNac())){
-                context.addMessage(null, new FacesMessage("Advertencia","La nacionalidad "+this.paisNuevo.getPaiNac()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. La nacionalidad "+this.paisNuevo.getPaiNac()+" ya existe"));
                 this.clean();
                 return;
             }
@@ -83,7 +83,7 @@ public class PaisBean implements Serializable{
         pais.setPaiUsuIns(loginBean.getUsername());
         pais.setPaiFecIns(new Date());
         paisEJB.create(pais);
-        context.addMessage("Mensaje",new FacesMessage("Felicidades!",pais.getPaiDesc()+" fue agregado con exito!"));
+        context.addMessage("Mensaje",new FacesMessage("Felicidades! "+pais.getPaiDesc()+" fue agregado con exito!"));
         paises = paisEJB.getAll();
         this.clean();
     }
@@ -109,7 +109,7 @@ public class PaisBean implements Serializable{
         pais.setPaiUsuMod(loginBean.getUsername());
         pais.setPaiFecMod(new Date());
         paisEJB.update(pais);
-        context.addMessage(null, new FacesMessage("Felicidades!", this.paisSelected.getPaiDesc()+" fue modificado con éxito!"));
+        context.addMessage(null, new FacesMessage("Felicidades! "+ this.paisSelected.getPaiDesc()+" fue modificado con éxito!"));
         
         paises= paisEJB.getAll();
         

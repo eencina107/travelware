@@ -59,7 +59,7 @@ public class OrgLogoBean implements Serializable{
                 stream = new FileInputStream(new File("/opt/py.travelware/orgLogo/"+org.getOrgLogo()));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(OrgLogoBean.class.getName()).log(Level.SEVERE, null, ex);
-                FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error", "No se encuentra el archivo"));
+                FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error. No se encuentra el archivo"));
             }
             image = new DefaultStreamedContent(stream);
         }

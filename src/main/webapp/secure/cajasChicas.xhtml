@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="cajasChicas-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtCajasChicas" var="cajasChicas" value="#{cajaChicaBean.cajasChicas}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{cajaChicaBean.cajaSelected}" rowKey="#{cajasChicas}"
+                             selectionMode="single">
+
+                    <p:column headerText="ID" sortBy="#{cajasChicas.cajId}">
+                        <h:outputText value="#{cajasChicas.cajId}" />
+                    </p:column>
+
+                    <p:column headerText="Descripción" style="width: 250px">
+                        <h:outputText value="#{cajasChicas.cajDesc}" />
+                    </p:column>
+
+                    <p:column headerText="Estado" >
+                        <h:outputText value="#{cajasChicas.cajEst eq  'A' ? 'Activo':'Inactivo'}"/>
+                    </p:column>
+
+                    <p:column headerText="Moneda" >
+                        <h:outputText value="#{cajasChicas.monId.monAbreviatura}"/>
+                    </p:column>
+
+                    <p:column headerText="Límite" >
+                        <h:outputText value="#{cajasChicas.cajLim}"/>
+                    </p:column>
+                    <p:column headerText="Saldo" >
+                        <h:outputText value="#{cajasChicas.cajSaldo}"/>
+                    </p:column>
+
+                    <f:facet name="header">
+                        <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:cajasChicasGr" 
+                                         oncomplete="PF('dlgCajasChicasAdd').show()" 
+                                         actionListener="#{cajaChicaBean.buttonAction}" disabled="#{cajaChicaBean.existeRegistro}"/>
+                        <p:commandButton process="dtCajasChicas" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgCajasChicasAdd').show()"
+                                         update=":form-add:cajasChicasGr"
+                                         />
+                        <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{cajaChicaBean.deleteCaja}">
+                            <p:confirm header="Borrar Datos Generales"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Datos Generales" widgetVar="dlgCajasChicasAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="cajasChicasGr">
+                        <p:outputLabel value="Descripción" for="descripcion" />
+                        <h:panelGroup>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{cajaChicaBean.cajaSelected.cajDesc}" />
+                            <h:inputHidden value="#{cajaChicaBean.cajaSelected.cajId}" />
+                        </h:panelGroup>
+
+                        <p:outputLabel value="Estado" for="estado" />
+                        <p:selectOneMenu id="estado" value="#{cajaChicaBean.cajaSelected.cajEst}" style="width:125px">
+                            <f:selectItem itemLabel="Activo" itemValue="A" />
+                            <f:selectItem itemLabel="Inactivo" itemValue="I" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Moneda" for="moneda" />
+                        <p:selectOneMenu id="moneda" required="true"
+                                         value="#{cajaChicaBean.cajaSelected.monId}" converter="monedaConverter">
+
+                            <f:selectItems value="#{cajaChicaBean.monedas}" 
+                                           var="moneda" 
+                                           itemLabel="#{moneda.monDesc} " 
+                                           itemValue="#{moneda}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Límite" for="limite" />
+                        <p:inputText id="limite" required="true"
+                                     value="#{cajaChicaBean.cajaSelected.cajLim}" />
+
+                        <p:spacer />
+                        <p:commandButton action="#{cajaChicaBean.saveCaja}" update="cajasChicasGr,:cajasChicas-form:dtCajasChicas"
+                            value="Grabar" />  
+                            
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

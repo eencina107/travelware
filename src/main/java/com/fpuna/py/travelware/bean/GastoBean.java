@@ -5,9 +5,11 @@
  */
 package com.fpuna.py.travelware.bean;
 
+import com.fpuna.py.travelware.dao.ConceptoDao;
 import com.fpuna.py.travelware.dao.GastoDao;
 import com.fpuna.py.travelware.dao.MonedaDao;
 import com.fpuna.py.travelware.model.PgeMonedas;
+import com.fpuna.py.travelware.model.ViaConceptos;
 import com.fpuna.py.travelware.model.ViaGastos;
 import com.fpuna.py.travelware.model.ViaPasajeros;
 import java.io.Serializable;
@@ -31,12 +33,15 @@ import org.primefaces.event.SelectEvent;
 public class GastoBean implements Serializable{
     private List<ViaGastos> gastos;
     private List<PgeMonedas> monedas;
+    private List<ViaConceptos> conceptos;
     private ViaGastos gastoSelected;
     private ViaPasajeros pasajeroSelected;
     @EJB
     private GastoDao gastoEJB;
     @EJB
     private MonedaDao monedaEJB;
+    @EJB
+    private ConceptoDao conceptoEJB;
     
     //crea una nueva instancia de Gasto
     public GastoBean(){
@@ -47,6 +52,7 @@ public class GastoBean implements Serializable{
     public void init(){
         this.clean();
         this.gastoSelected = new ViaGastos();
+        this.conceptos = conceptoEJB.getAll();
         this.monedas = monedaEJB.getAll();
     }
 
@@ -68,9 +74,10 @@ public class GastoBean implements Serializable{
         gasto.setGasNro(this.gastoSelected.getGasNro());
         gasto.setGasTip(this.gastoSelected.getGasTip());
         gasto.setMonId(this.gastoSelected.getMonId());
+        gasto.setConId(this.gastoSelected.getConId());
         gasto.setPviId(pasajeroSelected);
         gastoEJB.update(gasto);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", "El gasto ha sido guardado exitosamente"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El gasto ha sido guardado exitosamente"));
         gastos = gastoEJB.getAll(pasajeroSelected);
         this.clean();
     }
@@ -105,6 +112,14 @@ public class GastoBean implements Serializable{
 
     public void setMonedas(List<PgeMonedas> monedas) {
         this.monedas = monedas;
+    }
+
+    public List<ViaConceptos> getConceptos() {
+        return conceptos;
+    }
+
+    public void setConceptos(List<ViaConceptos> conceptos) {
+        this.conceptos = conceptos;
     }
 
     public ViaGastos getGastoSelected() {

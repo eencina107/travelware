@@ -61,7 +61,7 @@ public class RolBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeRoles rol: roles){
             if (rol.getRolDesc().equals(this.rolNuevo.getRolDesc())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El rol "+this.rolNuevo.getRolDesc()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El rol "+this.rolNuevo.getRolDesc()+" ya existe"));
                 this.clean();
                 return;
             }
@@ -72,7 +72,7 @@ public class RolBean implements Serializable{
         rol.setRolUsuIns(loginBean.getUsername());
         rol.setRolFecIns(new Date());
         rolEJB.create(rol);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!", rol.getRolDesc()+" fue creado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + rol.getRolDesc()+" fue creado con éxito!"));
         roles= rolEJB.getAll();
         this.clean();
     }

@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="pago-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtPago" var="pago" value="#{pagoBean.pagos}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{pagoBean.pagoSelected}" rowKey="#{pago}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{pagoBean.onRowSelect}" />
+
+                    <p:column headerText="Factura" >
+                        <h:outputText value="#{pago.facId.facDesc}"/>
+                    </p:column>
+                    <p:column headerText="Tipo" >
+                        <h:outputText value="#{pago.pgoTipo eq  'CTA' ? 'Cuota':'Cancelación'}" />
+                    </p:column>
+                    <p:column headerText="Fecha" sortBy="#{pago.pgoFecIns}">
+                        <h:outputText value="#{pago.pgoFecIns}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Forma de Pago" >
+                        <h:outputText value="#{pago.pgoForPago eq  'EFE' ? 'Efectivo':'Cheque'}"/>
+                    </p:column>
+                    <p:column headerText="Moneda">
+                        <h:outputText value="#{pago.monId.monDesc}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Cambio" >
+                        <h:outputText value="#{pago.pgoCambio}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Monto Pagado" >
+                        <h:outputText value="#{pago.pgoMonto}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Observación">
+                        <h:outputText value="#{pago.pgoObservacion}"></h:outputText>
+                    </p:column>
+                    <f:facet name="header">
+                        <p:commandButton process="dtPago" icon="ui-icon-document"
+                                         value="Agregar"  update=":form-add:pagoGr" 
+                                         oncomplete="PF('dlgPagoAdd').show()" 
+                                         actionListener="#{pagoBean.buttonAction}"/>
+                        <p:commandButton process="dtPago" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgPagoAdd').show()"
+                                         update=":form-add:pagoGr"
+                                         />
+                        <p:commandButton process="dtPago" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{pagoBean.deletePago}">
+                            <p:confirm header="Borrar Pago"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Pagos" widgetVar="dlgPagoAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="pagoGr">                           
+                        <p:outputLabel value="Nro. Documento" for="nroDoc" />
+                        <h:panelGroup>
+                            <p:inputText id="nroDoc" required="true"
+                                         value="#{pagoBean.pagoSelected.pgoNro}"/>
+                            <h:inputHidden value="#{pagoBean.pagoSelected.pgoId}" />
+
+                        </h:panelGroup>
+                        <p:outputLabel value="Factura" for="factura" />
+                        <p:selectOneMenu id="factura" required="true"
+                                         value="#{pagoBean.pagoSelected.facId}" converter="facturaConverter">
+
+                            <f:selectItems value="#{pagoBean.facturas}" 
+                                           var="factura" 
+                                           itemLabel="#{factura.facNro} - Saldo: #{factura.facSaldo} #{factura.monId.monAbreviatura}" 
+                                           itemValue="#{factura}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel for="tipo" value="Tipo de Pago" />
+                        <p:selectOneMenu id="tipo" value="#{pagoBean.pagoSelected.pgoTipo}" style="width:125px">
+                            <f:selectItem itemLabel="Cuota" itemValue="CTA" />
+                            <f:selectItem itemLabel="Cancelación" itemValue="CAN" />
+                        </p:selectOneMenu>
+                        <p:outputLabel for="forPago" value="Forma de Pago" />
+                        <p:selectOneMenu id="forPago" value="#{pagoBean.pagoSelected.pgoForPago}" style="width:125px">
+                            <f:selectItem itemLabel="Efectivo" itemValue="EFE" />
+                            <f:selectItem itemLabel="Cheque" itemValue="CHE" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Moneda" for="moneda" />
+                        <p:selectOneMenu id="moneda" required="true"
+                                         value="#{pagoBean.pagoSelected.monId}" converter="monedaConverter">
+
+                            <f:selectItems value="#{pagoBean.monedas}" 
+                                           var="moneda" 
+                                           itemLabel="#{moneda.monDesc} " 
+                                           itemValue="#{moneda}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Cambio" for="cambio" />
+                        <p:inputText id="cambio" required="true"
+                                     value="#{pagoBean.pagoSelected.pgoCambio}" />
+                        <p:outputLabel value="Monto" for="monto" />
+                        <p:inputText id="monto" required="true"
+                                     value="#{pagoBean.pagoSelected.pgoMonto}" />
+                        <p:outputLabel value="Observación" for="observacion" />
+                        <p:inputText id="observacion" required="true"
+                                     value="#{pagoBean.pagoSelected.pgoObservacion}" />
+                        <p:spacer />
+                        <p:commandButton
+                            value="Grabar"
+                            update="pagoGr,:pago-form:dtPago"
+                            action="#{pagoBean.addPago}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+
+
+    </ui:composition>
+</html>

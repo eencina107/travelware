@@ -98,7 +98,7 @@ public class PersonaBean implements Serializable{
         String mensaje;
         for (PgePersonas per:personas){
             if (per.getPerNroDoc().equals(this.personaSelected.getPerNroDoc()) && this.personaSelected.getPerId()==null){
-                context.addMessage(null, new FacesMessage("Advertencia", "Ya existe una persona con este documento: "+this.personaSelected.getPerNroDoc()));
+                context.addMessage(null, new FacesMessage("Advertencia. Ya existe una persona con este documento: "+this.personaSelected.getPerNroDoc()));
                 this.clean();
                 return;
               
@@ -127,9 +127,10 @@ public class PersonaBean implements Serializable{
         persona.setPerNroDoc(this.personaSelected.getPerNroDoc());
         persona.setPerLugNac(this.personaSelected.getPerLugNac());
         persona.setPerFecNac(this.personaSelected.getPerFecNac());
+        persona.setPerSex(this.personaSelected.getPerSex());
         persona.setPerEmail(this.personaSelected.getPerEmail());
         personaEJB.update(persona);
-        context.addMessage(null, new FacesMessage("Felicidades!", persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! "+ persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito"));
         personas = personaEJB.getAll();
         RequestContext.getCurrentInstance().update("personas-form:dtPersona");
         this.clean();

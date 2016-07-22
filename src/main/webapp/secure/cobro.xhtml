@@ -76,7 +76,7 @@
             <p:dialog header="Cobros" widgetVar="dlgCobroAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="cobroGr">                           
                         <p:outputLabel value="Nro. Documento" for="nroDoc" />
                         <h:panelGroup>
@@ -133,7 +133,7 @@
                                      value="#{cobroBean.cobroSelected.cobObservacion}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="cobroGr,:cobro-form:dtCobro"
                             action="#{cobroBean.addCobro}"
                             />

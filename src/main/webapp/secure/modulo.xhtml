@@ -58,7 +58,7 @@
             <p:dialog header="Módulos" widgetVar="dlgModuloAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="moduloGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
                         <h:panelGroup>
@@ -75,7 +75,7 @@
                                      value="#{moduloBean.moduloNuevo.modEstado}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Agregar"
+                            value="Grabar"
                             update="moduloGr,:modulo-form:dtModulo"
                             action="#{moduloBean.addModulo}"
                             />
@@ -86,7 +86,7 @@
             <p:dialog header="Modulos" widgetVar="dlgModuloUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="moduloGrUpd">                           
                         <p:outputLabel value="Descripcion" for="descripcion2" />
                         <h:panelGroup>
@@ -103,7 +103,7 @@
                                      value="#{moduloBean.moduloSelected.modEstado}" />
                         <p:spacer />
                         <p:commandButton
-                            value="Guardar"
+                            value="Grabar"
                             update="moduloGrUpd,:modulo-form:dtModulo"
                             action="#{moduloBean.editModulo}"
                             />
@@ -112,13 +112,7 @@
                 </h:form>
             </p:dialog>
 
-
-
-
-
         </ui:define>
-
-
 
     </ui:composition>
 </html>

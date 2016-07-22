@@ -59,12 +59,12 @@ public class TipoOrgBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeTipoOrg tipo:tiposOrg){
             if (tipo.getTipCodigo().toUpperCase().equals(tipCodigo.toUpperCase()) && !Objects.equals(tipo.getTipId(), this.tipoOrgSelected.getTipId())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El tipo "+this.tipoOrgSelected.getTipCodigo()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El tipo "+this.tipoOrgSelected.getTipCodigo()+" ya existe"));
                 this.clean();
                 return;
             }
             if (tipo.getTipDescripcion().toUpperCase().equals(tipDescripcion.toUpperCase()) && !Objects.equals(tipo.getTipId(), this.tipoOrgSelected.getTipId())){
-                context.addMessage(null, new FacesMessage("Advertencia", "El tipo "+this.tipoOrgSelected.getTipDescripcion()+" ya existe"));
+                context.addMessage(null, new FacesMessage("Advertencia. El tipo "+this.tipoOrgSelected.getTipDescripcion()+" ya existe"));
                 this.clean();
                 return;
             }
@@ -78,7 +78,7 @@ public class TipoOrgBean implements Serializable{
         tipoOrg.setTipCodigo(tipCodigo);
         tipoOrg.setTipDescripcion(tipDescripcion);
         tipoOrgEJB.update(tipoOrg);
-        context.addMessage("Mensaje", new  FacesMessage("Felicidades", tipoOrg.getTipDescripcion()+" fue guardado con éxito"));
+        context.addMessage("Mensaje", new  FacesMessage("Felicidades! "+ tipoOrg.getTipDescripcion()+" fue guardado con éxito"));
         tiposOrg = tipoOrgEJB.getAll();
         this.clean();
     }
