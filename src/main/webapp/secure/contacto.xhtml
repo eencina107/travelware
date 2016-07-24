@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
+        type="text/javascript"></script>-->
+
+    <ui:composition template="/WEB-INF/base.xhtml">
+        <ui:define name="content">
+            <h:form id="contacto-form">
+                <p:growl id="growl" showDetail="true" sticky="true" />
+
+                <p:dataTable id="dtContacto" var="contacto" value="#{contactoBean.contactos}"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             selection="#{contactoBean.contactoSelected}" rowKey="#{contacto}"
+                             selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{contactoBean.onRowSelect}" />
+                    <p:column headerText="Código" style="width: 8%"
+                              sortBy="#{contacto.conId}">
+                        <h:outputText value="#{contacto.conId}" />
+                    </p:column>
+                    <p:column headerText="Nombre" 
+                              sortBy="#{contacto.conIdPersonaCont.perNom}">
+                        <h:outputText value="#{contacto.conIdPersonaCont.perNom}" />
+                    </p:column>
+                    <p:column headerText="Apellido" >
+                        <h:outputText value="#{contacto.conIdPersonaCont.perApe}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Fecha Agenda"
+                              sortBy="#{contacto.conFechaContacto}">
+                        <h:outputText value="#{contacto.conFechaContacto}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText> 
+                    </p:column>
+                    <p:column headerText="Usuario">
+                        <h:outputText value="#{contacto.conIdUsuarioCont.usuCod}"/>
+                    </p:column>
+                    <p:column headerText="Estado">
+                        <h:outputText value="#{contacto.conEstado eq  'P' ? 'Pendiente' : contacto.conEstado eq 'C' ? 'Concretado' : 'Fallido'}"/>
+                    </p:column>
+                    <p:column headerText="Observación">
+                        <h:outputText value="#{contacto.conObservacion}"/>
+                    </p:column>
+                    <f:facet name="header">
+                        <p:commandButton process="dtContacto" icon="ui-icon-document"
+                                         value="Agregar"   
+                                         oncomplete="PF('dlgContactoAdd').show()" 
+                                         actionListener="#{contactoBean.buttonAction}"
+                                         update=":form-add:contactoGr"
+                                         />
+                        <p:commandButton process="dtContacto" icon="ui-icon-pencil"
+                                         value="Editar" 
+                                         oncomplete="PF('dlgContactoAdd').show()"
+                                         update=":form-add:contactoGr"
+                                         disabled="true"
+                                         />
+                        <p:commandButton process="dtContacto" icon="ui-icon-document"
+                                         value="Borrar" actionListener="#{contactoBean.deleteContacto}">
+                            <p:confirm header="Borrar Organización"
+                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="fade">
+                            <p:commandButton value="Si" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                            <p:commandButton value="No" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+
+                    </f:facet>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog header="Contactos" widgetVar="dlgContactoAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add">
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
+
+                        <p:outputLabel value="Fecha de Agenda" for="fecha" />
+                        <h:panelGroup>
+                            <p:calendar id="fecha" 
+                                        value="#{contactoBean.contactoSelected.conFechaContacto}" 
+                                        pattern="dd/MM/yyyy" 
+                                        mask="true" />
+                            <h:inputHidden value="#{contactoBean.contactoSelected.conId}" />
+
+                        </h:panelGroup>
+
+                        <p:outputLabel value="Persona" for="persona" />
+                        <p:selectOneMenu id="persona" required="true"
+                                         value="#{contactoBean.contactoSelected.conIdPersonaCont}" converter="personaConverter">
+
+                            <f:selectItems value="#{contactoBean.personas}" 
+                                           var="persona" 
+                                           itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
+                                           itemValue="#{persona}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Usuario" for="usuario" />
+                        <p:selectOneMenu id="usuario" required="true"
+                                         value="#{contactoBean.contactoSelected.conIdUsuarioCont}" converter="usuarioConverter">
+
+                            <f:selectItems value="#{contactoBean.usuarios}" 
+                                       var="usuario" 
+                                       itemLabel="#{usuario.usuCod}" 
+                                       itemValue="#{usuario}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Observación" for="obser" />
+                        <p:inputText id="obser"
+                                     value="#{contactoBean.contactoSelected.conObservacion}" />
+
+                        <p:spacer />
+                        <p:commandButton
+                            value="Grabar"
+                            update="contactoGr,:contacto-form:dtContacto"
+                            actionListener="#{contactoBean.addContacto}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>          
+        </ui:define>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Próximos Viajes</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <h:form>
+            <p:dataTable var="viaje" value="#{pantallaInicioBean.listaViajesFuturos}"
+                         rows="5" paginator="true" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <p:column headerText="Nombre" style="width: 30%" >
+                    <h:outputText value="#{viaje.viaDesc}" />
+                </p:column>
+
+                <p:column headerText="Salida" >
+                    <h:outputText value="#{viaje.viaFecSali}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Regreso" >
+                    <h:outputText value="#{viaje.viaFecReg}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Total" style="width:8%" >
+                    <h:outputText value="#{viaje.viaCantTot}" />
+                </p:column>
+
+                <p:column headerText="Disp." style="width:8%">
+                    <h:outputText value="#{viaje.viaCantTot - viaje.viaCantVend}" />
+                </p:column>
+
+                <p:column  style="width:5%">
+                    <p:commandButton icon="ui-icon-document"
+                                     style="height: 26px"
+                                     onclick="window.location='/py.travelware/repviaje?id=#{viaje.viaId}';" />
+                </p:column>
+
+
+            </p:dataTable>
+        </h:form>
+    </h:body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Contactos Pendientes</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+
+    <h:body style="min-height: 300px">
+        <h:form id="contacto-form">
+            <p:growl id="growl" showDetail="true" sticky="true" />
+            <p:dataTable id="dtContacto" var="contacto" value="#{pantallaInicioBean.listaContactosPendientes}"
+                         rows="5" paginator="true" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15"
+                         selection="#{pantallaInicioBean.contactoSelected}" rowKey="#{contacto}"
+                         selectionMode="single">
+                <p:column headerText="Nombre" >
+                    <h:outputText value="#{contacto.conIdPersonaCont.perNom}" />
+                </p:column>
+
+                <p:column headerText="Apellido" >
+                    <h:outputText value="#{contacto.conIdPersonaCont.perApe}" />
+                </p:column>
+
+                <p:column headerText="Fecha Agenda" >
+                    <h:outputText value="#{contacto.conFechaContacto}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Detalle" style="width:30%" >
+                    <h:outputText value="#{contacto.conObservacion}" />
+                </p:column>
+
+                <p:column style="width:5%">
+                    <p:commandButton process="dtContacto" icon="ui-icon-pencil"
+                                     style="height: 26px"
+                                     oncomplete="PF('dlgContactoAdd').show()"
+                                     update=":form-add:contactoGr"
+                                     actionListener="#{pantallaInicioBean.buttonAction(contacto)}"/>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog header="Contactos" widgetVar="dlgContactoAdd"
+                  modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <h:form id="form-add">
+                <p:messages id="messages" showDetail="false" autoUpdate="true" />
+                <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
+
+                    <p:outputLabel value="Persona" for="persona" />
+                    <p:selectOneMenu id="persona" disabled="true"
+                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont}" converter="personaConverter">
+
+                        <f:selectItems value="#{contactoBean.personas}" 
+                                       var="persona"
+                                       itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
+                                       itemValue="#{persona}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Estado" for="estado" />
+                    <h:panelGroup>
+                        <p:selectOneMenu id="estado"
+                                         value="#{pantallaInicioBean.contactoSelected.conEstado}" style="width:125px">
+                            <f:selectItem itemLabel="Concretado" itemValue="C" />
+                            <f:selectItem itemLabel="Fallido" itemValue="F" />
+                        </p:selectOneMenu>
+                        <h:inputHidden value="#{pantallaInicioBean.contactoSelected.conId}" />
+                    </h:panelGroup>
+
+                    <p:outputLabel value="Observación" for="obser" />
+                    <p:inputText id="obser"  style="width:250px"
+                                 value="#{pantallaInicioBean.contactoSelected.conObservacion}" />
+
+                    <p:spacer />
+                    <p:commandButton
+                        value="Grabar"
+                        update="contactoGr,:contacto-form:dtContacto"
+                        actionListener="#{pantallaInicioBean.updContacto()}"
+                        />
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>          
+    </h:body>
+
+</html>
