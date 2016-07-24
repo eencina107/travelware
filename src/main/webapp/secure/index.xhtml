@@ -8,21 +8,37 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             
+            <h:form>
+                <p:contentFlow value="#{imagenesInicioBean.images}" var="image" style="height: 300px">
+                    <p:graphicImage  value="../resources/inicio/#{image}" styleClass="content" />
+                </p:contentFlow>
+                <p:panel id="pasaportesVenc" header="Pasaportes Vencidos">
+                    <h:outputText value="#{pantallaInicioBean.cantPasaportesVencidos} se encuentra(n) vencido(s)" />
+                    <br/>
+                    <p:commandButton value="Mostrar" 
+                                     icon="ui-icon-extlink" 
+                                     actionListener="#{pantallaInicioBean.mostrarDialogPasaportesVencidos}"
+                                     rendered="#{not (pantallaInicioBean.cantPasaportesVencidos eq '0')}"/>
+                </p:panel>
+                <p:panel id="viajesFut" header="Próximos Viajes">
+                    <h:outputText value="#{pantallaInicioBean.cantViajesFuturos} se encuentra(n) próximo(s)" />
+                    <br/>
+                    <p:commandButton value="Mostrar" 
+                                     icon="ui-icon-extlink" 
+                                     actionListener="#{pantallaInicioBean.mostrarDialogViajesFuturos()}"
+                                     rendered="#{not (pantallaInicioBean.cantViajesFuturos eq '0')}"/>
+                </p:panel>
+                <p:panel id="contactosPend" header="Contactos Pendientes">
+                    <h:outputText value="#{pantallaInicioBean.cantContactosPendientes} se encuentra(n) pendiente(s)" />
+                    <br/>
+                    <p:commandButton value="Mostrar" 
+                                     icon="ui-icon-extlink" 
+                                     actionListener="#{pantallaInicioBean.mostrarDialogContactosPendientes()}"
+                                     rendered="#{not (pantallaInicioBean.cantContactosPendientes eq '0')}"/>
+                </p:panel>
+            </h:form>
 
-            <p:contentFlow value="#{imagenesInicioBean.images}" var="image" style="height: 200px">
-                <p:graphicImage  value="../resources/inicio/#{image}" styleClass="content" />
-            </p:contentFlow>
-            <p:panel id="pasaportesVenc" header="Pasaportes Vencidos">
-                <h:outputText value="#{pantallaInicioBean.cantPasaportesVencidos} se encuentran vencidos" />
-                <br/>
-                <p:commandButton value="Mostrar" 
-                                 icon="ui-icon-extlink" 
-                                 actionListener="#{pantallaInicioBean.mostrarDialogPasaportesVencidos}"
-                                 rendered="#{not (pantallaInicioBean.cantPasaportesVencidos eq '0')}"/>
-            </p:panel>
-            
         </ui:define>
-        
             
     </ui:composition>
 
