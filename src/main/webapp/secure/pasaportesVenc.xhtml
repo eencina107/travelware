@@ -15,7 +15,10 @@
 
     <h:body>
         <h:form>
-            <p:dataTable var="pasaporte" value="#{pantallaInicioBean.listaPasaportesVencidos}">
+            <p:dataTable var="pasaporte" value="#{pantallaInicioBean.listaPasaportesVencidos}"
+                         rows="5" paginator="true" paginatorPosition="bottom"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
                 <p:column headerText="Nro. Pasaporte">
                     <h:outputText value="#{pasaporte.patNroPas}" />
                 </p:column>
