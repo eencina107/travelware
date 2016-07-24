@@ -21,7 +21,7 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{permisoBean.onRowSelect}" />
-                    <p:column headerText="Menú" style="width: 250px; position: relative"
+                    <p:column headerText="Menú" style="position: relative"
                               sortBy="#{permiso.pgeMenus.menDescripcion}">
                         <h:outputText value="#{permiso.pgeMenus.menDescripcion}" />
                     </p:column>
@@ -87,8 +87,6 @@
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>
