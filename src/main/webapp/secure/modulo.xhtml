@@ -49,7 +49,7 @@
                         <h:outputText value="#{modulo.modAbr}" />
                     </p:column>
                     <p:column headerText="Estado" sortBy="#{modulo.modEstado}">
-                        <h:outputText value="#{modulo.modEstado}" />
+                        <h:outputText value="#{modulo.modEstado eq 'A' ? 'Abierto' : 'Cerrado'}" />
                     </p:column>
 
                 </p:dataTable>
@@ -70,9 +70,11 @@
                         <p:outputLabel value="Abrev." for="abreviatura" />
                         <p:inputText id="abreviatura" required="true" maxlength="3" 
                                      value="#{moduloBean.moduloNuevo.modAbr}" />
-                        <p:outputLabel value="Estado" for="estado" />
-                        <p:inputText id="estado" required="true"
-                                     value="#{moduloBean.moduloNuevo.modEstado}" />
+                        <p:outputLabel value="Estado" for="modEstado" />
+                        <p:selectOneMenu id="modEstado" required="true" value="#{moduloBean.moduloNuevo.modEstado}">
+                            <f:selectItem itemLabel="Abierto" itemValue="A" />
+                            <f:selectItem itemLabel="Cerrado" itemValue="C" />
+                        </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
                             value="Grabar"
@@ -98,9 +100,11 @@
                         <p:outputLabel value="Abrev." for="abreviatura2" />
                         <p:inputText id="abreviatura2" required="true"
                                      value="#{moduloBean.moduloSelected.modAbr}" />
-                        <p:outputLabel value="Estado" for="estado2" />
-                        <p:inputText id="estado2" required="true"
-                                     value="#{moduloBean.moduloSelected.modEstado}" />
+                        <p:outputLabel value="Estado" for="modEstado2" />
+                        <p:selectOneMenu id="modEstado2" required="true" value="#{moduloBean.moduloSelected.modEstado}">
+                            <f:selectItem itemLabel="Abierto" itemValue="A" />
+                            <f:selectItem itemLabel="Cerrado" itemValue="C" />
+                        </p:selectOneMenu>
                         <p:spacer />
                         <p:commandButton
                             value="Grabar"
