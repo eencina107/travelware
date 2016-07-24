@@ -21,23 +21,24 @@
                              selectionMode="single">
 
                     <p:ajax event="rowSelect" listener="#{personaBean.onRowSelect}" />
-                    <p:column headerText="Nro. Doc." style="width: 5%"
+                    <p:column headerText="Nro. Doc." style="width: 7%"
+                              filterBy="#{persona.perNroDoc}" filterMatchMode="exact"
                               sortBy="#{persona.perNroDoc}">
                         <h:outputText value="#{persona.perNroDoc}" />
                     </p:column>
                     <p:column headerText="Nombre" 
+                              filterBy="#{persona.perNom}" filterMatchMode="contains"
                               sortBy="#{persona.perNom}">
                         <h:outputText value="#{persona.perNom}" />
                     </p:column>
-                    <p:column headerText="Apellido" >
+                    <p:column headerText="Apellido"
+                              filterBy="#{persona.perApe}" filterMatchMode="contains"
+                              sortBy="#{persona.perApe}">
                         <h:outputText value="#{persona.perApe}"></h:outputText>
                     </p:column>
                     <p:column headerText="Nacionalidad"
                               sortBy="#{persona.paiId.paiNac}">
                         <h:outputText value="#{persona.paiId.paiNac}" />
-                    </p:column>
-                    <p:column headerText="Profesión">
-                        <h:outputText value="#{persona.prfId.prfDesc}"/>
                     </p:column>
                     <p:column headerText="Fecha de Nacimiento" >
                         <h:outputText value="#{persona.perFecNac}">
@@ -152,8 +153,6 @@
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>
