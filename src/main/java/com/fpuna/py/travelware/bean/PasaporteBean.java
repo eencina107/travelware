@@ -72,13 +72,13 @@ public class PasaporteBean implements Serializable{
     public void addPasaporte(){
         FacesContext context = FacesContext.getCurrentInstance();
         for (ViaPasaportes pas:pasaportes){
-            if (pas.getPatNroPas().equals(this.pasaporteSelected.getPatNroPas()) && this.pasaporteSelected!=null){
+            if (this.pasaporteSelected!=null && pas.getPatNroPas().equals(this.pasaporteSelected.getPatNroPas()) && !(pas.getPatId().equals(this.pasaporteSelected.getPatId())) ){
                 context.addMessage(null, new FacesMessage("Advertencia. Pasaporte "+this.pasaporteSelected.getPatNroPas()+" ya existe!"));
                 this.clean();
                 return;
             }
             
-            if (pas.getPerId().equals(this.pasaporteSelected.getPerId()) && this.pasaporteSelected!=null){
+            if (this.pasaporteSelected!=null && pas.getPerId().equals(this.pasaporteSelected.getPerId()) && !(pas.getPatId().equals(this.pasaporteSelected.getPatId()))){
                 context.addMessage(null, new FacesMessage("Advertencia. "+ this.pasaporteSelected.getPerId().getPerNom()+" "+this.pasaporteSelected.getPerId().getPerApe()+" ya posee pasaporte."));
                 this.clean();
                 return;
