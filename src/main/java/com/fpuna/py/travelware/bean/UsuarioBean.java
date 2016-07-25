@@ -70,14 +70,21 @@ public class UsuarioBean implements Serializable{
     
     public void addUsuario(){
         FacesContext context = FacesContext.getCurrentInstance();
+        usuarios = usuarioEJB.getAllTot();
         for (PgeUsuarios usu:usuarios){
-            if (usu.getPerId().equals(this.usuarioSelected.getPerId()) && this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario para esta persona"));
+            if (usu.getUsuCod().equals(this.usuarioSelected.getUsuCod()) &&
+                    ((this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())) || this.usuarioSelected.getUsuId()==null)){
+                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario con éste codigo"));
+                usuarios = usuarioEJB.getAll();
                 this.clean();
                 return;
             }
-            if (usu.getUsuCod().equals(this.usuarioSelected.getUsuCod()) && this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario con éste codigo"));
+        }
+        usuarios = usuarioEJB.getAll();
+        for (PgeUsuarios usu:usuarios){
+            if (usu.getPerId().equals(this.usuarioSelected.getPerId()) &&
+                    ((this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())) || this.usuarioSelected.getUsuId()==null)){
+                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario para esta persona"));
                 this.clean();
                 return;
             }

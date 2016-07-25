@@ -154,8 +154,6 @@ public class UsuRolBean implements Serializable{
 
     public void setUsuRolSelected(PgeUsuRoles usuRolSelected) {
         this.usuRolSelected = usuRolSelected;
-        this.rol = this.usuRolSelected.getRolId();
-        this.usuario = this.usuRolSelected.getUsuId();
     }
 
     public PgeRoles getRol() {
@@ -173,6 +171,5 @@ public class UsuRolBean implements Serializable{
     public void setUsuario(PgeUsuarios usuario) {
         this.usuario = usuario;
     }
-    
     
 }

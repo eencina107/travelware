@@ -137,9 +137,6 @@ public class PermisoBean implements Serializable{
 
     public void setPermisoSelected(PgePermisos permisoSelected) {
         this.permisoSelected = permisoSelected;
-        this.menu = this.permisoSelected.getPgeMenus();
-        this.rol = this.permisoSelected.getRolId();
-        
     }
 
     public PgeRoles getRol() {
@@ -157,6 +154,5 @@ public class PermisoBean implements Serializable{
     public void setMenu(PgeMenus menu) {
         this.menu = menu;
     }
-    
     
 }
