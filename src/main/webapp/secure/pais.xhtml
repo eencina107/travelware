@@ -31,7 +31,7 @@
                         <p:commandButton process="dtPais" icon="ui-icon-document"
                                          value="Borrar" actionListener="#{paisBean.deletePais}">
                             <p:confirm header="Borrar Pais"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                                       message="Estas seguro que queres borrar? \n#{paisBean.paisSelected.paiId} - #{paisBean.paisSelected.paiDesc}" icon="ui-icon-alert" />
                         </p:commandButton>
                         <p:confirmDialog global="true" showEffect="fade"
                                          hideEffect="explode">
