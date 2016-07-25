@@ -95,7 +95,6 @@ public class PersonaBean implements Serializable{
     
     public void addPersona(){
         FacesContext context = FacesContext.getCurrentInstance();
-        String mensaje;
         for (PgePersonas per:personas){
             if (per.getPerNroDoc().equals(this.personaSelected.getPerNroDoc()) && this.personaSelected.getPerId()==null){
                 context.addMessage(null, new FacesMessage("Advertencia. Ya existe una persona con este documento: "+this.personaSelected.getPerNroDoc()));
@@ -132,7 +131,7 @@ public class PersonaBean implements Serializable{
         personaEJB.update(persona);
         context.addMessage(null, new FacesMessage("Felicidades! "+ persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito"));
         personas = personaEJB.getAll();
-        RequestContext.getCurrentInstance().update("personas-form:dtPersona");
+        RequestContext.getCurrentInstance().update("persona-form:dtPersona");
         this.clean();
     }
     
@@ -143,8 +142,10 @@ public class PersonaBean implements Serializable{
     }
     
     public void onRowSelect(SelectEvent event){
+        this.clean();
         this.personaSelected = (PgePersonas) event.getObject();
-        RequestContext.getCurrentInstance().update("personas-form:dtPersona");
+        //System.out.println(this.personaSelected.getPerNroDoc());
+        RequestContext.getCurrentInstance().update("persona-form:dtPersona");
     }
     
     public void handleFileUpload(FileUploadEvent event) {
@@ -306,6 +307,5 @@ public class PersonaBean implements Serializable{
     public void setDocImg(String docImg) {
         this.docImg = docImg;
     }
-    
-    
+
 }
