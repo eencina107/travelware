@@ -179,4 +179,4 @@ public class ProveedorBean implements Serializable{
     public void setOrganizacion(PgeOrganizaciones organizacion) {
         this.organizacion = organizacion;
     }
-}
+    }
