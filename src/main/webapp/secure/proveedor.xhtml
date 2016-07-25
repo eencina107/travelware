@@ -56,24 +56,20 @@
                                          />
                         <p:commandButton process="dtProveedor" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgProveedorAdd').show()"
+                                         oncomplete="document.getElementById('form-add:addProveedor').style.display='block';
+                                                     PF('dlgProveedorAdd').show();"
                                          update=":form-add:proveedorGr"
                                          />
                         <p:commandButton process="dtProveedor" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{proveedorBean.deleteProveedor}">
-                            <p:confirm header="Borrar Proveedor"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteProveedor').style.display='block';
+                                                     document.getElementById('form-add:addProveedor').style.display='none';
+                                                     PF('dlgProveedorAdd').show();"
+                                         update=":form-add:proveedorGr"
+                                         />
                         <p:commandButton icon="ui-icon-document" value="Ver Facturas"
                                          onclick="window.location='/py.travelware/repfactura?id=#{proveedorBean.proveedorSelected.proId}';"
                                          />
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
 
                     </f:facet>
                 </p:dataTable>
@@ -93,7 +89,7 @@
                         </h:panelGroup>
 
                         <p:outputLabel value="Nro. Doc. Persona" for="persona1" />
-                        <p:inputText id="persona1" required="true"
+                        <p:inputText id="persona1" 
                                      value="#{proveedorBean.proveedorSelected.perId}" converter="personaConverter">
                             <p:ajax event="dblclick" oncomplete="PF('dlgPersBusqAdd').show()" />
                             <p:ajax event="blur" update="personaDesc" />
@@ -125,11 +121,29 @@
                                     mask="true" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="proveedorGr,:proveedor-form:dtProveedor"
-                            actionListener="#{proveedorBean.addProveedor}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addProveedor"
+                                value="Grabar" style="display: block"
+                                update="proveedorGr,:proveedor-form:dtProveedor"
+                                actionListener="#{proveedorBean.addProveedor}"
+                                />
+                            <p:commandButton id="deleteProveedor"
+                                value="Borrar" style="display: none"
+                                update="proveedorGr,:proveedor-form:dtProveedor"
+                                actionListener="#{proveedorBean.deleteProveedor()}"
+                                oncomplete="PF('dlgProveedorAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Proveedor"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
