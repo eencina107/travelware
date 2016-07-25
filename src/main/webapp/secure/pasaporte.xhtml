@@ -131,19 +131,22 @@
                                     pattern="dd/MM/yyyy" 
                                     mask="true" />
                         <p:outputLabel value="Fecha de Vencimiento" for="fecVenc" />
-                        <p:calendar id="fecVenc" 
+                        <p:calendar id="fecVenc" required="true"
                                     value="#{pasaporteBean.pasaporteSelected.patFecVen}" 
                                     pattern="dd/MM/yyyy" 
                                     mask="true" />
-                        <p:outputLabel value="Persona" for="persona" />
-                        <p:selectOneMenu id="persona" required="true"
-                                         value="#{pasaporteBean.pasaporteSelected.perId}" converter="personaConverter">
 
-                            <f:selectItems value="#{pasaporteBean.personas}" 
-                                           var="persona" 
-                                           itemLabel="#{persona.perNroDoc} - #{persona.perNom} #{persona.perApe}" 
-                                           itemValue="#{persona}" />
-                        </p:selectOneMenu>
+                        <p:outputLabel value="Nro. Doc. Persona" for="persona1" />
+                        <p:inputText id="persona1" required="true"
+                                     value="#{pasaporteBean.pasaporteSelected.perId}" converter="personaConverter">
+                            <p:ajax event="dblclick" oncomplete="PF('dlgPersBusqAdd').show()" />
+                            <p:ajax event="blur" update="personaDesc" />
+                        </p:inputText>
+
+                        <p:outputLabel value="Persona" for="personaDesc" />
+                        <p:inputText id="personaDesc" disabled="true" style="width:270px"
+                                     value="#{pasaporteBean.pasaporteSelected.perId.perNom} #{pasaporteBean.pasaporteSelected.perId.perApe}" />
+
                         <p:spacer />
                         <p:commandButton
                             value="Grabar"
@@ -188,9 +191,61 @@
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
+
+            <p:dialog header="Búsqueda de Personas" widgetVar="dlgPersBusqAdd" width="60%" 
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="persona-form">
+                    <p:growl id="growl" showDetail="true" sticky="true" />
+
+                    <p:dataTable id="dtPersona" var="persona" value="#{personaBean.personas}"
+                                 rows="10" paginator="true" paginatorPosition="bottom"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 selection="#{personaBean.personaSelected}" rowKey="#{persona}"
+                                 selectionMode="single">
+
+                        <p:ajax event="rowSelect"  listener="#{personaBean.onRowSelect}" />
+                        <p:column headerText="Nro. Doc." style="width: 12%"
+                                  filterBy="#{persona.perNroDoc}" filterMatchMode="exact"
+                                  sortBy="#{persona.perNroDoc}">
+                            <h:outputText value="#{persona.perNroDoc}" />
+                        </p:column>
+                        <p:column headerText="Nombre" 
+                                  filterBy="#{persona.perNom}" filterMatchMode="contains"
+                                  sortBy="#{persona.perNom}">
+                            <h:outputText value="#{persona.perNom}" />
+                        </p:column>
+                        <p:column headerText="Apellido"
+                                  filterBy="#{persona.perApe}" filterMatchMode="contains"
+                                  sortBy="#{persona.perApe}">
+                            <h:outputText value="#{persona.perApe}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nacionalidad">
+                            <h:outputText value="#{persona.paiId.paiNac}" />
+                        </p:column>
+                        <p:column headerText="Fecha de Nacimiento"  style="width: 10%">
+                            <h:outputText value="#{persona.perFecNac}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+
+                        </p:column>
+                        <p:column headerText="Sexo" style="width: 7%">
+                            <h:outputText value="#{persona.perSex eq  'M' ? 'Masculino':'Femenino'}" />
+                        </p:column>
+
+                        <f:facet name="header" >
+                            <p:commandButton process="dtPersona" icon="ui-icon-pencil"
+                                             value="Seleccionar" 
+                                             oncomplete="document.getElementById('form-add:persona1').value=#{personaBean.personaSelected.perNroDoc};
+                                                         document.getElementById('form-add:persona1').onblur();
+                                                         PF('dlgPersBusqAdd').hide()"
+                                             />
+                        </f:facet>
+
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
         </ui:define>
-
-
 
     </ui:composition>
 </html>
