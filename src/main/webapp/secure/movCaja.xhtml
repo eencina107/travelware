@@ -60,17 +60,12 @@
                                          update=":form-add:movCajaGr"
                                          />
                         <p:commandButton process="dtMovCaja" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{movCajaBean.deleteMovCaja}">
-                            <p:confirm header="Borrar MovCaja"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteMovCaja').style.display='block';
+                                                     document.getElementById('form-add:addMovCaja').style.display='none';
+                                                     PF('dlgMovCajaAdd').show();"
+                                         update=":form-add:movCajaGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -129,11 +124,29 @@
                                      value="#{movCajaBean.movCajaSelected.movObservacion}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="movCajaGr,:movCaja-form:dtMovCaja"
-                            action="#{movCajaBean.addMovCaja}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addMovCaja" 
+                                value="Grabar"
+                                update="movCajaGr,:movCaja-form:dtMovCaja"
+                                action="#{movCajaBean.addMovCaja}"
+                                />
+                            <p:commandButton id="deleteMovCaja" 
+                                value="Borrar" style="display: none"
+                                update="movCajaGr,:movCaja-form:dtMovCaja"
+                                actionListener="#{movCajaBean.deleteMovCaja()}"
+                                oncomplete="PF('dlgMovCajaAdd').hide()"
+                                > 
+                                    <p:confirm header="Borrar MovCaja"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

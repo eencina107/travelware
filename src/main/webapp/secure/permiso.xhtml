@@ -39,17 +39,12 @@
                                          update=":form-add:permisoGr"
                                          />
                         <p:commandButton process="dtPermiso" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{permisoBean.deletePermiso}">
-                            <p:confirm header="Borrar Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deletePermiso').style.display='block';
+                                                     document.getElementById('form-add:addPermiso').style.display='none';
+                                                     PF('dlgPermisoAdd').show();"
+                                         update=":form-add:permisoGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -78,11 +73,29 @@
                                            itemValue="#{rol}" />
                         </p:selectOneMenu>
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="permisoGr,:permiso-form:dtPermiso"
-                            action="#{permisoBean.addPermiso}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addPermiso" 
+                                value="Grabar"
+                                update="permisoGr,:permiso-form:dtPermiso"
+                                action="#{permisoBean.addPermiso}"
+                                />
+                            <p:commandButton id="deletePermiso" 
+                                value="Borrar" style="display: none"
+                                update="permisoGr,:permiso-form:dtPermiso"
+                                actionListener="#{permisoBean.deletePermiso()}"
+                                oncomplete="PF('dlgPermisoAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Permiso"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

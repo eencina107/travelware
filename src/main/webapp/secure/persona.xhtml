@@ -74,17 +74,12 @@
                                          update=":form-add:personaGr"
                                          />
                         <p:commandButton process="dtPersona" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{personaBean.deletePersona}">
-                            <p:confirm header="Borrar Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deletePersona').style.display='block';
+                                                     document.getElementById('form-add:addPersona').style.display='none';
+                                                     PF('dlgPersonaAdd').show();"
+                                         update=":form-add:personaGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -144,11 +139,29 @@
                         <p:fileUpload id="perDoc" fileUploadListener="#{personaBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="personaGr,:persona-form:dtPersona"
-                            action="#{personaBean.addPersona}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addPersona" 
+                                value="Grabar"
+                                update="personaGr,:persona-form:dtPersona"
+                                action="#{personaBean.addPersona}"
+                                />
+                            <p:commandButton id="deletePersona" 
+                                value="Borrar" style="display: none"
+                                update="personaGr,:persona-form:dtPersona"
+                                actionListener="#{personaBean.deletePersona()}"
+                                oncomplete="PF('dlgPersonaAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Persona"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

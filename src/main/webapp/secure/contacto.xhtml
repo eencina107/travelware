@@ -61,17 +61,12 @@
                                          disabled="true"
                                          />
                         <p:commandButton process="dtContacto" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{contactoBean.deleteContacto}">
-                            <p:confirm header="Borrar Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteContacto').style.display='block';
+                                                     document.getElementById('form-add:addContacto').style.display='none';
+                                                     PF('dlgContactoAdd').show();"
+                                         update=":form-add:contactoGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -119,11 +114,29 @@
                                      value="#{contactoBean.contactoSelected.conObservacion}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="contactoGr,:contacto-form:dtContacto"
-                            actionListener="#{contactoBean.addContacto}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addContacto" 
+                                value="Grabar"
+                                update="contactoGr,:contacto-form:dtContacto"
+                                actionListener="#{contactoBean.addContacto}"
+                                />
+                            <p:commandButton id="deleteContacto" 
+                                value="Borrar" style="display: none"
+                                update="contactoGr,:contacto-form:dtContacto"
+                                actionListener="#{contactoBean.deleteContacto()}"
+                                oncomplete="PF('dlgContactoAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Contacto"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

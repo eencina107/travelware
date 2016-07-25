@@ -47,17 +47,12 @@
                                          update=":form-add:atractivoGr"
                                          />
                         <p:commandButton process="dtAtractivo" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{atractivoBean.deleteAtractivo}">
-                            <p:confirm header="Borrar Atractivo"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteAtractivo').style.display='block';
+                                                     document.getElementById('form-add:addAtractivo').style.display='none';
+                                                     PF('dlgAtractivoAdd').show();"
+                                         update=":form-add:atractivoGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -91,11 +86,29 @@
                         <p:fileUpload id="imagen" fileUploadListener="#{atractivoBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="atractivoGr,:atractivo-form:dtAtractivo"
-                            action="#{atractivoBean.addAtractivo}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addAtractivo" 
+                               value="Grabar"
+                               update="atractivoGr,:atractivo-form:dtAtractivo"
+                               action="#{atractivoBean.addAtractivo}"
+                               />
+                            <p:commandButton id="deleteAtractivo" 
+                                value="Borrar" style="display: none"
+                                update="atractivoGr,:atractivo-form:dtAtractivo"
+                                actionListener="#{atractivoBean.deleteAtractivo()}"
+                                oncomplete="PF('dlgAtractivoAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Atractivo"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

@@ -107,17 +107,12 @@
                                          update=":form-add:pasajeroGr"
                                          />
                         <p:commandButton process="dtPasajero" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{pasajeroBean.deletePasajero}">
-                            <p:confirm header="Borrar Pasajero"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deletePasajero').style.display='block';
+                                                     document.getElementById('form-add:addPasajero').style.display='none';
+                                                     PF('dlgPasajeroAdd').show();"
+                                         update=":form-add:pasajeroGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -163,11 +158,29 @@
                         <p:inputText id="prefComi" required="true"
                                      value="#{pasajeroBean.pasajeroSelected.pasPrefComi }" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="pasajeroGr,:pasajero-form:dtPasajero"
-                            action="#{pasajeroBean.addPasajero}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addPasajero" 
+                                value="Grabar"
+                                update="pasajeroGr,:pasajero-form:dtPasajero"
+                                action="#{pasajeroBean.addPasajero}"
+                                />
+                            <p:commandButton id="deletePasajero" 
+                                value="Borrar" style="display: none"
+                                update="pasajeroGr,:pasajero-form:dtPasajero"
+                                actionListener="#{pasajeroBean.deletePasajero()}"
+                                oncomplete="PF('dlgPasajeroAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Pasajero"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>     

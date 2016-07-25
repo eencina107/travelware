@@ -60,17 +60,12 @@
                                          update=":form-add:organizacionGr"
                                          />
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{organizacionBean.deleteOrganizacion}">
-                            <p:confirm header="Borrar Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteOrganizacion').style.display='block';
+                                                     document.getElementById('form-add:addOrganizacion').style.display='none';
+                                                     PF('dlgOrganizacionAdd').show();"
+                                         update=":form-add:organizacionGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -122,17 +117,33 @@
                         <p:fileUpload id="logo" fileUploadListener="#{organizacionBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="organizacionGr,:organizacion-form:dtOrganizacion"
-                            action="#{organizacionBean.addOrganizacion}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton
+                                value="Grabar" id="addOrganizacion"
+                                update="organizacionGr,:organizacion-form:dtOrganizacion"
+                                action="#{organizacionBean.addOrganizacion}"
+                                />
+                            <p:commandButton id="deleteOrganizacion" 
+                                value="Borrar" style="display: none"
+                                update="organizacionGr,:organizacion-form:dtOrganizacion"
+                                actionListener="#{organizacionBean.deleteOrganizacion()}"
+                                oncomplete="PF('dlgOrganizacionAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Organizacion"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>

@@ -54,23 +54,18 @@
                                          update=":form-add:cajasChicasGr"
                                          />
                         <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{cajaChicaBean.deleteCaja}">
-                            <p:confirm header="Borrar Datos Generales"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteCajaChica').style.display='block';
+                                                     document.getElementById('form-add:addCajaChica').style.display='none';
+                                                     PF('dlgCajasChicasAdd').show();"
+                                         update=":form-add:cajasChicasGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
             </h:form>
 
-            <p:dialog header="Datos Generales" widgetVar="dlgCajasChicasAdd"
+            <p:dialog header="Cajas Chicas" widgetVar="dlgCajasChicasAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
@@ -101,10 +96,29 @@
                         <p:outputLabel value="Límite" for="limite" />
                         <p:inputText id="limite" required="true"
                                      value="#{cajaChicaBean.cajaSelected.cajLim}" />
-
                         <p:spacer />
-                        <p:commandButton action="#{cajaChicaBean.saveCaja}" update="cajasChicasGr,:cajasChicas-form:dtCajasChicas"
-                            value="Grabar" />  
+                        <h:panelGroup>
+                            <p:commandButton id="addCajaChica" 
+                                action="#{cajaChicaBean.saveCaja}"
+                                update="cajasChicasGr,:cajasChicas-form:dtCajasChicas"
+                                value="Grabar" />  
+                            <p:commandButton id="deleteCajaChica" 
+                                value="Borrar" style="display: none"
+                                update="cajasChicasGr,:cajasChicas-form:dtCajasChicas"
+                                actionListener="#{cajaChicaBean.deleteCaja()}"
+                                oncomplete="PF('dlgCajasChicasAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Caja Chica"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                             
                     </p:panelGrid>
                 </h:form>

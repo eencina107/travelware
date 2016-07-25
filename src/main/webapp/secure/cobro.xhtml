@@ -57,17 +57,12 @@
                                          update=":form-add:cobroGr"
                                          />
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{cobroBean.deleteCobro}">
-                            <p:confirm header="Borrar Cobro"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteCobro').style.display='block';
+                                                     document.getElementById('form-add:addCobro').style.display='none';
+                                                     PF('dlgCobroAdd').show();"
+                                         update=":form-add:cobroGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -133,11 +128,29 @@
                         <p:inputText id="observacion" required="true"
                                      value="#{cobroBean.cobroSelected.cobObservacion}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="cobroGr,:cobro-form:dtCobro"
-                            action="#{cobroBean.addCobro}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addCobro" 
+                                value="Grabar"
+                                update="cobroGr,:cobro-form:dtCobro"
+                                action="#{cobroBean.addCobro}"
+                                />
+                            <p:commandButton id="deleteCobro" 
+                                value="Borrar" style="display: none"
+                                update="cobroGr,:cobro-form:dtCobro"
+                                actionListener="#{cobroBean.deleteCobro()}"
+                                oncomplete="PF('dlgCobroAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Cobro"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

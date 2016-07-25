@@ -29,17 +29,12 @@
                                          update=":form-upd:paisGrUpd" 
                                          />
                         <p:commandButton process="dtPais" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{paisBean.deletePais}">
-                            <p:confirm header="Borrar Pais"
-                                       message="Estas seguro que queres borrar? \n#{paisBean.paisSelected.paiId} - #{paisBean.paisSelected.paiDesc}" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-upd:deletePais').style.display='block';
+                                                     document.getElementById('form-upd:editPais').style.display='none';
+                                                     PF('dlgPaisUpd').show();"
+                                         update=":form-upd:paisGrUpd"
+                                         />
 
                     </f:facet>
 
@@ -108,11 +103,29 @@
                         <p:inputText id="ubicacion2" required="true"
                                      value="#{paisBean.paisSelected.paiUbi}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="paisGrUpd,:pais-form:dtPais"
-                            action="#{paisBean.editPais}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton
+                                value="Grabar" id='editPais'
+                                update="paisGrUpd,:pais-form:dtPais"
+                                action="#{paisBean.editPais}"
+                                />
+                            <p:commandButton id="deletePais" 
+                                value="Borrar" style="display: none"
+                                update="paisGrUpd,:pais-form:dtPais"
+                                actionListener="#{paisBean.deletePais()}"
+                                oncomplete="PF('dlgPaisUpd').hide()"
+                                >
+                                    <p:confirm header="Borrar Pais"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

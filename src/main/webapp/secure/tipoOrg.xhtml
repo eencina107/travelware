@@ -20,7 +20,7 @@
 
                     <p:ajax event="rowSelect" listener="#{tipoOrgBean.onRowSelect}" />
 
-                    <p:column headerText="Código" style="width: 10%"
+                    <p:column headerText="Código" style="width: 20%"
                               sortBy="#{tipoOrg.tipCodigo}">
                         <h:outputText value="#{tipoOrg.tipCodigo}" />
                     </p:column>
@@ -38,17 +38,12 @@
                                          update=":form-add:tipoOrgGr"
                                          />
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{tipoOrgBean.deleteTipoOrg}">
-                            <p:confirm header="Borrar Tipo de Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteTipoOrg').style.display='block';
+                                                     document.getElementById('form-add:addTipoOrg').style.display='none';
+                                                     PF('dlgTipoOrgAdd').show();"
+                                         update=":form-add:tipoOrgGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -62,17 +57,36 @@
                         <p:outputLabel value="Código" for="codigo" />
                         <h:panelGroup>
                             <p:inputText id="codigo" required="true"
+                                         maxlength='2'
                                          value="#{tipoOrgBean.tipCodigo}" />
                         </h:panelGroup>
                         <p:outputLabel value="Descripción" for="descripcion" />
                         <p:inputText id="descripcion" required="true"
                                      value="#{tipoOrgBean.tipDescripcion}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
-                            action="#{tipoOrgBean.addTipoOrg}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addTipoOrg" 
+                                value="Grabar"
+                                update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
+                                action="#{tipoOrgBean.addTipoOrg}"
+                                />
+                            <p:commandButton id="deleteTipoOrg" 
+                                value="Borrar" style="display: none"
+                                update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
+                                actionListener="#{tipoOrgBean.deleteTipoOrg()}"
+                                oncomplete="PF('dlgTipoOrgAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Tipo de Organizacion"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

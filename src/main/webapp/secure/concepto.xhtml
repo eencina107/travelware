@@ -54,17 +54,12 @@
                                          update=":form-add:conceptoGr"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{conceptoBean.deleteConcepto}">
-                            <p:confirm header="Borrar Concepto"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteConcepto').style.display='block';
+                                                     document.getElementById('form-add:addConcepto').style.display='none';
+                                                     PF('dlgConceptoAdd').show();"
+                                         update=":form-add:conceptoGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -99,11 +94,29 @@
                         </p:selectOneMenu>
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="conceptoGr,:concepto-form:dtConcepto"
-                            actionListener="#{conceptoBean.addConcepto}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addConcepto" 
+                                value="Grabar"
+                                update="conceptoGr,:concepto-form:dtConcepto"
+                                actionListener="#{conceptoBean.addConcepto}"
+                                />
+                            <p:commandButton id="deleteConcepto" 
+                                value="Borrar" style="display: none"
+                                update="conceptoGr,:concepto-form:dtConcepto"
+                                actionListener="#{conceptoBean.deleteConcepto()}"
+                                oncomplete="PF('dlgConceptoAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Concepto"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

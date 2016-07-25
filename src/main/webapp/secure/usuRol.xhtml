@@ -40,17 +40,12 @@
                                          update=":form-add:usuRolGr"
                                          />
                         <p:commandButton process="dtUsuRol" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{usuRolBean.deleteUsuRol}">
-                            <p:confirm header="Borrar Relación"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteUsuRol').style.display='block';
+                                                     document.getElementById('form-add:addUsuRol').style.display='none';
+                                                     PF('dlgUsuRolAdd').show();"
+                                         update=":form-add:usuRolGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -84,11 +79,29 @@
                                            itemValue="#{rol}" />
                         </p:selectOneMenu>
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="usuRolGr,:usuRol-form:dtUsuRol"
-                            action="#{usuRolBean.addUsuRol}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addUsuRol" 
+                                value="Grabar"
+                                update="usuRolGr,:usuRol-form:dtUsuRol"
+                                action="#{usuRolBean.addUsuRol}"
+                                />
+                            <p:commandButton id="deleteUsuRol" 
+                                value="Borrar" style="display: none"
+                                update="usuRolGr,:usuRol-form:dtUsuRol"
+                                actionListener="#{usuRolBean.deleteUsuRol()}"
+                                oncomplete="PF('dlgUsuRolAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Relación Usuario-Rol"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

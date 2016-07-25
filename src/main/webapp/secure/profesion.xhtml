@@ -36,23 +36,18 @@
                                          update=":form-upd:profesionGrUpd"
                                          />
                         <p:commandButton process="dtProfesion" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{profesionBean.deleteProfesion}" update=":profesion-form:dtProfesion">
-                            <p:confirm header="Borrar Módulo"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-upd:deleteProfesion').style.display='block';
+                                                     document.getElementById('form-upd:editProfesion').style.display='none';
+                                                     PF('dlgProfesionUpd').show();"
+                                         update=":form-upd:profesionGrUpd"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
             </h:form>
 
-            <p:dialog header="Módulos" widgetVar="dlgProfesionAdd"
+            <p:dialog header="Profesión" widgetVar="dlgProfesionAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
@@ -69,7 +64,7 @@
                                      value="#{profesionBean.profesionNuevo.prfObs}"/>
                         <p:spacer />
                         <p:commandButton
-                            value="Grabar"
+                        value="Grabar"
                             update="profesionGr,:profesion-form:dtProfesion"
                             action="#{profesionBean.addProfesion}"
                             />
@@ -93,11 +88,29 @@
                         <p:inputText id="observacion2" required="true"
                                      value="#{profesionBean.profesionSelected.prfObs}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="profesionGrUpd,:profesion-form:dtProfesion"
-                            action="#{profesionBean.editProfesion}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton
+                                value="Grabar" id='editProfesion'
+                                update="profesionGrUpd,:profesion-form:dtProfesion"
+                                action="#{profesionBean.editProfesion}"
+                                />
+                            <p:commandButton id="deleteProfesion" 
+                                value="Borrar" style="display: none"
+                                update="profesionGrUpd,:profesion-form:dtProfesion"
+                                actionListener="#{profesionBean.deleteProfesion()}"
+                                oncomplete="PF('dlgProfesionUpd').hide()"
+                                >
+                                    <p:confirm header="Borrar Profesion"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

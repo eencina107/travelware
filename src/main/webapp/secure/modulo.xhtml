@@ -29,17 +29,12 @@
                                          update=":form-upd:moduloGrUpd"
                                          />
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{moduloBean.deleteModulo}" update=":modulo-form:dtModulo">
-                            <p:confirm header="Borrar Módulo"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-upd:deleteModulo').style.display='block';
+                                                     document.getElementById('form-upd:editModulo').style.display='none';
+                                                     PF('dlgModuloUpd').show();"
+                                         update=":form-upd:moduloGrUpd"
+                                         />
 
                     </f:facet>
                     <p:column headerText="Nombre" sortBy="#{modulo.modDesc}">
@@ -106,11 +101,29 @@
                             <f:selectItem itemLabel="Cerrado" itemValue="C" />
                         </p:selectOneMenu>
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="moduloGrUpd,:modulo-form:dtModulo"
-                            action="#{moduloBean.editModulo}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton
+                                value="Grabar" id='editModulo'
+                                update="moduloGrUpd,:modulo-form:dtModulo"
+                                action="#{moduloBean.editModulo}"
+                                />
+                            <p:commandButton id="deleteModulo" 
+                                value="Borrar" style="display: none"
+                                update="moduloGrUpd,:modulo-form:dtModulo"
+                                actionListener="#{moduloBean.deleteModulo()}"
+                                oncomplete="PF('dlgModuloUpd').hide()"
+                                >
+                                    <p:confirm header="Borrar Modulo"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
 
                     </p:panelGrid>
                 </h:form>

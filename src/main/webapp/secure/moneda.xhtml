@@ -47,17 +47,12 @@
                                          update=":form-add:monedaGr"
                                          />
                         <p:commandButton process="dtMoneda" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{monedaBean.deleteMoneda}">
-                            <p:confirm header="Borrar Moneda"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteMoneda').style.display='block';
+                                                     document.getElementById('form-add:addMoneda').style.display='none';
+                                                     PF('dlgMonedaAdd').show();"
+                                         update=":form-add:monedaGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -88,8 +83,29 @@
                                            itemValue="#{pais}" />
                         </p:selectOneMenu>
                         <p:spacer />
-                        <p:commandButton action="#{monedaBean.addMoneda}" update="monedaGr,:moneda-form:dtMoneda"
-                            value="Grabar" />
+                        <h:panelGroup>
+                            <p:commandButton id='addMoneda'
+                                value="Grabar" 
+                                action="#{monedaBean.addMoneda}"
+                                update="monedaGr,:moneda-form:dtMoneda"
+                                />
+                            <p:commandButton id="deleteMoneda" 
+                                value="Borrar" style="display: none"
+                                update="monedaGr,:moneda-form:dtMoneda"
+                                actionListener="#{monedaBean.deleteMoneda()}"
+                                oncomplete="PF('dlgMonedaAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Moneda"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          

@@ -158,17 +158,12 @@
                                          update=":form-add:facturaGr"
                                          />
                         <p:commandButton process="dtFactura" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{facturaBean.deleteFactura}">
-                            <p:confirm header="Borrar Factura"
-                                       message="Estas seguro que queres borrar la factura?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteFactura').style.display='block';
+                                                     document.getElementById('form-add:addFactura').style.display='none';
+                                                     PF('dlgFacturaAdd').show();"
+                                         update=":form-add:facturaGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -252,11 +247,29 @@
                                      value="#{facturaBean.facturaSelected.facCanCuo}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="facturaGr,:factura-form:dtFactura"
-                            action="#{facturaBean.addFactura}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addFactura" 
+                                value="Grabar"
+                                update="facturaGr,:factura-form:dtFactura"
+                                action="#{facturaBean.addFactura}"
+                                />
+                            <p:commandButton id="deleteFactura" 
+                                value="Borrar" style="display: none"
+                                update="facturaGr,:factura-form:dtFactura"
+                                actionListener="#{facturaBean.deleteFactura()}"
+                                oncomplete="PF('dlgFacturaAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Factura"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

@@ -133,22 +133,16 @@
                                          update=":form-add:viajeGr"
                                          />
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{viajeBean.deleteViaje}">
-                            <p:confirm header="Borrar Tipo de Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteViaje').style.display='block';
+                                                     document.getElementById('form-add:addViaje').style.display='none';
+                                                     PF('dlgViajeAdd').show();"
+                                         update=":form-add:viajeGr"
+                                         />
                         <p:commandButton icon="ui-icon-document" value="Listado Pasajeros"
                                          onclick="window.location='/py.travelware/repviaje?id=#{viajeBean.viajeSelected.viaId}';"
                                          />
 
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
 
                     </f:facet>
                 </p:dataTable>
@@ -194,11 +188,29 @@
                                      value="#{viajeBean.viajeSelected.viaCost}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="viajeGr,:viaje-form:dtViaje"
-                            action="#{viajeBean.addViaje}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addViaje" 
+                                value="Grabar"
+                                update="viajeGr,:viaje-form:dtViaje"
+                                action="#{viajeBean.addViaje}"
+                                />
+                            <p:commandButton id="deleteViaje" 
+                                value="Borrar" style="display: none"
+                                update="viajeGr,:viaje-form:dtViaje"
+                                actionListener="#{viajeBean.deleteViaje()}"
+                                oncomplete="PF('dlgViajeAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Viaje"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog> 

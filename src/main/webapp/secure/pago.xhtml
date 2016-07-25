@@ -59,17 +59,12 @@
                                          update=":form-add:pagoGr"
                                          />
                         <p:commandButton process="dtPago" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{pagoBean.deletePago}">
-                            <p:confirm header="Borrar Pago"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deletePago').style.display='block';
+                                                     document.getElementById('form-add:addPago').style.display='none';
+                                                     PF('dlgPagoAdd').show();"
+                                         update=":form-add:pagoGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -125,17 +120,33 @@
                         <p:inputText id="observacion" required="true"
                                      value="#{pagoBean.pagoSelected.pgoObservacion}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="pagoGr,:pago-form:dtPago"
-                            action="#{pagoBean.addPago}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addPago" 
+                                value="Grabar"
+                                update="pagoGr,:pago-form:dtPago"
+                                action="#{pagoBean.addPago}"
+                                />
+                            <p:commandButton id="deletePago" 
+                                value="Borrar" style="display: none"
+                                update="pagoGr,:pago-form:dtPago"
+                                actionListener="#{pagoBean.deletePago()}"
+                                oncomplete="PF('dlgPagoAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Pago"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>

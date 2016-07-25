@@ -50,17 +50,12 @@
                                          update=":form-upd:menuGrUpd"
                                          />
                         <p:commandButton process="dtMenu" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{menuCrudBean.deleteMenu()}">
-                            <p:confirm header="Borrar Menú"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-upd:deleteMenu').style.display='block';
+                                                     document.getElementById('form-upd:editMenu').style.display='none';
+                                                     PF('dlgMenuUpd').show();"
+                                         update=":form-upd:menuGrUpd"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -150,11 +145,29 @@
                                      value="#{menuCrudBean.menuSelected.menUbicacion}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="menuGrUpd,:menu-form:dtMenu"
-                            action="#{menuCrudBean.editMenu}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton
+                                value="Grabar" id='editMenu'
+                                update="menuGrUpd,:menu-form:dtMenu"
+                                action="#{menuCrudBean.editMenu}"
+                                />
+                            <p:commandButton id="deleteMenu" 
+                                value="Borrar" style="display: none"
+                                update="menuGrUpd,:menu-form:dtMenu" 
+                                actionListener="#{menuCrudBean.deleteMenu()}"
+                                oncomplete="PF('dlgMenuUpd').hide()"
+                                >
+                                    <p:confirm header="Borrar MenuCrud"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
 
                     </p:panelGrid>
                 </h:form>

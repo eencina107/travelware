@@ -54,17 +54,12 @@
                                          update=":form-add:usuarioGr"
                                          />
                         <p:commandButton process="dtUsuario" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{usuarioBean.deleteUsuario}">
-                            <p:confirm header="Borrar Organización"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteUsuario').style.display='block';
+                                                     document.getElementById('form-add:addUsuario').style.display='none';
+                                                     PF('dlgUsuarioAdd').show();"
+                                         update=":form-add:usuarioGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -95,11 +90,29 @@
                         <p:inputText id="cargo" required="true"
                                      value="#{usuarioBean.usuarioSelected.usuCargo}" />
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="usuarioGr,:usuario-form:dtUsuario"
-                            actionListener="#{usuarioBean.addUsuario}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addUsuario" 
+                                value="Grabar"
+                                update="usuarioGr,:usuario-form:dtUsuario"
+                                actionListener="#{usuarioBean.addUsuario}"
+                                />
+                            <p:commandButton id="deleteUsuario" 
+                                value="Borrar" style="display: none"
+                                update="usuarioGr,:usuario-form:dtUsuario"
+                                actionListener="#{usuarioBean.deleteUsuario()}"
+                                oncomplete="PF('dlgUsuarioAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Usuario"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>

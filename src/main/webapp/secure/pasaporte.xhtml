@@ -98,17 +98,12 @@
                                          update=":form-add:pasaporteGr"
                                          />
                         <p:commandButton process="dtPasaporte" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{pasaporteBean.deletePasaporte}">
-                            <p:confirm header="Borrar Pasaporte"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="fade">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deletePasaporte').style.display='block';
+                                                     document.getElementById('form-add:addPasaporte').style.display='none';
+                                                     PF('dlgPasaporteAdd').show();"
+                                         update=":form-add:pasaporteGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -148,11 +143,29 @@
                                      value="#{pasaporteBean.pasaporteSelected.perId.perNom} #{pasaporteBean.pasaporteSelected.perId.perApe}" />
 
                         <p:spacer />
-                        <p:commandButton
-                            value="Grabar"
-                            update="pasaporteGr,:pasaporte-form:dtPasaporte"
-                            action="#{pasaporteBean.addPasaporte}"
-                            />
+                        <h:panelGroup>
+                            <p:commandButton id="addPasaporte" 
+                                value="Grabar"
+                                update="pasaporteGr,:pasaporte-form:dtPasaporte"
+                                action="#{pasaporteBean.addPasaporte}"
+                                />
+                            <p:commandButton id="deletePasaporte" 
+                                value="Borrar" style="display: none"
+                                update="pasaporteGr,:pasaporte-form:dtPasaporte"
+                                actionListener="#{pasaporteBean.deletePasaporte()}"
+                                oncomplete="PF('dlgPasaporteAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar Pasaporte"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>     

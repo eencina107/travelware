@@ -56,21 +56,16 @@
                                          actionListener="#{datosGeneralesBean.buttonAction}" disabled="#{datosGeneralesBean.existeRegistro}"/>
                         <p:commandButton process="dtDatosGenerales" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgDaTosGeneralesAdd').show()"
+                                         oncomplete="PF('dlgDatosGeneralesAdd').show()"
                                          update=":form-add:datosGeneralesGr"
                                          />
                         <p:commandButton process="dtDatosGenerales" icon="ui-icon-document"
-                                         value="Borrar" actionListener="#{datosGeneralesBean.deleteDatos}">
-                            <p:confirm header="Borrar Datos Generales"
-                                       message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
-                        </p:commandButton>
-                        <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
-                            <p:commandButton value="Si" type="button"
-                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                            <p:commandButton value="No" type="button"
-                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                        </p:confirmDialog>
+                                         value="Borrar" 
+                                         oncomplete="document.getElementById('form-add:deleteDatosGenerales').style.display='block';
+                                                     document.getElementById('form-add:addDatosGenerales').style.display='none';
+                                                     PF('dlgDatosGeneralesAdd').show();"
+                                         update=":form-add:datosGeneralesGr"
+                                         />
 
                     </f:facet>
                 </p:dataTable>
@@ -110,15 +105,32 @@
                         <p:inputText id="ruc" required="true"
                                      value="#{datosGeneralesBean.datoSelected.gralRuc}" />
                         <p:spacer />
-                        <p:commandButton action="#{datosGeneralesBean.saveDatos}"
-                                         update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
-                                         value="Grabar" />  
+                        <h:panelGroup>
+                            <p:commandButton  id="addDatosGenerales"
+                                action="#{datosGeneralesBean.saveDatos}"
+                                update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
+                                value="Grabar" />  
+                            <p:commandButton id="deleteDatosGenerales" 
+                                value="Borrar" style="display: none"
+                                update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
+                                actionListener="#{datosGeneralesBean.deleteDatos()}"
+                                oncomplete="PF('dlgDatosGeneralesAdd').hide()"
+                                >
+                                    <p:confirm header="Borrar DatosGenerales"
+                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>
