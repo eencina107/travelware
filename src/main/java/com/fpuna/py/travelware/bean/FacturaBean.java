@@ -80,6 +80,11 @@ public class FacturaBean implements Serializable{
     
     public void addFactura(){
         FacesContext context = FacesContext.getCurrentInstance();
+        if (this.facturaSelected.getProId()==null) {
+                context.addMessage(null, new FacesMessage("Advertencia. Proveedor no válido. Verifique."));
+                return;
+        }
+        
         for (ComFacturas fac:facturas){
             if (this.facturaSelected!=null && !(fac.getFacId().equals(this.facturaSelected.getFacId())) &&
                     fac.getFacNro().equals(this.facturaSelected.getFacNro()) &&
