@@ -50,13 +50,15 @@
                     <f:facet name="header">
                         <p:commandButton process="dtContacto" icon="ui-icon-document"
                                          value="Agregar"   
-                                         oncomplete="PF('dlgContactoAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgContactoAdd').show()" 
                                          actionListener="#{contactoBean.buttonAction}"
                                          update=":form-add:contactoGr"
                                          />
                         <p:commandButton process="dtContacto" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgContactoAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgContactoAdd').show()"
                                          update=":form-add:contactoGr"
                                          disabled="true"
                                          />
@@ -64,6 +66,7 @@
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteContacto').style.display='block';
                                                      document.getElementById('form-add:addContacto').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgContactoAdd').show();"
                                          update=":form-add:contactoGr"
                                          />
@@ -75,6 +78,7 @@
             <p:dialog header="Contactos" widgetVar="dlgContactoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
 
@@ -138,6 +142,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
 

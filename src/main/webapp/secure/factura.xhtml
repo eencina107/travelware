@@ -150,17 +150,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtFactura" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:facturaGr" 
-                                         oncomplete="PF('dlgFacturaAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgFacturaAdd').show()" 
                                          actionListener="#{facturaBean.buttonAction}"/>
                         <p:commandButton process="dtFactura" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgFacturaAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgFacturaAdd').show()"
                                          update=":form-add:facturaGr"
                                          />
                         <p:commandButton process="dtFactura" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteFactura').style.display='block';
                                                      document.getElementById('form-add:addFactura').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgFacturaAdd').show();"
                                          update=":form-add:facturaGr"
                                          />
@@ -172,6 +175,7 @@
             <p:dialog header="Facturas" widgetVar="dlgFacturaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="facturaGr">                           
 
@@ -271,6 +275,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
             

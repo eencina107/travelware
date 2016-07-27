@@ -32,13 +32,16 @@
                         <p:commandButton process="dtProfesion" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgProfesionAdd').show()" />
                         <p:commandButton process="dtProfesion" icon="ui-icon-pencil"
-                                         value="Editar" oncomplete="PF('dlgProfesionUpd').show()"
+                                         value="Editar"
+                                         oncomplete="document.getElementById('form-upd-fs').disabled = false;
+                                                     PF('dlgProfesionUpd').show()"
                                          update=":form-upd:profesionGrUpd"
                                          />
                         <p:commandButton process="dtProfesion" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-upd:deleteProfesion').style.display='block';
                                                      document.getElementById('form-upd:editProfesion').style.display='none';
+                                                     document.getElementById('form-upd-fs').disabled = true;
                                                      PF('dlgProfesionUpd').show();"
                                          update=":form-upd:profesionGrUpd"
                                          />
@@ -75,6 +78,7 @@
             <p:dialog header="Profesiones" widgetVar="dlgProfesionUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
+                    <fieldset id="form-upd-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="profesionGrUpd">                           
                         <p:outputLabel value="Nombre" for="descripcion2" />
@@ -112,6 +116,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
         </ui:define>

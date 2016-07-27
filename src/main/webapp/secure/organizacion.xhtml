@@ -52,17 +52,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:organizacionGr" 
-                                         oncomplete="PF('dlgOrganizacionAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgOrganizacionAdd').show()" 
                                          actionListener="#{organizacionBean.buttonAction}"/>
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgOrganizacionAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgOrganizacionAdd').show()"
                                          update=":form-add:organizacionGr"
                                          />
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteOrganizacion').style.display='block';
                                                      document.getElementById('form-add:addOrganizacion').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgOrganizacionAdd').show();"
                                          update=":form-add:organizacionGr"
                                          />
@@ -74,6 +77,7 @@
             <p:dialog header="Organizaciones" widgetVar="dlgOrganizacionAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="organizacionGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
@@ -141,6 +145,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>

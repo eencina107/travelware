@@ -39,17 +39,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtMoneda" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:monedaGr" 
-                                         oncomplete="PF('dlgMonedaAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgMonedaAdd').show()" 
                                          actionListener="#{monedaBean.buttonAction}"/>
                         <p:commandButton process="dtMoneda" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgMonedaAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgMonedaAdd').show()"
                                          update=":form-add:monedaGr"
                                          />
                         <p:commandButton process="dtMoneda" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteMoneda').style.display='block';
                                                      document.getElementById('form-add:addMoneda').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgMonedaAdd').show();"
                                          update=":form-add:monedaGr"
                                          />
@@ -61,6 +64,7 @@
             <p:dialog header="Monedas" widgetVar="dlgMonedaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="monedaGr">                           
                         <p:outputLabel value="Descripcion" for="descripcion" />
@@ -107,6 +111,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>

@@ -31,17 +31,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtPermiso" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:permisoGr" 
-                                         oncomplete="PF('dlgPermisoAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPermisoAdd').show()" 
                                          actionListener="#{permisoBean.buttonAction}"/>
                         <p:commandButton process="dtPermiso" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgPermisoAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPermisoAdd').show()"
                                          update=":form-add:permisoGr"
                                          />
                         <p:commandButton process="dtPermiso" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deletePermiso').style.display='block';
                                                      document.getElementById('form-add:addPermiso').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgPermisoAdd').show();"
                                          update=":form-add:permisoGr"
                                          />
@@ -53,6 +56,7 @@
             <p:dialog header="Permisos" widgetVar="dlgPermisoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="permisoGr">
                         <p:outputLabel value="Menú" for="menu" />
@@ -97,6 +101,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>

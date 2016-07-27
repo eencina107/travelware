@@ -66,17 +66,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtPersona" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:personaGr" 
-                                         oncomplete="PF('dlgPersonaAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPersonaAdd').show()" 
                                          actionListener="#{personaBean.buttonAction}"/>
                         <p:commandButton process="dtPersona" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgPersonaAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPersonaAdd').show()"
                                          update=":form-add:personaGr"
                                          />
                         <p:commandButton process="dtPersona" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deletePersona').style.display='block';
                                                      document.getElementById('form-add:addPersona').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgPersonaAdd').show();"
                                          update=":form-add:personaGr"
                                          />
@@ -88,6 +91,7 @@
             <p:dialog header="Personas" widgetVar="dlgPersonaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="personaGr">                           
                         <p:outputLabel value="Nro. de Doc." for="nroDoc" />
@@ -163,6 +167,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>

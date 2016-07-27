@@ -25,13 +25,16 @@
                         <p:commandButton process="dtPais" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgPaisAdd').show()" />
                         <p:commandButton process="dtPais" icon="ui-icon-pencil" 
-                                         value="Editar" oncomplete="PF('dlgPaisUpd').show()" 
+                                         value="Editar"
+                                         oncomplete="document.getElementById('form-upd-fs').disabled = false;
+                                                     PF('dlgPaisUpd').show()" 
                                          update=":form-upd:paisGrUpd" 
                                          />
                         <p:commandButton process="dtPais" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-upd:deletePais').style.display='block';
                                                      document.getElementById('form-upd:editPais').style.display='none';
+                                                     document.getElementById('form-upd-fs').disabled = true;
                                                      PF('dlgPaisUpd').show();"
                                          update=":form-upd:paisGrUpd"
                                          />
@@ -87,6 +90,7 @@
             <p:dialog header="Paises" widgetVar="dlgPaisUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
+                    <fieldset id="form-upd-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="paisGrUpd">                           
                         <p:outputLabel value="Descripcion" for="descripcion2" />
@@ -127,6 +131,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
             

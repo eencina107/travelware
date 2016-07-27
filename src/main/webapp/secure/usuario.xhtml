@@ -44,19 +44,22 @@
                     <f:facet name="header">
                         <p:commandButton process="dtUsuario" icon="ui-icon-document"
                                          value="Agregar"   
-                                         oncomplete="PF('dlgUsuarioAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgUsuarioAdd').show()" 
                                          actionListener="#{usuarioBean.buttonAction}"
                                          update=":form-add:usuarioGr"
                                          />
                         <p:commandButton process="dtUsuario" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgUsuarioAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgUsuarioAdd').show()"
                                          update=":form-add:usuarioGr"
                                          />
                         <p:commandButton process="dtUsuario" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteUsuario').style.display='block';
                                                      document.getElementById('form-add:addUsuario').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgUsuarioAdd').show();"
                                          update=":form-add:usuarioGr"
                                          />
@@ -68,6 +71,7 @@
             <p:dialog header="Usuarios" widgetVar="dlgUsuarioAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="usuarioGr">                           
                         <p:outputLabel value="Código" for="codigo" />
@@ -114,6 +118,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
 

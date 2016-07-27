@@ -25,13 +25,16 @@
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgModuloAdd').show()" />
                         <p:commandButton process="dtModulo" icon="ui-icon-pencil"
-                                         value="Editar" oncomplete="PF('dlgModuloUpd').show()"
+                                         value="Editar"
+                                         oncomplete="document.getElementById('form-upd-fs').disabled = false;
+                                                     PF('dlgModuloUpd').show()"
                                          update=":form-upd:moduloGrUpd"
                                          />
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-upd:deleteModulo').style.display='block';
                                                      document.getElementById('form-upd:editModulo').style.display='none';
+                                                     document.getElementById('form-upd-fs').disabled = true;
                                                      PF('dlgModuloUpd').show();"
                                          update=":form-upd:moduloGrUpd"
                                          />
@@ -83,6 +86,7 @@
             <p:dialog header="Modulos" widgetVar="dlgModuloUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
+                    <fieldset id="form-upd-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="moduloGrUpd">                           
                         <p:outputLabel value="Descripcion" for="descripcion2" />
@@ -126,6 +130,7 @@
                         </h:panelGroup>
 
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
 

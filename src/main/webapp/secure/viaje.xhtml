@@ -125,17 +125,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:viajeGr" 
-                                         oncomplete="PF('dlgViajeAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgViajeAdd').show()" 
                                          actionListener="#{viajeBean.buttonAction}"/>
                         <p:commandButton process="dtViaje" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgViajeAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgViajeAdd').show()"
                                          update=":form-add:viajeGr"
                                          />
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteViaje').style.display='block';
                                                      document.getElementById('form-add:addViaje').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgViajeAdd').show();"
                                          update=":form-add:viajeGr"
                                          />
@@ -151,6 +154,7 @@
             <p:dialog header="Viaje" widgetVar="dlgViajeAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="viajeGr">                           
 
@@ -212,6 +216,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog> 
             

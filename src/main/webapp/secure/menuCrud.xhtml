@@ -46,13 +46,16 @@
                         <p:commandButton process="dtMenu" icon="ui-icon-document"
                                          value="Agregar"  oncomplete="PF('dlgMenuAdd').show()" />
                         <p:commandButton process="dtMenu" icon="ui-icon-pencil"
-                                         value="Editar" oncomplete="PF('dlgMenuUpd').show()"
+                                         value="Editar"
+                                         oncomplete="document.getElementById('form-upd-fs').disabled = false;
+                                                     PF('dlgMenuUpd').show()"
                                          update=":form-upd:menuGrUpd"
                                          />
                         <p:commandButton process="dtMenu" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-upd:deleteMenu').style.display='block';
                                                      document.getElementById('form-upd:editMenu').style.display='none';
+                                                     document.getElementById('form-upd-fs').disabled = true;
                                                      PF('dlgMenuUpd').show();"
                                          update=":form-upd:menuGrUpd"
                                          />
@@ -110,6 +113,7 @@
             <p:dialog header="Menús" widgetVar="dlgMenuUpd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-upd">
+                    <fieldset id="form-upd-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="menuGrUpd">                           
  
@@ -170,6 +174,7 @@
                         </h:panelGroup>
 
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
 

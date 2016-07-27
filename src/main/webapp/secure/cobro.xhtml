@@ -49,17 +49,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:cobroGr" 
-                                         oncomplete="PF('dlgCobroAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgCobroAdd').show()" 
                                          actionListener="#{cobroBean.buttonAction}"/>
                         <p:commandButton process="dtCobro" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgCobroAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgCobroAdd').show()"
                                          update=":form-add:cobroGr"
                                          />
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteCobro').style.display='block';
                                                      document.getElementById('form-add:addCobro').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgCobroAdd').show();"
                                          update=":form-add:cobroGr"
                                          />
@@ -71,6 +74,7 @@
             <p:dialog header="Cobros" widgetVar="dlgCobroAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="cobroGr">                           
                         <p:outputLabel value="Nro. Documento" for="nroDoc" />
@@ -152,6 +156,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>
 

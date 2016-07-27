@@ -46,17 +46,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:cajasChicasGr" 
-                                         oncomplete="PF('dlgCajasChicasAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgCajasChicasAdd').show()" 
                                          actionListener="#{cajaChicaBean.buttonAction}" disabled="#{cajaChicaBean.existeRegistro}"/>
                         <p:commandButton process="dtCajasChicas" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgCajasChicasAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgCajasChicasAdd').show()"
                                          update=":form-add:cajasChicasGr"
                                          />
                         <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteCajaChica').style.display='block';
                                                      document.getElementById('form-add:addCajaChica').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgCajasChicasAdd').show();"
                                          update=":form-add:cajasChicasGr"
                                          />
@@ -68,6 +71,7 @@
             <p:dialog header="Cajas Chicas" widgetVar="dlgCajasChicasAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="cajasChicasGr">
                         <p:outputLabel value="Descripción" for="descripcion" />
@@ -121,6 +125,7 @@
                         </h:panelGroup>
                             
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>

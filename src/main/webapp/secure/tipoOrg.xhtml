@@ -30,17 +30,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:tipoOrgGr" 
-                                         oncomplete="PF('dlgTipoOrgAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgTipoOrgAdd').show()" 
                                          actionListener="#{tipoOrgBean.buttonAction}"/>
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgTipoOrgAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgTipoOrgAdd').show()"
                                          update=":form-add:tipoOrgGr"
                                          />
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteTipoOrg').style.display='block';
                                                      document.getElementById('form-add:addTipoOrg').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgTipoOrgAdd').show();"
                                          update=":form-add:tipoOrgGr"
                                          />
@@ -52,6 +55,7 @@
             <p:dialog header="Tipos de Organización" widgetVar="dlgTipoOrgAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="tipoOrgGr">                           
                         <p:outputLabel value="Código" for="codigo" />
@@ -88,11 +92,10 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
 
     </ui:composition>
 </html>

@@ -90,17 +90,20 @@
                     <f:facet name="header">
                         <p:commandButton process="dtPasaporte" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:pasaporteGr" 
-                                         oncomplete="PF('dlgPasaporteAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPasaporteAdd').show()" 
                                          actionListener="#{pasaporteBean.buttonAction}"/>
                         <p:commandButton process="dtPasaporte" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgPasaporteAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgPasaporteAdd').show()"
                                          update=":form-add:pasaporteGr"
                                          />
                         <p:commandButton process="dtPasaporte" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deletePasaporte').style.display='block';
                                                      document.getElementById('form-add:addPasaporte').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgPasaporteAdd').show();"
                                          update=":form-add:pasaporteGr"
                                          />
@@ -112,6 +115,7 @@
             <p:dialog header="Pasaportes" widgetVar="dlgPasaporteAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="pasaporteGr">                           
                         <p:outputLabel value="Pasaporte Nro." for="nroPasaporte" />
@@ -167,6 +171,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>     
             

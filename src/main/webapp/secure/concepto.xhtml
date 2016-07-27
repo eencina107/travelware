@@ -44,19 +44,22 @@
                     <f:facet name="header">
                         <p:commandButton process="dtConcepto" icon="ui-icon-document"
                                          value="Agregar"   
-                                         oncomplete="PF('dlgConceptoAdd').show()" 
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgConceptoAdd').show()" 
                                          actionListener="#{conceptoBean.buttonAction}"
                                          update=":form-add:conceptoGr"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-pencil"
                                          value="Editar" 
-                                         oncomplete="PF('dlgConceptoAdd').show()"
+                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
+                                                     PF('dlgConceptoAdd').show()"
                                          update=":form-add:conceptoGr"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-document"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteConcepto').style.display='block';
                                                      document.getElementById('form-add:addConcepto').style.display='none';
+                                                     document.getElementById('form-add-fs').disabled = true;
                                                      PF('dlgConceptoAdd').show();"
                                          update=":form-add:conceptoGr"
                                          />
@@ -68,6 +71,7 @@
             <p:dialog header="Conceptos" widgetVar="dlgConceptoAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
+                    <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="conceptoGr">                           
 
@@ -118,6 +122,7 @@
                             </p:confirmDialog>
                         </h:panelGroup>
                     </p:panelGrid>
+                    </fieldset>
                 </h:form>
             </p:dialog>          
         </ui:define>
