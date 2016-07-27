@@ -94,6 +94,7 @@ public class ContactoBean implements Serializable{
             con.setConEstado('P');
             con.setConExito(false);
         }
+        con.setConTipo(this.contactoSelected.getConTipo());
         con.setConFechaContacto(this.contactoSelected.getConFechaContacto());
         con.setConIdPersonaCont(this.contactoSelected.getConIdPersonaCont());
         con.setConIdUsuarioCont(this.contactoSelected.getConIdUsuarioCont());

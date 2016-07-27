@@ -95,6 +95,7 @@ public class ViajeBean implements Serializable{
             viaje.setViaCantVend(0);
         }
         viaje.setViaDesc(this.viajeSelected.getViaDesc());
+        viaje.setViaResumen(this.viajeSelected.getViaResumen());
         viaje.setViaFecSali(this.viajeSelected.getViaFecSali());
         viaje.setViaFecReg(this.viajeSelected.getViaFecReg());
         viaje.setMonId(this.viajeSelected.getMonId());

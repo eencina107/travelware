@@ -165,6 +165,10 @@
                             <h:inputHidden value="#{viajeBean.viajeSelected.viaId}" />
                         </h:panelGroup>
 
+                        <p:outputLabel value="Resumen" for="resum" />
+                        <p:inputTextarea id="resum" rows="3" cols="30"
+                                         value="#{viajeBean.viajeSelected.viaResumen}" />
+
                         <p:outputLabel value="Fecha de Salida" for="fecSali" />
                         <p:calendar id="fecSali" required="true"
                                     value="#{viajeBean.viajeSelected.viaFecSali}" 

@@ -41,6 +41,9 @@
                     <p:column headerText="Usuario">
                         <h:outputText value="#{contacto.conIdUsuarioCont.usuCod}"/>
                     </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputText value="#{contacto.conTipo eq  'D' ? 'Visita' : contacto.conEstado eq 'T' ? 'Llamada' : 'E-mail'}"/>
+                    </p:column>
                     <p:column headerText="Estado">
                         <h:outputText value="#{contacto.conEstado eq  'P' ? 'Pendiente' : contacto.conEstado eq 'C' ? 'Concretado' : 'Fallido'}"/>
                     </p:column>
@@ -113,8 +116,15 @@
                                        itemValue="#{usuario}" />
                         </p:selectOneMenu>
 
+                        <p:outputLabel value="Tipo" for="tipo" />
+                        <p:selectOneMenu id="tipo" required="true" value="#{contactoBean.contactoSelected.conTipo}">
+                            <f:selectItem itemLabel="E-mail" itemValue="E" />
+                            <f:selectItem itemLabel="Llamada" itemValue="T" />
+                            <f:selectItem itemLabel="Visita" itemValue="D" />
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="Observación" for="obser" />
-                        <p:inputText id="obser"
+                        <p:inputTextarea id="obser" rows="3" cols="30"
                                      value="#{contactoBean.contactoSelected.conObservacion}" />
 
                         <p:spacer />

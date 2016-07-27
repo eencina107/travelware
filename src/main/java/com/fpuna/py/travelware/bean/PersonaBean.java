@@ -62,6 +62,8 @@ public class PersonaBean implements Serializable{
     private Date fecNac;
     private String lugNac;
     private String email;
+    private String direccion;
+    private String telefono;
     private String docImg;
     
     //crea una nueva instancia de Persona
@@ -128,6 +130,8 @@ public class PersonaBean implements Serializable{
         persona.setPerFecNac(this.personaSelected.getPerFecNac());
         persona.setPerSex(this.personaSelected.getPerSex());
         persona.setPerEmail(this.personaSelected.getPerEmail());
+        persona.setPerDir(this.personaSelected.getPerDir());
+        persona.setPerTel(this.personaSelected.getPerTel());
         personaEJB.update(persona);
         context.addMessage(null, new FacesMessage("Felicidades! "+ persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito"));
         personas = personaEJB.getAll();
@@ -298,6 +302,22 @@ public class PersonaBean implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public String getDocImg() {

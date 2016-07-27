@@ -13,7 +13,7 @@
         </style>
     </h:head>
 
-    <h:body style="min-height: 300px">
+    <h:body style="min-height: 400px">
         <h:form id="contacto-form">
             <p:growl id="growl" showDetail="true" sticky="true" />
             <p:dataTable id="dtContacto" var="contacto" value="#{pantallaInicioBean.listaContactosPendientes}"
@@ -34,6 +34,10 @@
                     <h:outputText value="#{contacto.conFechaContacto}" >
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputText>
+                </p:column>
+
+                <p:column headerText="Tipo">
+                    <h:outputText value="#{contacto.conTipo eq  'D' ? 'Visita' : contacto.conEstado eq 'T' ? 'Llamada' : 'E-mail'}"/>
                 </p:column>
 
                 <p:column headerText="Detalle" style="width:30%" >
@@ -57,15 +61,34 @@
                 <p:messages id="messages" showDetail="false" autoUpdate="true" />
                 <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
 
-                    <p:outputLabel value="Persona" for="persona" />
-                    <p:selectOneMenu id="persona" disabled="true"
-                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont}" converter="personaConverter">
+                        <p:outputLabel value="Persona" for="persona" />
+                        <p:selectOneMenu id="persona" disabled="true"
+                                         value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont}" converter="personaConverter">
 
-                        <f:selectItems value="#{contactoBean.personas}" 
-                                       var="persona"
-                                       itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
-                                       itemValue="#{persona}" />
-                    </p:selectOneMenu>
+                            <f:selectItems value="#{contactoBean.personas}" 
+                                           var="persona"
+                                           itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
+                                           itemValue="#{persona}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Tipo" for="tipo" />
+                        <p:selectOneMenu id="tipo"  disabled="true" value="#{contactoBean.contactoSelected.conTipo}">
+                            <f:selectItem itemLabel="E-mail" itemValue="E" />
+                            <f:selectItem itemLabel="Llamada" itemValue="T" />
+                            <f:selectItem itemLabel="Visita" itemValue="D" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Teléfono" for="tel" />
+                        <p:inputText id="tel"  style="width:250px" disabled="true"
+                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perTel}" />
+
+                        <p:outputLabel value="E-Mail" for="email" />
+                        <p:inputText id="email"  style="width:250px" disabled="true"
+                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perEmail}" />
+
+                        <p:outputLabel value="Dirección" for="dir" />
+                        <p:inputText id="dir"  style="width:250px" disabled="true"
+                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perDir}" />
 
                     <p:outputLabel value="Estado" for="estado" />
                     <h:panelGroup>
@@ -78,7 +101,7 @@
                     </h:panelGroup>
 
                     <p:outputLabel value="Observación" for="obser" />
-                    <p:inputText id="obser"  style="width:250px"
+                    <p:inputTextarea id="obser" rows="3" cols="40" autoResize="false"
                                  value="#{pantallaInicioBean.contactoSelected.conObservacion}" />
 
                     <p:spacer />

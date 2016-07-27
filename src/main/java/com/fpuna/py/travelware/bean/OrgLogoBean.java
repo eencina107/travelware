@@ -40,7 +40,7 @@ public class OrgLogoBean implements Serializable{
     private OrganizacionDao orgEJB;
     
     PgeOrganizaciones org;
-    String nombreArch;
+    String nombreArch = null;
 
     @PostConstruct
     public void init() {
@@ -54,14 +54,16 @@ public class OrgLogoBean implements Serializable{
             orgId = (context.getExternalContext().getRequestParameterMap().get("orgId")) ;
             org= orgEJB.getById(Integer.parseInt(orgId));
             nombreArch = org.getOrgLogo();
-             InputStream stream = null;
-            try {
-                stream = new FileInputStream(new File("/opt/py.travelware/orgLogo/"+org.getOrgLogo()));
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(OrgLogoBean.class.getName()).log(Level.SEVERE, null, ex);
-                FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error. No se encuentra el archivo"));
+            InputStream stream = null;
+            if (nombreArch != null) { 
+                try {
+                    stream = new FileInputStream(new File("/opt/py.travelware/orgLogo/"+nombreArch));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(OrgLogoBean.class.getName()).log(Level.SEVERE, null, ex);
+                    FacesContext.getCurrentInstance().addMessage("", new FacesMessage("Error. No se encuentra el archivo"));
+                }
+                image = new DefaultStreamedContent(stream);
             }
-            image = new DefaultStreamedContent(stream);
         }
     }
 

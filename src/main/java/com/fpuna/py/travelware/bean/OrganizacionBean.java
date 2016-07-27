@@ -53,7 +53,7 @@ public class OrganizacionBean implements Serializable{
     private LoginBean loginBean;
     private PgeCiudades ciudad;
     private PgeTipoOrg tipoOrg;
-    String nombreArchivo;
+    String nombreArchivo = "";
     String nombreCarpetaImg;
     
     //Crea una nueva instancia
@@ -98,16 +98,20 @@ public class OrganizacionBean implements Serializable{
         
         PgeOrganizaciones organizacion = new PgeOrganizaciones();
         organizacion.setOrgDesc(this.organizacionSelected.getOrgDesc());
-        if (this.organizacionSelected.getOrgId()!=null){
+        System.out.print("Archivo Logo: " + this.nombreArchivo);
+        if (this.organizacionSelected.getOrgId()!=null){ //modificacion
+            if (this.nombreArchivo != "")
+                organizacion.setOrgLogo(this.nombreArchivo);
+            else
+                organizacion.setOrgLogo(this.organizacionSelected.getOrgLogo());
             organizacion.setOrgFecMod(new Date());
             organizacion.setOrgUsuMod(loginBean.getUsername());
             organizacion.setOrgUsuIns(this.organizacionSelected.getOrgUsuIns());
             organizacion.setOrgFecIns(this.organizacionSelected.getOrgFecIns());
-            organizacion.setOrgLogo(this.organizacionSelected.getOrgLogo());
             organizacion.setOrgId(this.organizacionSelected.getOrgId());
             mensaje = organizacion.getOrgDesc()+" fue modificado con éxito!";
         }
-        else{
+        else{ //insercion
             organizacion.setOrgLogo(this.nombreArchivo);
             organizacion.setOrgFecIns(new Date());
             organizacion.setOrgUsuIns(loginBean.getUsername());
@@ -177,7 +181,7 @@ public class OrganizacionBean implements Serializable{
                 inputStream.close();
 
                 FacesMessage msg = 
-                            new FacesMessage("Propiedades", "Nombre: " +
+                            new FacesMessage("Propiedades "+ "Nombre: " +
                             event.getFile().getFileName() + " Tamaño: " + 
                             event.getFile().getSize() / 1024 + 
                             " Kb Tipo: " + 
