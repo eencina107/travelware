@@ -15,6 +15,10 @@ import com.fpuna.py.travelware.model.ComFacturasDet;
 import com.fpuna.py.travelware.model.ViaViajes;
 import com.fpuna.py.travelware.model.ViaViajesDet;
 import com.fpuna.py.travelware.model.PgeMonedas;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +26,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import static org.hibernate.internal.util.io.StreamCopier.BUFFER_SIZE;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -61,6 +68,9 @@ public class ViajeDetBean implements Serializable{
     private ComFacturasDet facturaDet;
     private PgeMonedas moneda;
     private ViaViajes viaje;
+
+    String nombreArchivo = "";
+    String nombreCarpetaImg;
 
     //crea una nueva instancia de ViajeDet
     public ViajeDetBean(){
@@ -114,6 +124,10 @@ public class ViajeDetBean implements Serializable{
 
         ViaViajesDet viajeDet = new ViaViajesDet();
         if (this.viajeDetSelected.getVidId()!=null){ //modificacion
+            if (this.nombreArchivo != "")
+                viajeDet.setVidImg(this.nombreArchivo);
+            else
+                viajeDet.setVidImg(this.viajeDetSelected.getVidImg());
             viajeDet.setVidId(this.viajeDetSelected.getVidId());
             viajeDet.setVidUsuIns(this.viajeDetSelected.getVidUsuIns());
             viajeDet.setVidFecIns(this.viajeDetSelected.getVidFecIns());
@@ -121,6 +135,7 @@ public class ViajeDetBean implements Serializable{
             viajeDet.setVidFecMod(new Date());
         }
         else {
+            viajeDet.setVidImg(this.nombreArchivo);
             viajeDet.setVidUsuIns(loginBean.getUsername());
             viajeDet.setVidFecIns(new Date());
         }
@@ -217,6 +232,62 @@ public class ViajeDetBean implements Serializable{
         this.viajeSelected = viaje;
     }
 
+    public void handleFileUpload(FileUploadEvent event) {
+         ExternalContext extContext = javax.faces.context.FacesContext.getCurrentInstance().getExternalContext();
+         Boolean existeDir; 
+         File targetFolder;
+         File result;
+            try {
+                targetFolder = new File("/opt/py.travelware/vidImg/");
+                result = new File("/opt/py.travelware/vidImg/"+event.getFile().getFileName());
+                existeDir = targetFolder.canRead();
+                if (!existeDir){
+                    targetFolder.mkdirs();
+                }
+                //this.getClass().getResource("/").getPath(); 
+                
+                System.out.println("/opt/py.travelware/vidImg/" + event.getFile().getFileName()+" subido");
+               } catch (Exception e) {
+                   return;
+            }
+
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(result);
+
+                byte[] buffer = new byte[BUFFER_SIZE];
+
+                int bulk;
+                InputStream inputStream = event.getFile().getInputstream();
+                while (true) {
+                    bulk = inputStream.read(buffer);
+                    if (bulk < 0) {
+                        break;
+                    }
+                    fileOutputStream.write(buffer, 0, bulk);
+                    fileOutputStream.flush();
+                }
+
+                fileOutputStream.close();
+                inputStream.close();
+
+                FacesMessage msg = 
+                            new FacesMessage("Propiedades "+ "Nombre: " +
+                            event.getFile().getFileName() + " Tamaño: " + 
+                            event.getFile().getSize() / 1024 + 
+                            " Kb Tipo: " + 
+                            event.getFile().getContentType() + 
+                                    " Subido correctamente.");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                this.nombreArchivo = event.getFile().getFileName();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                FacesMessage error = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir", "");
+                FacesContext.getCurrentInstance().addMessage(null, error);
+            }     
+    }
+
     public List<ViaViajesDet> getViajesDet() {
         viajesDet = viajeDetEJB.getAll(viajeSelected);
         return viajesDet;
@@ -296,5 +367,9 @@ public class ViajeDetBean implements Serializable{
 
     public void setMoneda(PgeMonedas moneda) {
         this.moneda = moneda;
+    }
+
+    public String getNombreCarpetaImg(String nombreArchivo) {
+        return nombreCarpetaImg+nombreArchivo;
     }
 }

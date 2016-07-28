@@ -56,6 +56,12 @@
                         <h:outputText value="#{viaje.viaCantVend}" />
                     </p:column>
 
+                    <p:column headerText="Imagen" style="width: 100px">
+                        <p:graphicImage value="#{viaImgBean.image}" style="height: 50px; width: 90px">
+                            <f:param value="#{viaje.viaId}" name="viaId"></f:param>
+                        </p:graphicImage>
+                    </p:column>
+
                     <p:column headerText="Detalles" style="width: 3%">
                         <p:rowToggler />
                     </p:column>
@@ -93,6 +99,12 @@
 
                                     <p:column headerText="Tipo">
                                         <h:outputText value="#{viajeDet.vidTip eq  'I' ? 'Incluido':'No Incluido'}" />
+                                    </p:column>
+
+                                    <p:column headerText="Imagen" style="width: 100px">
+                                        <p:graphicImage value="#{vidImgBean.image}" style="height: 50px; width: 90px">
+                                            <f:param value="#{viajeDet.vidId}" name="vidId"></f:param>
+                                        </p:graphicImage>
                                     </p:column>
 
                                     <f:facet name="footer">
@@ -195,6 +207,10 @@
                         <p:inputText id="costo" required="true"
                                      value="#{viajeBean.viajeSelected.viaCost}" />
 
+                        <p:outputLabel value="Imagen" for="img" />
+                        <p:fileUpload id="img" fileUploadListener="#{viajeBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                                      update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
                         <p:spacer />
                         <h:panelGroup>
                             <p:commandButton id="addViaje" 
@@ -284,6 +300,10 @@
                             <f:selectItem itemLabel="Incluido" itemValue="I" />
                             <f:selectItem itemLabel="No Incluido" itemValue="N" />
                         </p:selectOneMenu>
+
+                        <p:outputLabel value="Imagen " for="imgD" />
+                        <p:fileUpload id="imgD" fileUploadListener="#{viajeDetBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
+                                      update="messages2" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
 
                         <p:spacer />
                         <p:commandButton

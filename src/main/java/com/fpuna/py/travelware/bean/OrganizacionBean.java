@@ -98,7 +98,7 @@ public class OrganizacionBean implements Serializable{
         
         PgeOrganizaciones organizacion = new PgeOrganizaciones();
         organizacion.setOrgDesc(this.organizacionSelected.getOrgDesc());
-        System.out.print("Archivo Logo: " + this.nombreArchivo);
+        //System.out.print("Archivo Logo: " + this.nombreArchivo);
         if (this.organizacionSelected.getOrgId()!=null){ //modificacion
             if (this.nombreArchivo != "")
                 organizacion.setOrgLogo(this.nombreArchivo);
@@ -193,8 +193,7 @@ public class OrganizacionBean implements Serializable{
             } catch (IOException e) {
                 e.printStackTrace();
 
-                FacesMessage error = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                               "Error al subir", "");
+                FacesMessage error = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir", "");
                 FacesContext.getCurrentInstance().addMessage(null, error);
             }     
     }
@@ -267,7 +266,5 @@ public class OrganizacionBean implements Serializable{
     public void setTipoOrg(PgeTipoOrg tipoOrg) {
         this.tipoOrg = tipoOrg;
     }
-    
-    
     
 }
