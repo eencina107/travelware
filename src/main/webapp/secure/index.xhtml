@@ -3,14 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             
             <h:form>
-                <p:contentFlow value="#{imagenesInicioBean.images}" var="image" style="height: 300px">
-                    <p:graphicImage  value="../resources/inicio/#{image}" styleClass="content" />
+                <p:contentFlow value="#{pantallaInicioBean.listaViajesFuturos}" var="viaje" style="height: 300px">
+                    <p:graphicImage  value="#{viajeImgBean.image}" styleClass="content" >
+                        <f:param value="#{viaje.viaId}" name="viaId"></f:param>
+                    </p:graphicImage>
                 </p:contentFlow>
                 <p:panel id="pasaportesVenc" header="Pasaportes Vencidos">
                     <h:outputText value="#{pantallaInicioBean.cantPasaportesVencidos} se encuentra(n) vencido(s)" />
