@@ -32,9 +32,10 @@
                                          />
                         <p:commandButton process="dtPais" icon="ui-icon-document"
                                          value="Borrar" 
-                                         oncomplete="document.getElementById('form-upd:deletePais').style.display='block';
-                                                     document.getElementById('form-upd:editPais').style.display='none';
-                                                     document.getElementById('form-upd-fs').disabled = true;
+                                         oncomplete="document.getElementById('form-upd:editPais').style.display='none';
+                                                     document.getElementById('form-upd:descripcion2').disabled = true;
+                                                     document.getElementById('form-upd:ubicacion2').disabled = true;
+                                                     document.getElementById('form-upd:nacionalidad2').disabled = true;
                                                      PF('dlgPaisUpd').show();"
                                          update=":form-upd:paisGrUpd"
                                          />
@@ -114,9 +115,9 @@
                                 action="#{paisBean.editPais}"
                                 />
                             <p:commandButton id="deletePais" 
-                                value="Borrar" style="display: none"
+                                value="Borrar" 
                                 update="paisGrUpd,:pais-form:dtPais"
-                                actionListener="#{paisBean.deletePais()}"
+                                actionListener="#{paisBean.deletePais}"
                                 oncomplete="PF('dlgPaisUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Pais"
