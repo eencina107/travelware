@@ -64,6 +64,8 @@ public class PagoBean implements Serializable{
     private final String[] CENTENAS = {"", "ciento ", "doscientos ", "trecientos ", "cuatrocientos ", "quinientos ", "seiscientos ",
         "setecientos ", "ochocientos ", "novecientos "};
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Pago
     public PagoBean(){
         
@@ -81,6 +83,7 @@ public class PagoBean implements Serializable{
         this.pagos = pagoEJB.getAll();
         this.monedas = monedaEJB.getAll();
         this.facturas = facturaEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -223,6 +226,14 @@ public class PagoBean implements Serializable{
         this.factura = factura;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+
     public Integer getSecuencia(){
         return secuenciaEJB.getSec(this.clave)+1;
     }

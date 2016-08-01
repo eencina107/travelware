@@ -44,6 +44,8 @@ public class MonedaBean implements Serializable{
     private LoginBean loginBean;
     private PgePaises pais;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Moneda
     public MonedaBean(){
         
@@ -60,6 +62,7 @@ public class MonedaBean implements Serializable{
         monedaSelected.setPaiId(pais);
         monedas = monedaEJB.getAll();
         paises = paisEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -185,7 +188,11 @@ public class MonedaBean implements Serializable{
         return monedas;
     }
     
-    
-    
-    
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

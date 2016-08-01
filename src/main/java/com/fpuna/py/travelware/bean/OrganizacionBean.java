@@ -56,6 +56,8 @@ public class OrganizacionBean implements Serializable{
     String nombreArchivo = "";
     String nombreCarpetaImg;
     
+    private boolean habilitado;
+
     //Crea una nueva instancia
     public OrganizacionBean(){
         
@@ -74,7 +76,7 @@ public class OrganizacionBean implements Serializable{
         organizaciones = organizacionEJB.getAll();
         ciudades = ciudadEJB.getAll();
         tiposOrg = tipoOrgEJB.getAll();
-        
+        habilitado = true;
     }
 
     private void clean() {
@@ -267,4 +269,11 @@ public class OrganizacionBean implements Serializable{
         this.tipoOrg = tipoOrg;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

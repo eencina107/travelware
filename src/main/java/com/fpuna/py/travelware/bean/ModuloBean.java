@@ -39,6 +39,8 @@ public class ModuloBean implements Serializable{
     private ModuloDao moduloEJB;
     private LoginBean loginBean;
 
+    private boolean habilitado;
+
     public int getModId() {
         return modId;
     }
@@ -87,6 +89,14 @@ public class ModuloBean implements Serializable{
         this.moduloSelected = moduloSelected;
     }
 
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+
     public PgeModulos getModuloNuevo() {
         return moduloNuevo;
     }
@@ -107,6 +117,7 @@ public class ModuloBean implements Serializable{
         loginBean = (LoginBean) session.getAttribute("loginBean");
         moduloSelected= new PgeModulos();
         modulos=moduloEJB.getAll();
+        habilitado = true;
     }
     
     public void clean(){

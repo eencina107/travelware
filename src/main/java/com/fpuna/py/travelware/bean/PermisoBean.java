@@ -43,6 +43,8 @@ public class PermisoBean implements Serializable{
     private PgeRoles rol;
     private PgeMenus menu;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Permiso
     public PermisoBean(){
     
@@ -59,6 +61,7 @@ public class PermisoBean implements Serializable{
         permisos = permisoEJB.getAll();
         roles = rolEJB.getAll();
         menus = menuEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -155,4 +158,11 @@ public class PermisoBean implements Serializable{
         this.menu = menu;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

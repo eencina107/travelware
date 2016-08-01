@@ -48,6 +48,8 @@ public class ContactoBean implements Serializable{
     private PgePersonas personaSelected;
     private PgeUsuarios usuarioSelected;
     
+    private boolean habilitado;
+
 //    crea una nueva instacia de contacto
     public ContactoBean(){
 
@@ -70,7 +72,9 @@ public class ContactoBean implements Serializable{
         usuarios = usuarioEJB.getAll();
 
         contactos = contactoEJB.getAll();
-    }
+
+        habilitado = true;
+}
 
     private void clean() {
         this.contactoSelected = new ConContactos();
@@ -173,5 +177,11 @@ public class ContactoBean implements Serializable{
         this.contactoEJB = contactoEJB;
     }
     
-    
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

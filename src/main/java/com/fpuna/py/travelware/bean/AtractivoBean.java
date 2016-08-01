@@ -47,6 +47,8 @@ public class AtractivoBean implements Serializable{
     private LoginBean loginBean;
     private PgeCiudades ciudad;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de atractivo
     public AtractivoBean(){
         
@@ -63,6 +65,7 @@ public class AtractivoBean implements Serializable{
         atractivoSelected.setCiuId(ciudad);
         atractivos = atractivoEJB.getAll();
         ciudades = ciudadEJB.getAll();
+        habilitado = true;
     }
     public void buttonAction(ActionEvent actionEvent) {
         atractivoSelected = new PgeAtractivos();
@@ -219,6 +222,12 @@ public class AtractivoBean implements Serializable{
     public void setCiudad(PgeCiudades ciudad) {
         this.ciudad = ciudad;
     }
-    
-    
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

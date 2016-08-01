@@ -48,6 +48,8 @@ public class ProveedorBean implements Serializable{
     private PgePersonas persona;
     private PgeOrganizaciones organizacion;
     
+    private boolean habilitado;
+
 //    crea una nueva instacia de proveedor
     public ProveedorBean(){
         
@@ -70,7 +72,9 @@ public class ProveedorBean implements Serializable{
         organizaciones = organizacionEJB.getAll();
 
         proveedores = proveedorEJB.getAll();
-    }
+
+        habilitado = true;
+}
 
     private void clean() {
         this.proveedorSelected = new ComProveedores();
@@ -179,4 +183,12 @@ public class ProveedorBean implements Serializable{
     public void setOrganizacion(PgeOrganizaciones organizacion) {
         this.organizacion = organizacion;
     }
+
+    public boolean isHabilitado() {
+        return habilitado;
     }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+}

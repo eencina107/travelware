@@ -43,6 +43,8 @@ public class PasaporteBean implements Serializable{
     private Date fecha;
     private int anho;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Pasaporte
     public PasaporteBean(){
         
@@ -59,6 +61,7 @@ public class PasaporteBean implements Serializable{
         this.personas = personaEJB.getAll();
         this.fecha = new Date();
         this.fecha = DateUtils.round(this.fecha, Calendar.MONTH);
+        habilitado = true;
     }
 
     private void clean() {
@@ -134,6 +137,14 @@ public class PasaporteBean implements Serializable{
     public void setPersonas(List<PgePersonas> personas) {
         this.personas = personas;
     }
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 
     public ViaPasaportes getPasaporteSelected() {
         return pasaporteSelected;

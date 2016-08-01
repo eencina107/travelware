@@ -46,6 +46,8 @@ public class UsuRolBean implements Serializable{
     private PgeUsuarios usuario;
     private LoginBean loginBean;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Usuario-Rol
     public UsuRolBean(){
         
@@ -65,6 +67,7 @@ public class UsuRolBean implements Serializable{
         usuRoles = usuRolEJB.getAll();
         roles = rolEJB.getAll();
         usuarios = usuarioEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -172,4 +175,11 @@ public class UsuRolBean implements Serializable{
         this.usuario = usuario;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

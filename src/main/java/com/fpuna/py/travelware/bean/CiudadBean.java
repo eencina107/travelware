@@ -44,6 +44,8 @@ public class CiudadBean implements Serializable{
     private LoginBean loginBean;
     private PgePaises pais;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de ciudad
     public CiudadBean(){
         
@@ -62,6 +64,7 @@ public class CiudadBean implements Serializable{
         paises = paisEJB.getAll();
         ciudadNuevo = new PgeCiudades();
         ciudadNuevo.setPaiId(pais);
+        habilitado = true;
     }
 
     private void clean() {
@@ -198,5 +201,11 @@ public class CiudadBean implements Serializable{
         this.ciudadEJB = ciudadEJB;
     }
    
-   
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

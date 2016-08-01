@@ -74,6 +74,8 @@ public class MovCajaBean implements Serializable{
     private final String[] CENTENAS = {"", "ciento ", "doscientos ", "trecientos ", "cuatrocientos ", "quinientos ", "seiscientos ",
         "setecientos ", "ochocientos ", "novecientos "};
     
+    private boolean habilitado;
+
     //crea una nueva instancia de MovCaja
     public MovCajaBean(){
         
@@ -91,6 +93,7 @@ public class MovCajaBean implements Serializable{
         this.movCajas = movCajaEJB.getAll();
         this.monedas = monedaEJB.getAll();
         this.cajas = cajaEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -257,6 +260,14 @@ public class MovCajaBean implements Serializable{
         this.caja = caja;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+
     /*public Integer getSecuencia(){
         return secuenciaEJB.getSec(this.clave)+1;
     }*/
