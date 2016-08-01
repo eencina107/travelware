@@ -78,6 +78,7 @@ public class ViajeBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.viajeSelected = new ViaViajes();
+        habilitado = true;
     }
     
     public void addViaje(){

@@ -69,6 +69,7 @@ public class UsuarioBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.usuarioSelected = new PgeUsuarios();
+        habilitado = true;
     }
     
     public void addUsuario(){

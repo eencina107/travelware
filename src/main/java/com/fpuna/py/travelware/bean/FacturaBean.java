@@ -79,6 +79,7 @@ public class FacturaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.facturaSelected = new ComFacturas();
+        habilitado = true;
     }
     
     public void addFactura(){

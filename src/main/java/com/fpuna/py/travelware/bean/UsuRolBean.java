@@ -82,6 +82,7 @@ public class UsuRolBean implements Serializable{
         this.usuario = new PgeUsuarios();
         usuRolSelected.setRolId(rol);
         usuRolSelected.setUsuId(usuario);
+        habilitado = true;
     }
     
     public void addUsuRol(){

@@ -103,6 +103,7 @@ public class CajaChicaBean implements Serializable{
     }
     
     public void buttonAction(ActionEvent actionEvent){
+        habilitado = true;
 //        this.cajaSelected = new ComCajas();
     }
 

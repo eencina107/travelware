@@ -96,6 +96,7 @@ public class PersonaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         personaSelected = new PgePersonas();
+        habilitado = true;
     }
     
     public void addPersona(){

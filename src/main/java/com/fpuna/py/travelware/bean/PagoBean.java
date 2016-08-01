@@ -98,6 +98,7 @@ public class PagoBean implements Serializable{
         this.pagoSelected = new ComPagos();
         Integer nro = secuenciaEJB.getSec(clave)+1;
         this.pagoSelected.setPgoNro(nro.toString());
+        habilitado = true;
     }
     
     public void buttonAction2(ComFacturas factura){

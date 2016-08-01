@@ -69,7 +69,7 @@ public class AtractivoBean implements Serializable{
     }
     public void buttonAction(ActionEvent actionEvent) {
         atractivoSelected = new PgeAtractivos();
-        
+        habilitado = true;
     }
     
     

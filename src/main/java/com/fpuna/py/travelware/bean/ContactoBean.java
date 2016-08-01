@@ -82,6 +82,7 @@ public class ContactoBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.contactoSelected = new ConContactos();
+        habilitado = true;
     }
 
     public void addContacto(){

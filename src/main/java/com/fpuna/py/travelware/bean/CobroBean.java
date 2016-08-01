@@ -106,6 +106,7 @@ public class CobroBean implements Serializable{
         this.cobroSelected = new PagCobros();
         Integer nro = secuenciaEJB.getSec(clave)+1;
         this.cobroSelected.setCobNro(nro.toString());
+        habilitado = true;
     }
     
     public void addCobro(){

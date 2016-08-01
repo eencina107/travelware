@@ -82,6 +82,7 @@ public class ProveedorBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.proveedorSelected = new ComProveedores();
+        habilitado = true;
     }
     
     public void addProveedor(){

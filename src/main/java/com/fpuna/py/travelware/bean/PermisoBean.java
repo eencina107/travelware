@@ -74,6 +74,7 @@ public class PermisoBean implements Serializable{
         permisoSelected = new PgePermisos();
         this.menu = permisoSelected.getPgeMenus();
         this.rol = permisoSelected.getRolId();
+        habilitado = true;
     }
     
     public void addPermiso(){

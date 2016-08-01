@@ -106,6 +106,7 @@ public class MovCajaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.movCajaSelected = new ComMovCajas();
+        habilitado = true;
         //Integer nro = secuenciaEJB.getSec(clave)+1;
         //this.movCajaSelected.setMovNro(nro.toString());
     }

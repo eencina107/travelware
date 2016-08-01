@@ -60,6 +60,7 @@ public class ConceptoBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.conceptoSelected = new ViaConceptos();
+        habilitado = true;
     }
     
     public void addConcepto(){

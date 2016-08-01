@@ -102,6 +102,7 @@ public class PasajeroBean implements Serializable {
 
     public void buttonAction(ActionEvent actionEvent) {
         this.pasajeroSelected = new ViaPasajeros();
+        habilitado = true;
     }
 
     public void addPasajero() {

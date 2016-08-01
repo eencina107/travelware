@@ -72,6 +72,7 @@ public class MonedaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         monedaSelected = new PgeMonedas();
+        habilitado = true;
     }
     
     public void addMoneda(){

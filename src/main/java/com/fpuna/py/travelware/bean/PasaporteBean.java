@@ -70,6 +70,7 @@ public class PasaporteBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.pasaporteSelected = new ViaPasaportes();
+        habilitado = true;
     }
     
     public void addPasaporte(){

@@ -85,6 +85,7 @@ public class OrganizacionBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         organizacionSelected = new PgeOrganizaciones();
+        habilitado = true;
     }
     
     public void addOrganizacion(){
