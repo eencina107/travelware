@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -36,15 +37,18 @@
                                          actionListener="#{permisoBean.buttonAction}"/>
                         <p:commandButton process="dtPermiso" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{permisoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPermisoAdd').show()"
                                          update=":form-add:permisoGr"
                                          />
                         <p:commandButton process="dtPermiso" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{permisoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePermiso').style.display='block';
                                                      document.getElementById('form-add:addPermiso').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPermisoAdd').show();"
                                          update=":form-add:permisoGr"
                                          />
@@ -61,6 +65,7 @@
                     <p:panelGrid columns="2" columnClasses="column" id="permisoGr">
                         <p:outputLabel value="Menú" for="menu" />
                         <p:selectOneMenu id="menu" required="true"
+                                         disabled="#{!permisoBean.isHabilitado()}" 
                                          value="#{permisoBean.permisoSelected.pgeMenus}" converter="menuConverter">
                             <f:selectItems value="#{permisoBean.menus}" 
                                            var="menu" 
@@ -69,6 +74,7 @@
                         </p:selectOneMenu>
                         <p:outputLabel value="Rol" for="rol" />
                         <p:selectOneMenu id="rol" required="true"
+                                         disabled="#{!permisoBean.isHabilitado()}" 
                                          value="#{permisoBean.permisoSelected.rolId}" converter="rolConverter">
 
                             <f:selectItems value="#{permisoBean.roles}"                                  

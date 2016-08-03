@@ -177,7 +177,7 @@ public class PaisBean implements Serializable{
     }
     
     public void setPaisSelected(PgePaises paisSelected){
-            this.paisSelected=paisSelected;
+        this.paisSelected=paisSelected;
 //        this.paiDesc = this.getPaisSelected().getPaiDesc();
 //        this.paiNac = this.getPaisSelected().getPaiNac();
 //        this.paiUbi = this.getPaisSelected().getPaiUbi();

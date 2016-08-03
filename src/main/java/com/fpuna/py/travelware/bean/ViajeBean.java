@@ -52,6 +52,8 @@ public class ViajeBean implements Serializable{
     String nombreArchivo = "";
     String nombreCarpetaImg;
 
+    private boolean habilitado;
+
     //crea una nueva instancia de Viaje
     public ViajeBean(){
         
@@ -67,6 +69,7 @@ public class ViajeBean implements Serializable{
         this.viajeSelected.setMonId(this.moneda);
         this.monedas = monedaEJB.getAll();
         viajes = viajeEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -75,6 +78,7 @@ public class ViajeBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.viajeSelected = new ViaViajes();
+        habilitado = true;
     }
     
     public void addViaje(){
@@ -223,4 +227,12 @@ public class ViajeBean implements Serializable{
     public String getNombreCarpetaImg(String nombreArchivo) {
         return nombreCarpetaImg+nombreArchivo;
     }
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

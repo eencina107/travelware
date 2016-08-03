@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -53,16 +54,19 @@
                                                      PF('dlgCobroAdd').show()" 
                                          actionListener="#{cobroBean.buttonAction}"/>
                         <p:commandButton process="dtCobro" icon="ui-icon-pencil"
+                                         actionListener="#{cobroBean.setHabilitado(true)}"
                                          value="Editar" 
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()"
                                          update=":form-add:cobroGr"
                                          />
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
+                                         actionListener="#{cobroBean.setHabilitado(false)}"
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteCobro').style.display='block';
                                                      document.getElementById('form-add:addCobro').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgCobroAdd').show();"
                                          update=":form-add:cobroGr"
                                          />
@@ -96,6 +100,7 @@
                                      value="#{cobroBean.persona.perNom} #{cobroBean.persona.perApe}" />
                         <p:outputLabel value="Viaje" for="viaje" />
                         <p:selectOneMenu id="viaje" required="true"
+                                         disabled="#{!cobroBean.isHabilitado()}" 
                                          value="#{cobroBean.cobroSelected.viaId}" converter="viajeConverter">
 
                             <f:selectItems value="#{cobroBean.viajes}" 
@@ -104,17 +109,22 @@
                                            itemValue="#{viaje}" />
                         </p:selectOneMenu>
                         <p:outputLabel for="tipo" value="Tipo de Cobro" />
-                        <p:selectOneMenu id="tipo" value="#{cobroBean.cobroSelected.cobTipo}" style="width:125px">
+                        <p:selectOneMenu id="tipo"
+                                         disabled="#{!cobroBean.isHabilitado()}" 
+                                         value="#{cobroBean.cobroSelected.cobTipo}" style="width:125px">
                             <f:selectItem itemLabel="Cuota" itemValue="CTA" />
                             <f:selectItem itemLabel="Cancelación" itemValue="CAN" />
                         </p:selectOneMenu>
                         <p:outputLabel for="forPago" value="Forma de Pago" />
-                        <p:selectOneMenu id="forPago" value="#{cobroBean.cobroSelected.cobForPago}" style="width:125px">
+                        <p:selectOneMenu id="forPago"
+                                         disabled="#{!cobroBean.isHabilitado()}" 
+                                         value="#{cobroBean.cobroSelected.cobForPago}" style="width:125px">
                             <f:selectItem itemLabel="Efectivo" itemValue="EFE" />
                             <f:selectItem itemLabel="Cheque" itemValue="CHE" />
                         </p:selectOneMenu>
                         <p:outputLabel value="Moneda" for="moneda" />
                         <p:selectOneMenu id="moneda" required="true"
+                                         disabled="#{!cobroBean.isHabilitado()}" 
                                          value="#{cobroBean.cobroSelected.monId}" converter="monedaConverter">
 
                             <f:selectItems value="#{cobroBean.monedas}" 

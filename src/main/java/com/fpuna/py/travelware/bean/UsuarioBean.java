@@ -42,6 +42,8 @@ public class UsuarioBean implements Serializable{
     
     private PgePersonas persona;
     
+    private boolean habilitado;
+
 //    crea una nueva instacia de usuario
     public UsuarioBean(){
         
@@ -58,6 +60,7 @@ public class UsuarioBean implements Serializable{
         usuarioSelected.setPerId(persona);
         usuarios = usuarioEJB.getAll();
         personas = personaEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -66,6 +69,7 @@ public class UsuarioBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.usuarioSelected = new PgeUsuarios();
+        habilitado = true;
     }
     
     public void addUsuario(){
@@ -160,5 +164,11 @@ public class UsuarioBean implements Serializable{
         this.persona = persona;
     }
     
-    
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

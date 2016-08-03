@@ -50,6 +50,8 @@ public class FacturaBean implements Serializable{
     private Date fecha;
     private int anho;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Factura
     public FacturaBean(){
         
@@ -68,6 +70,7 @@ public class FacturaBean implements Serializable{
         this.monedas = monedaEJB.getAll();
         this.fecha = new Date();
         this.fecha = DateUtils.round(this.fecha, Calendar.MONTH);
+        habilitado = true;
     }
 
     private void clean() {
@@ -76,6 +79,7 @@ public class FacturaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.facturaSelected = new ComFacturas();
+        habilitado = true;
     }
     
     public void addFactura(){
@@ -203,6 +207,14 @@ public class FacturaBean implements Serializable{
         return anho;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+
     public String getValidezVenc(Date fechaVenc){
         Date rounded = DateUtils.truncate(fechaVenc, Calendar.MONTH);
         if (rounded.equals(this.fecha) || rounded.before(this.fecha)){

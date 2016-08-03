@@ -69,6 +69,8 @@ public class CobroBean implements Serializable{
     private final String[] CENTENAS = {"", "ciento ", "doscientos ", "trecientos ", "cuatrocientos ", "quinientos ", "seiscientos ",
         "setecientos ", "ochocientos ", "novecientos "};
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Cobro
     public CobroBean(){
         
@@ -88,6 +90,7 @@ public class CobroBean implements Serializable{
         this.monedas = monedaEJB.getAll();
         this.personas = personaEJB.getAll();
         this.viajes = viajeEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -103,6 +106,7 @@ public class CobroBean implements Serializable{
         this.cobroSelected = new PagCobros();
         Integer nro = secuenciaEJB.getSec(clave)+1;
         this.cobroSelected.setCobNro(nro.toString());
+        habilitado = true;
     }
     
     public void addCobro(){
@@ -215,6 +219,14 @@ public class CobroBean implements Serializable{
         this.viaje = viaje;
     }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
+
     public Integer getSecuencia(){
         return secuenciaEJB.getSec(this.clave)+1;
     }

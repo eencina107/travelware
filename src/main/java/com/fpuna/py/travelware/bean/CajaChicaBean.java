@@ -41,6 +41,8 @@ public class CajaChicaBean implements Serializable{
     private PgeMonedas moneda;
     private boolean existeRegistro;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de caja chica
     public CajaChicaBean(){
         
@@ -57,6 +59,7 @@ public class CajaChicaBean implements Serializable{
         this.monedas = monedaEJB.getAll();
         this.cajaSelected = cajasChicas.get(0);
         existeRegistro = cajasChicas.size()>0;
+        habilitado = true;
     }
 
     private void clean() {
@@ -100,6 +103,7 @@ public class CajaChicaBean implements Serializable{
     }
     
     public void buttonAction(ActionEvent actionEvent){
+        habilitado = true;
 //        this.cajaSelected = new ComCajas();
     }
 
@@ -143,4 +147,11 @@ public class CajaChicaBean implements Serializable{
         this.existeRegistro = existeRegistro;
     }
 
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

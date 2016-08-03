@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
@@ -43,7 +44,8 @@
                                          value="Borrar" 
                                          oncomplete="document.getElementById('form-add:deleteTipoOrg').style.display='block';
                                                      document.getElementById('form-add:addTipoOrg').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgTipoOrgAdd').show();"
                                          update=":form-add:tipoOrgGr"
                                          />

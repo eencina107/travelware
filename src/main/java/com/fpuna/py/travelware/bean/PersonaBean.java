@@ -54,6 +54,8 @@ public class PersonaBean implements Serializable{
     
     private PgePaises pais;
     private PgeProfesiones profesion;
+
+    private boolean habilitado;
     
     //Utilizados en Agregar
     private String nom;
@@ -85,6 +87,7 @@ public class PersonaBean implements Serializable{
         paises = paisEJB.getAll();
         profesiones = profesionEJB.getAll();
         personas= personaEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -93,6 +96,7 @@ public class PersonaBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         personaSelected = new PgePersonas();
+        habilitado = true;
     }
     
     public void addPersona(){
@@ -328,4 +332,11 @@ public class PersonaBean implements Serializable{
         this.docImg = docImg;
     }
 
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

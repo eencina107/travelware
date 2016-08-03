@@ -73,6 +73,8 @@ public class PasajeroBean implements Serializable {
 
     private LoginBean loginBean;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de Pasajero
     public PasajeroBean() {
 
@@ -90,6 +92,7 @@ public class PasajeroBean implements Serializable {
         this.viajes = viajeEJB.getAllDisp();
         this.personas = personaEJB.getAll();
         this.gastos = gastoEJB.getAll(this.pasajeroSelected);
+        habilitado = true;
     }
 
     private void clean() {
@@ -99,6 +102,7 @@ public class PasajeroBean implements Serializable {
 
     public void buttonAction(ActionEvent actionEvent) {
         this.pasajeroSelected = new ViaPasajeros();
+        habilitado = true;
     }
 
     public void addPasajero() {
@@ -254,6 +258,14 @@ public class PasajeroBean implements Serializable {
     public void setPrecViajes(List<ViaPreViajes> precViajes) {
         this.precViajes = precViajes;
     }
+
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 
     public String getSimpleDateFormat(Date fecha) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

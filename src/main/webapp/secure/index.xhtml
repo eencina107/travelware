@@ -11,7 +11,7 @@
             
             <h:form>
                 <p:contentFlow value="#{pantallaInicioBean.listaViajesFuturos}" var="viaje" style="height: 200px">
-                    <p:graphicImage  value="#{viajeImgBean.image}" styleClass="content">
+                    <p:graphicImage  value="#{viajeImgBean.image}" styleClass="content" >
                         <f:param value="#{viaje.viaId}" name="viaId"></f:param>
                     </p:graphicImage>
                 </p:contentFlow>

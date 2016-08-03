@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
@@ -155,15 +156,18 @@
                                          actionListener="#{facturaBean.buttonAction}"/>
                         <p:commandButton process="dtFactura" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{facturaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgFacturaAdd').show()"
                                          update=":form-add:facturaGr"
                                          />
                         <p:commandButton process="dtFactura" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{facturaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteFactura').style.display='block';
                                                      document.getElementById('form-add:addFactura').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgFacturaAdd').show();"
                                          update=":form-add:facturaGr"
                                          />
@@ -188,6 +192,7 @@
 
                         <p:outputLabel value="Proveedor" for="proveedor" />
                         <p:selectOneMenu id="proveedor" required="true"
+                                         disabled="#{!facturaBean.isHabilitado()}" 
                                          value="#{facturaBean.facturaSelected.proId}" converter="proveedorConverter">
 
                             <f:selectItems value="#{facturaBean.proveedores}" 
@@ -204,6 +209,7 @@
 
                         <p:outputLabel value="Moneda" for="moneda" />
                         <p:selectOneMenu id="moneda" required="true"
+                                         disabled="#{!facturaBean.isHabilitado()}" 
                                          value="#{facturaBean.facturaSelected.monId}" converter="monedaConverter">
 
                             <f:selectItems value="#{facturaBean.monedas}" 
@@ -231,13 +237,17 @@
                                      value="#{facturaBean.facturaSelected.facDesc}" />
 
                         <p:outputLabel value="Estado" for="estado" />
-                        <p:selectOneMenu id="estado" value="#{facturaBean.facturaSelected.facEst}" style="width:125px">
+                        <p:selectOneMenu id="estado"
+                                         disabled="#{!facturaBean.isHabilitado()}" 
+                                         value="#{facturaBean.facturaSelected.facEst}" style="width:125px">
                             <f:selectItem itemLabel="Ingresado" itemValue="I" />
                             <f:selectItem itemLabel="Pagado" itemValue="P" />
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Condición" for="condicion" />
-                        <p:selectOneMenu id="condicion" value="#{facturaBean.facturaSelected.facCond}" style="width:125px">
+                        <p:outputLabel value="Condición" for="condicion" /> 
+                        <p:selectOneMenu id="condicion"
+                                         disabled="#{!facturaBean.isHabilitado()}" 
+                                         value="#{facturaBean.facturaSelected.facCond}" style="width:125px">
                             <f:selectItem itemLabel="Contado" itemValue="C" />
                             <f:selectItem itemLabel="Credito" itemValue="R" />
                         </p:selectOneMenu>

@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -57,15 +58,18 @@
                                          actionListener="#{organizacionBean.buttonAction}"/>
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{organizacionBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgOrganizacionAdd').show()"
                                          update=":form-add:organizacionGr"
                                          />
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{organizacionBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteOrganizacion').style.display='block';
                                                      document.getElementById('form-add:addOrganizacion').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgOrganizacionAdd').show();"
                                          update=":form-add:organizacionGr"
                                          />
@@ -89,6 +93,7 @@
                         </h:panelGroup>
                         <p:outputLabel value="Ciudad" for="ciudad" />
                         <p:selectOneMenu id="ciudad" required="true"
+                                         disabled="#{!organizacionBean.isHabilitado()}" 
                                          value="#{organizacionBean.organizacionSelected.ciuId}" converter="ciudadConverter">
 
                             <f:selectItems value="#{organizacionBean.ciudades}" 
@@ -107,6 +112,7 @@
                                      value="#{organizacionBean.organizacionSelected.orgTel}" />
                         <p:outputLabel value="Tipo" for="tipoOrg" />
                         <p:selectOneMenu id="tipoOrg" required="true"
+                                         disabled="#{!organizacionBean.isHabilitado()}" 
                                          value="#{organizacionBean.organizacionSelected.tipOrgId}" converter="tipoOrgConverter">
 
                             <f:selectItems value="#{organizacionBean.tiposOrg}" 

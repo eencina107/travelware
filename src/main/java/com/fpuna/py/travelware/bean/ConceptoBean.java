@@ -36,6 +36,8 @@ public class ConceptoBean implements Serializable{
 
     private LoginBean loginBean;
     
+    private boolean habilitado;
+
 //    crea una nueva instacia de concepto
     public ConceptoBean(){
         
@@ -48,8 +50,8 @@ public class ConceptoBean implements Serializable{
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         loginBean = (LoginBean) session.getAttribute("loginBean");
         conceptoSelected = new ViaConceptos();
-
         conceptos = conceptoEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -58,6 +60,7 @@ public class ConceptoBean implements Serializable{
     
     public void buttonAction(ActionEvent event){
         this.conceptoSelected = new ViaConceptos();
+        habilitado = true;
     }
     
     public void addConcepto(){
@@ -121,4 +124,11 @@ public class ConceptoBean implements Serializable{
         this.conceptoSelected = conceptoSelected;
     }
 
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }

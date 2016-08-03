@@ -44,6 +44,8 @@ public class MenuCrudBean implements Serializable{
     private ModuloDao moduloEJB;
     private LoginBean loginBean;
     
+    private boolean habilitado;
+
     //crea una nueva instancia de MenuCrudBean
     public MenuCrudBean(){
         
@@ -59,6 +61,7 @@ public class MenuCrudBean implements Serializable{
         menuNuevo = new PgeMenus();
         menus= menuEJB.getAll();
         modulos= moduloEJB.getAll();
+        habilitado = true;
     }
 
     private void clean() {
@@ -211,6 +214,12 @@ public class MenuCrudBean implements Serializable{
         this.menuEJB = menuEJB;
     }
     
-    
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+    public void setHabilitado(boolean habilitado) {
+        this.habilitado = habilitado;
+    }   
 }
 
