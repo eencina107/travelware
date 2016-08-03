@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -26,15 +27,18 @@
                                          value="Agregar"  oncomplete="PF('dlgModuloAdd').show()" />
                         <p:commandButton process="dtModulo" icon="ui-icon-pencil"
                                          value="Editar"
+                                         actionListener="#{moduloBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-upd-fs').disabled = false;
                                                      PF('dlgModuloUpd').show()"
                                          update=":form-upd:moduloGrUpd"
                                          />
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{moduloBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-upd:deleteModulo').style.display='block';
                                                      document.getElementById('form-upd:editModulo').style.display='none';
-                                                     document.getElementById('form-upd-fs').disabled = true;
+                                                     $('#form-upd-fs :input').prop('disabled', true); 
+                                                     $('#form-upd-fs :button').prop('disabled', false); 
                                                      PF('dlgModuloUpd').show();"
                                          update=":form-upd:moduloGrUpd"
                                          />
@@ -100,7 +104,9 @@
                         <p:inputText id="abreviatura2" required="true"
                                      value="#{moduloBean.moduloSelected.modAbr}" />
                         <p:outputLabel value="Estado" for="modEstado2" />
-                        <p:selectOneMenu id="modEstado2" required="true" value="#{moduloBean.moduloSelected.modEstado}">
+                        <p:selectOneMenu id="modEstado2" required="true"
+                                         disabled="#{!moduloBean.isHabilitado()}" 
+                                         value="#{moduloBean.moduloSelected.modEstado}">
                             <f:selectItem itemLabel="Abierto" itemValue="A" />
                             <f:selectItem itemLabel="Cerrado" itemValue="C" />
                         </p:selectOneMenu>

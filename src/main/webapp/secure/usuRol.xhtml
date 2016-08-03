@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -37,15 +38,18 @@
                                          actionListener="#{usuRolBean.buttonAction}"/>
                         <p:commandButton process="dtUsuRol" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{usuRolBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgUsuRolAdd').show()"
                                          update=":form-add:usuRolGr"
                                          />
                         <p:commandButton process="dtUsuRol" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{usuRolBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteUsuRol').style.display='block';
                                                      document.getElementById('form-add:addUsuRol').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgUsuRolAdd').show();"
                                          update=":form-add:usuRolGr"
                                          />
@@ -63,6 +67,7 @@
                         <p:outputLabel value="Usuario" for="usuario" />
                         <h:panelGroup>
                             <p:selectOneMenu id="usuario" required="true"
+                                         disabled="#{!usuRolBean.isHabilitado()}" 
                                              value="#{usuRolBean.usuRolSelected.usuId}" converter="usuarioConverter">
 
                                 <f:selectItems value="#{usuRolBean.usuarios}" 
@@ -75,6 +80,7 @@
                         </h:panelGroup>
                         <p:outputLabel value="Rol" for="rol" />
                         <p:selectOneMenu id="rol" required="true"
+                                         disabled="#{!usuRolBean.isHabilitado()}" 
                                          value="#{usuRolBean.usuRolSelected.rolId}" converter="rolConverter">
 
                             <f:selectItems value="#{usuRolBean.roles}" 

@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -44,15 +45,18 @@
                                          actionListener="#{monedaBean.buttonAction}"/>
                         <p:commandButton process="dtMoneda" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{monedaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgMonedaAdd').show()"
                                          update=":form-add:monedaGr"
                                          />
                         <p:commandButton process="dtMoneda" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{monedaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteMoneda').style.display='block';
                                                      document.getElementById('form-add:addMoneda').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgMonedaAdd').show();"
                                          update=":form-add:monedaGr"
                                          />
@@ -79,6 +83,7 @@
                                      value="#{monedaBean.monedaSelected.monAbreviatura}" />
                         <p:outputLabel value="País" for="pais" />
                         <p:selectOneMenu id="pais" required="true"
+                                         disabled="#{!monedaBean.isHabilitado()}" 
                                          value="#{monedaBean.monedaSelected.paiId}" converter="paisConverter">
 
                             <f:selectItems value="#{monedaBean.paises}" 
@@ -97,7 +102,6 @@
                                 value="Borrar" style="display: none"
                                 update="monedaGr,:moneda-form:dtMoneda"
                                 actionListener="#{monedaBean.deleteMoneda()}"
-                                oncomplete="PF('dlgMonedaAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Moneda"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

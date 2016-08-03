@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
@@ -104,15 +105,18 @@
                                          actionListener="#{pasajeroBean.buttonAction}"/>
                         <p:commandButton process="dtPasajero" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{pasajeroBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPasajeroAdd').show()"
                                          update=":form-add:pasajeroGr"
                                          />
                         <p:commandButton process="dtPasajero" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{pasajeroBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePasajero').style.display='block';
                                                      document.getElementById('form-add:addPasajero').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPasajeroAdd').show();"
                                          update=":form-add:pasajeroGr"
                                          />
@@ -130,6 +134,7 @@
                         <p:outputLabel value="Viaje" for="viaje" />
                         <h:panelGroup>
                             <p:selectOneMenu id="viaje" required="true"
+                                             disabled="#{!pasajeroBean.isHabilitado()}" 
                                              value="#{pasajeroBean.pasajeroSelected.viaId}" converter="viajeConverter">
                                 <f:selectItems value="#{pasajeroBean.viajes}" 
                                                var="viaje" 
@@ -149,12 +154,16 @@
                         <p:inputText id="personaDesc" disabled="true" style="width:270px"
                                      value="#{pasajeroBean.pasajeroSelected.perId.perNom} #{pasajeroBean.pasajeroSelected.perId.perApe}" />
                         <p:outputLabel value="Relación" for="relacion" />
-                        <p:selectOneMenu id="relacion" value="#{pasajeroBean.pasajeroSelected.pasRel}" >
+                        <p:selectOneMenu id="relacion"
+                                         disabled="#{!pasajeroBean.isHabilitado()}" 
+                                         value="#{pasajeroBean.pasajeroSelected.pasRel}" >
                             <f:selectItem itemLabel="Pasajero" itemValue="P" />
                             <f:selectItem itemLabel="Acompañante" itemValue="A" />
                         </p:selectOneMenu>
                         <p:outputLabel value="Preferencia de Asiento" for="prefAsi" />
-                        <p:selectOneMenu id="prefAsi" value="#{pasajeroBean.pasajeroSelected.pasPrefAsi}" >
+                        <p:selectOneMenu id="prefAsi"
+                                         disabled="#{!pasajeroBean.isHabilitado()}" 
+                                         value="#{pasajeroBean.pasajeroSelected.pasPrefAsi}" >
                             <f:selectItem itemLabel="Pasillo" itemValue="P" />
                             <f:selectItem itemLabel="Ventanilla" itemValue="V" />
                         </p:selectOneMenu>

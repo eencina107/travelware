@@ -62,21 +62,12 @@
                 <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
 
                         <p:outputLabel value="Persona" for="persona" />
-                        <p:selectOneMenu id="persona" disabled="true"
-                                         value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont}" converter="personaConverter">
-
-                            <f:selectItems value="#{contactoBean.personas}" 
-                                           var="persona"
-                                           itemLabel="#{persona.perNom} #{persona.perApe} (#{persona.perNroDoc} )" 
-                                           itemValue="#{persona}" />
-                        </p:selectOneMenu>
+                        <p:inputText id="persona"  disabled="true" style="width:300px"
+                                     value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perNom} #{pantallaInicioBean.contactoSelected.conIdPersonaCont.perApe} (#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perNroDoc})" />
 
                         <p:outputLabel value="Tipo" for="tipo" />
-                        <p:selectOneMenu id="tipo"  disabled="true" value="#{contactoBean.contactoSelected.conTipo}">
-                            <f:selectItem itemLabel="E-mail" itemValue="E" />
-                            <f:selectItem itemLabel="Llamada" itemValue="T" />
-                            <f:selectItem itemLabel="Visita" itemValue="D" />
-                        </p:selectOneMenu>
+                        <p:inputText id="tipo"  disabled="true"
+                                     value="#{pantallaInicioBean.contactoSelected.conTipo eq  'D' ? 'Visita' : pantallaInicioBean.contactoSelected.conEstado eq 'T' ? 'Llamada' : 'E-mail'}" />
 
                         <p:outputLabel value="Teléfono" for="tel" />
                         <p:inputText id="tel"  style="width:250px" disabled="true"

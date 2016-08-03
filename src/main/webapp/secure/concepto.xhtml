@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -51,15 +52,18 @@
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{conceptoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgConceptoAdd').show()"
                                          update=":form-add:conceptoGr"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{conceptoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteConcepto').style.display='block';
                                                      document.getElementById('form-add:addConcepto').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgConceptoAdd').show();"
                                          update=":form-add:conceptoGr"
                                          />
@@ -84,6 +88,7 @@
 
                         <p:outputLabel value="Estado" for="estado" />
                         <p:selectOneMenu id="estado" value="#{conceptoBean.conceptoSelected.conEst}"
+                                         disabled="#{!conceptoBean.isHabilitado()}" 
                                          style="width:125px" immediate="true">
                             <f:selectItem itemLabel="Activo" itemValue="A" />
                             <f:selectItem itemLabel="Inactivo" itemValue="I" />

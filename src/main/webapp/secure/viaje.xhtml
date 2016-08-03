@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
@@ -142,15 +143,18 @@
                                          actionListener="#{viajeBean.buttonAction}"/>
                         <p:commandButton process="dtViaje" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{viajeBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgViajeAdd').show()"
                                          update=":form-add:viajeGr"
                                          />
                         <p:commandButton process="dtViaje" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{viajeBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteViaje').style.display='block';
                                                      document.getElementById('form-add:addViaje').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgViajeAdd').show();"
                                          update=":form-add:viajeGr"
                                          />
@@ -195,6 +199,7 @@
 
                         <p:outputLabel value="Moneda" for="moneda" />
                         <p:selectOneMenu id="moneda" required="true"
+                                         disabled="#{!viajeBean.isHabilitado()}" 
                                          value="#{viajeBean.viajeSelected.monId}" converter="monedaConverter">
 
                             <f:selectItems value="#{viajeBean.monedas}" 

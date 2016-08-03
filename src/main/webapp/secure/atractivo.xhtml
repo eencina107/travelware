@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -44,15 +45,18 @@
                                          actionListener="#{atractivoBean.buttonAction}"/>
                         <p:commandButton process="dtAtractivo" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{atractivoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgAtractivoAdd').show()"
                                          update=":form-add:atractivoGr"
                                          />
                         <p:commandButton process="dtAtractivo" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{atractivoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteAtractivo').style.display='block';
                                                      document.getElementById('form-add:addAtractivo').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgAtractivoAdd').show();"
                                          update=":form-add:atractivoGr"
                                          />
@@ -76,6 +80,7 @@
                         </h:panelGroup>
                         <p:outputLabel value="Ciudad" for="ciudad" />
                         <p:selectOneMenu id="ciudad" required="true"
+                                         disabled="#{!atractivoBean.isHabilitado()}" 
                                          value="#{atractivoBean.atractivoSelected.ciuId}" converter="ciudadConverter">
 
                             <f:selectItems value="#{atractivoBean.ciudades}" 
@@ -118,8 +123,5 @@
                 </h:form>
             </p:dialog>          
         </ui:define>
-
-
-
     </ui:composition>
 </html>

@@ -5,6 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script type="text/javascript" src="./scripts/jquery-1.7.1.js"></script>
     <!--    <script src="http://maps.google.com/maps/api/js?sensor=false"
         type="text/javascript"></script>-->
 
@@ -71,15 +72,18 @@
                                          actionListener="#{personaBean.buttonAction}"/>
                         <p:commandButton process="dtPersona" icon="ui-icon-pencil"
                                          value="Editar" 
+                                         actionListener="#{personaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPersonaAdd').show()"
                                          update=":form-add:personaGr"
                                          />
                         <p:commandButton process="dtPersona" icon="ui-icon-document"
                                          value="Borrar" 
+                                         actionListener="#{personaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePersona').style.display='block';
                                                      document.getElementById('form-add:addPersona').style.display='none';
-                                                     document.getElementById('form-add-fs').disabled = true;
+                                                     $('#form-add-fs :input').prop('disabled', true); 
+                                                     $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPersonaAdd').show();"
                                          update=":form-add:personaGr"
                                          />
@@ -109,6 +113,7 @@
                                      value="#{personaBean.personaSelected.perApe}" />
                         <p:outputLabel value="Nacionalidad" for="nacionalidad" />
                         <p:selectOneMenu id="nacionalidad" required="true"
+                                         disabled="#{!personaBean.isHabilitado()}" 
                                          value="#{personaBean.personaSelected.paiId}" converter="paisConverter">
 
                             <f:selectItems value="#{personaBean.paises}" 
@@ -118,12 +123,14 @@
                         </p:selectOneMenu>
                         <p:outputLabel value="Sexo" for="sexo" />
                         <p:selectOneMenu id="sexo" required="true"
+                                         disabled="#{!personaBean.isHabilitado()}" 
                                          value="#{personaBean.personaSelected.perSex}">
                             <f:selectItem itemLabel="Masculino" itemValue="M" />
                             <f:selectItem itemLabel="Femenino" itemValue="F" />
                         </p:selectOneMenu>
                         <p:outputLabel value="Profesion" for="profesion" />
                         <p:selectOneMenu id="profesion" required="true"
+                                         disabled="#{!personaBean.isHabilitado()}" 
                                          value="#{personaBean.personaSelected.prfId}" converter="profesionConverter">
 
                             <f:selectItems value="#{personaBean.profesiones}" 
