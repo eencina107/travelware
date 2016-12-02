@@ -56,14 +56,23 @@
                                                      PF('dlgPagoAdd').show()" 
                                          actionListener="#{pagoBean.buttonAction}"/>
                         <p:commandButton process="dtPago" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:pagoGr"
                                          disabled="true" style="display: none"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{pagoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPagoAdd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtPago" icon="ui-icon-closethick"
                                          value="Anular" update=":form-add:pagoGr"
+=======
+                        <p:commandButton process="dtPago" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{pagoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePago').style.display='block';
                                                      document.getElementById('form-add:addPago').style.display='none';

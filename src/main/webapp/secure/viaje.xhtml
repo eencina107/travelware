@@ -150,13 +150,22 @@
                                                      PF('dlgViajeAdd').show()" 
                                          actionListener="#{viajeBean.buttonAction}"/>
                         <p:commandButton process="dtViaje" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:viajeGr"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{viajeBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgViajeAdd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtViaje" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:viajeGr"
+=======
+                        <p:commandButton process="dtViaje" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{viajeBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteViaje').style.display='block';
                                                      document.getElementById('form-add:addViaje').style.display='none';

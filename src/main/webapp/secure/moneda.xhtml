@@ -44,13 +44,22 @@
                                                      PF('dlgMonedaAdd').show()" 
                                          actionListener="#{monedaBean.buttonAction}"/>
                         <p:commandButton process="dtMoneda" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar"  update=":form-add:monedaGr"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{monedaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgMonedaAdd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtMoneda" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:monedaGr"
+=======
+                        <p:commandButton process="dtMoneda" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{monedaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteMoneda').style.display='block';
                                                      document.getElementById('form-add:addMoneda').style.display='none';
@@ -76,8 +85,16 @@
                             <h:inputHidden value="#{monedaBean.monedaSelected.monId}" />
 
                         </h:panelGroup>
+<<<<<<< HEAD
                         <p:outputLabel value="País" for="pais2" />
                         <p:selectOneMenu id="pais2" required="true"
+=======
+                        <p:outputLabel value="Abrev." for="abrev" />
+                        <p:inputText id="abrev" required="true"
+                                     value="#{monedaBean.monedaSelected.monAbreviatura}" />
+                        <p:outputLabel value="País" for="pais" />
+                        <p:selectOneMenu id="pais" required="true"
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          disabled="#{!monedaBean.isHabilitado()}" 
                                          value="#{monedaBean.monedaSelected.paiId}" converter="paisConverter">
 

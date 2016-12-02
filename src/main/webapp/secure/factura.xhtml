@@ -147,13 +147,22 @@
                                                      PF('dlgFacturaAdd').show()" 
                                          actionListener="#{facturaBean.buttonAction}"/>
                         <p:commandButton process="dtFactura" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:facturaGr"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{facturaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgFacturaAdd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtFactura" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:facturaGr"
+=======
+                        <p:commandButton process="dtFactura" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{facturaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteFactura').style.display='block';
                                                      document.getElementById('form-add:addFactura').style.display='none';

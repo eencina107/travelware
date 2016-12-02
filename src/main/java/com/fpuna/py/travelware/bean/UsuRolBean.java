@@ -70,6 +70,13 @@ public class UsuRolBean implements Serializable{
 
     public void buttonAction(ActionEvent actionEvent){
         usuRolSelected = new PgeUsuRoles();
+<<<<<<< HEAD
+=======
+        this.rol = new PgeRoles();
+        this.usuario = new PgeUsuarios();
+        usuRolSelected.setRolId(rol);
+        usuRolSelected.setUsuId(usuario);
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
         habilitado = true;
     }
     
@@ -159,6 +166,21 @@ public class UsuRolBean implements Serializable{
         return habilitado;
     }
 
+<<<<<<< HEAD
+=======
+    public PgeUsuarios getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(PgeUsuarios usuario) {
+        this.usuario = usuario;
+    }
+    
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
     public void setHabilitado(boolean habilitado) {
         this.habilitado = habilitado;
     }   

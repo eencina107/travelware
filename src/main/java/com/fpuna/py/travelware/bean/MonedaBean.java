@@ -146,6 +146,17 @@ public class MonedaBean implements Serializable{
         this.monedaEJB = monedaEJB;
     }
 
+<<<<<<< HEAD
+=======
+    public PgePaises getPais() {
+        return pais;
+    }
+
+    public void setPais(PgePaises pais) {
+        this.pais = pais;
+    }
+
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
     public List<PgePaises> getPaises() {
         return paises;
     }

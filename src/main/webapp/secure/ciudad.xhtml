@@ -43,13 +43,22 @@
                                          oncomplete="PF('dlgCiudadAdd').show()"
                                          actionListener="#{ciudadBean.buttonAction}"/>
                         <p:commandButton process="dtCiudad" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-upd:ciudadGrUpd"
+=======
+                                         value="Editar"
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{ciudadBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-upd-fs').disabled = false;
                                                      PF('dlgCiudadUpd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtCiudad" icon="ui-icon-trash"
                                          value="Borrar" update=":form-upd:ciudadGrUpd"
+=======
+                        <p:commandButton process="dtCiudad" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{ciudadBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-upd:deleteCiudad').style.display='block';
                                                      document.getElementById('form-upd:editCiudad').style.display='none';

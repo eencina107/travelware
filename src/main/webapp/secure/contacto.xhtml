@@ -59,14 +59,23 @@
                                          actionListener="#{contactoBean.buttonAction}"
                                          />
                         <p:commandButton process="dtContacto" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:contactoGr" style="display: none"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{contactoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgContactoAdd').show()"
                                          disabled="true"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtContacto" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:contactoGr"
+=======
+                        <p:commandButton process="dtContacto" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{contactoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteContacto').style.display='block';
                                                      document.getElementById('form-add:addContacto').style.display='none';

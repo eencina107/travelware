@@ -56,13 +56,22 @@
                                          actionListener="#{proveedorBean.buttonAction}"
                                          />
                         <p:commandButton process="dtProveedor" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:proveedorGr"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{proveedorBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgProveedorAdd').show();"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtProveedor" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:proveedorGr"
+=======
+                        <p:commandButton process="dtProveedor" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{proveedorBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteProveedor').style.display='block';
                                                      document.getElementById('form-add:addProveedor').style.display='none';

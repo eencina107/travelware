@@ -50,13 +50,22 @@
                                          actionListener="#{conceptoBean.buttonAction}"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-pencil"
+<<<<<<< HEAD
                                          value="Editar" update=":form-add:conceptoGr"
+=======
+                                         value="Editar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{conceptoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgConceptoAdd').show()"
                                          />
+<<<<<<< HEAD
                         <p:commandButton process="dtConcepto" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:conceptoGr"
+=======
+                        <p:commandButton process="dtConcepto" icon="ui-icon-document"
+                                         value="Borrar" 
+>>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{conceptoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteConcepto').style.display='block';
                                                      document.getElementById('form-add:addConcepto').style.display='none';
