@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="permiso-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtPermiso" var="permiso" value="#{permisoBean.permisos}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -42,7 +42,7 @@
                                                      PF('dlgPermisoAdd').show()"
                                          update=":form-add:permisoGr"
                                          />
-                        <p:commandButton process="dtPermiso" icon="ui-icon-document"
+                        <p:commandButton process="dtPermiso" icon="ui-icon-trash"
                                          value="Borrar" 
                                          actionListener="#{permisoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePermiso').style.display='block';
@@ -93,7 +93,6 @@
                                 value="Borrar" style="display: none"
                                 update="permisoGr,:permiso-form:dtPermiso"
                                 actionListener="#{permisoBean.deletePermiso()}"
-                                oncomplete="PF('dlgPermisoAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Permiso"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

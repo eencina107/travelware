@@ -20,11 +20,11 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import static org.hibernate.internal.util.io.StreamCopier.BUFFER_SIZE;
@@ -37,7 +37,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "personaBean")
-@SessionScoped
+@ViewScoped
 public class PersonaBean implements Serializable{
     private List<PgePersonas> personas;
     private List<PgeProfesiones> profesiones;
@@ -58,15 +58,7 @@ public class PersonaBean implements Serializable{
     private boolean habilitado;
     
     //Utilizados en Agregar
-    private String nom;
-    private String ape;
-    private String nroDoc;
-    private Date fecNac;
-    private String lugNac;
-    private String email;
-    private String direccion;
-    private String telefono;
-    private String docImg;
+    private String docImg = null;
     
     //crea una nueva instancia de Persona
     public PersonaBean(){
@@ -103,8 +95,8 @@ public class PersonaBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgePersonas per:personas){
             if (per.getPerNroDoc().equals(this.personaSelected.getPerNroDoc()) && this.personaSelected.getPerId()==null){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe una persona con este documento: "+this.personaSelected.getPerNroDoc()));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya existe una persona con este documento: "+this.personaSelected.getPerNroDoc(), ""));
+                //this.clean();
                 return;
               
             }
@@ -113,9 +105,12 @@ public class PersonaBean implements Serializable{
         PgePersonas persona = new PgePersonas();
         persona.setPerNroDoc(this.personaSelected.getPerNroDoc());
         if (this.personaSelected.getPerId()!=null){
+            if (this.docImg != null)
+                persona.setPerDoc(docImg);
+            else
+                persona.setPerDoc(this.personaSelected.getPerDoc());
             persona.setPerUsuMod(loginBean.getUsername());
             persona.setPerFecMod(new Date());
-            persona.setPerDoc(this.personaSelected.getPerDoc());
             persona.setPerId(this.personaSelected.getPerId());
             persona.setPerUsuIns(this.personaSelected.getPerUsuIns());
             persona.setPerFecIns(this.personaSelected.getPerFecIns());
@@ -137,16 +132,21 @@ public class PersonaBean implements Serializable{
         persona.setPerDir(this.personaSelected.getPerDir());
         persona.setPerTel(this.personaSelected.getPerTel());
         personaEJB.update(persona);
-        context.addMessage(null, new FacesMessage("Felicidades! "+ persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! " + persona.getPerNom()+" "+persona.getPerApe()+" fue guardado con éxito.", ""));
         personas = personaEJB.getAll();
-        RequestContext.getCurrentInstance().update("persona-form:dtPersona");
+        RequestContext.getCurrentInstance().update("persona-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPersonaAdd').hide();");
     }
     
     public void deletePersona(){
+        FacesContext context = FacesContext.getCurrentInstance();
         personaEJB.delete(personaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + personaSelected.getPerNom() + " " + personaSelected.getPerApe() + " fue borrado con éxito.", ""));
         personas = personaEJB.getAll();
-        RequestContext.getCurrentInstance().update("persona-form:dtPersona");
+        RequestContext.getCurrentInstance().update("persona-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPersonaAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
@@ -195,12 +195,12 @@ public class PersonaBean implements Serializable{
                 inputStream.close();
 
                 FacesMessage msg = 
-                            new FacesMessage("Propiedades", "Nombre: " +
+                            new FacesMessage("Propiedades: " + "Nombre: " +
                             event.getFile().getFileName() + " Tamaño: " + 
                             event.getFile().getSize() / 1024 + 
                             " Kb Tipo: " + 
                             event.getFile().getContentType() + 
-                                    " Subido correctamente.");
+                                    " Subido correctamente.", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 this.docImg = event.getFile().getFileName();
 
@@ -258,70 +258,6 @@ public class PersonaBean implements Serializable{
 
     public void setProfesion(PgeProfesiones profesion) {
         this.profesion = profesion;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getApe() {
-        return ape;
-    }
-
-    public void setApe(String ape) {
-        this.ape = ape;
-    }
-
-    public String getNroDoc() {
-        return nroDoc;
-    }
-
-    public void setNroDoc(String nroDoc) {
-        this.nroDoc = nroDoc;
-    }
-
-    public Date getFecNac() {
-        return fecNac;
-    }
-
-    public void setFecNac(Date fecNac) {
-        this.fecNac = fecNac;
-    }
-
-    public String getLugNac() {
-        return lugNac;
-    }
-
-    public void setLugNac(String lugNac) {
-        this.lugNac = lugNac;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
     }
 
     public String getDocImg() {

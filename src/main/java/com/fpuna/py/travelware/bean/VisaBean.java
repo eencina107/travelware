@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -27,7 +27,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "visaBean")
-@SessionScoped
+@ViewScoped
 public class VisaBean implements Serializable{
     private List<ViaVisas> visas;
     private List<PgePaises> paises;
@@ -64,7 +64,7 @@ public class VisaBean implements Serializable{
             for (ViaVisas visa:visas){
                 if (visa.getVisNroSec().equals(this.visaSelected.getVisNroSec()) && 
                         visa.getPaiId().equals(this.visaSelected.getPaiId()) && this.visaSelected.getVisId()==null){
-                    context.addMessage(null, new FacesMessage("Advertencia. " + this.visaSelected.getVisNro()+" ya exste"));
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + this.visaSelected.getVisNro()+" ya exsite.", ""));
                     this.clean();
                     return;
                 }
@@ -90,15 +90,21 @@ public class VisaBean implements Serializable{
         visa.setVisNro(nroSec);
         visa.setVisFecVenc(this.visaSelected.getVisFecVenc());
         visaEJB.update(visa);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! La visa ha sido guardada con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! La visa ha sido guardada con éxito.", ""));
         visas = visaEJB.getAll(pasaporteSelected);
+        RequestContext.getCurrentInstance().update("pasaporte-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgVisaAdd').hide();");
     }
     
     public void deleteVisa(){
+        FacesContext context = FacesContext.getCurrentInstance();
         visaEJB.delete(this.visaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! La visa ha sido borrada con éxito.", ""));
         visas = visaEJB.getAll(pasaporteSelected);
-        RequestContext.getCurrentInstance().update("pasaporte-form:dtPasaporte:dtVisa");
+        RequestContext.getCurrentInstance().update("pasaporte-form");
+        this.clean();
+        //RequestContext.getCurrentInstance().execute("PF('dlgVisaAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

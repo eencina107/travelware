@@ -48,20 +48,13 @@ public class RepViaje extends HttpServlet {
     private String user, pwd, usuario, clave;
 
     private WritableCellFormat formatoCab;
-    private WritableCellFormat formatoTexto;
-    private WritableCellFormat formatoNumero;
-    private WritableCellFormat formatoFecha;
-    private WritableCellFormat formatoTexto2;
-    private WritableCellFormat formatoNumero2;
-    private WritableCellFormat formatoFecha2;
+    private WritableCellFormat formatoTexto, formatoNumero, formatoFecha;
+    private WritableCellFormat formatoTexto2, formatoNumero2, formatoFecha2;
+    private WritableCellFormat formActTexto, formActNumero, formActFecha;
 
-    private WritableCellFormat fTitulo;
-    private WritableCellFormat fPie;
-    private WritableCellFormat fTexto; //dmezac+
-    private WritableCellFormat fNumero; //dmezac+
-    private WritableCellFormat fFecHor;
-    private WritableCellFormat fFecha;
-    private WritableCellFormat fHora;
+    private WritableCellFormat fTitulo, fPie;
+    private WritableCellFormat fTexto, fNumero; //dmezac+
+    private WritableCellFormat fFecHor, fFecha, fHora;
 
     //private String sentencia = "";
 
@@ -179,31 +172,36 @@ public class RepViaje extends HttpServlet {
                 //Cargamos las columnas //dmezac+ ini
                 if(fila%2 == 0) //si es par
                 {
-                    //Procedimientos --> addLabel, addNumber, addDate
-                    //Formatos --> formatoTexto, formatoNumero, formatoFecha
-                    this.addNumber(excelSheet, 0, ++fila, ++row, formatoTexto2);
-                    this.addLabel (excelSheet, 1, fila, pasajero.getPerId().getPerApe(), formatoTexto2);
-                    this.addLabel (excelSheet, 2, fila, pasajero.getPerId().getPerNom(), formatoTexto2);
-                    this.addLabel (excelSheet, 3, fila, pasajero.getPerId().getViaPasaportes().getPatNroPas(), formatoTexto2);
-                    this.addDate  (excelSheet, 4, fila, pasajero.getPerId().getPerFecNac(), formatoFecha2);
-                    this.addLabel (excelSheet, 5, fila, pasajero.getPerId().getPerLugNac(), formatoTexto2);
-                    this.addLabel (excelSheet, 6, fila, pasajero.getPerId().getPaiId().getPaiNac(), formatoTexto2);
-                    this.addLabel (excelSheet, 7, fila, pasajero.getPerId().getPerSex().toString(), formatoTexto2);
-                    this.addDate  (excelSheet, 8, fila, pasajero.getPerId().getViaPasaportes().getPatFecEmi(), formatoFecha2);
-                    this.addDate  (excelSheet, 9, fila, pasajero.getPerId().getViaPasaportes().getPatFecVen(), formatoFecha2);
+                    formActTexto = formatoTexto2;
+                    formActNumero = formatoNumero2;
+                    formActFecha = formatoFecha2;
                 }
                 else //si no es par
                 {
-                    this.addNumber(excelSheet, 0, ++fila, ++row, formatoTexto);
-                    this.addLabel (excelSheet, 1, fila, pasajero.getPerId().getPerApe(), formatoTexto);
-                    this.addLabel (excelSheet, 2, fila, pasajero.getPerId().getPerNom(), formatoTexto);
-                    this.addLabel (excelSheet, 3, fila, pasajero.getPerId().getViaPasaportes().getPatNroPas(), formatoTexto);
-                    this.addDate  (excelSheet, 4, fila, pasajero.getPerId().getPerFecNac(), formatoFecha);
-                    this.addLabel (excelSheet, 5, fila, pasajero.getPerId().getPerLugNac(), formatoTexto);
-                    this.addLabel (excelSheet, 6, fila, pasajero.getPerId().getPaiId().getPaiNac(), formatoTexto);
-                    this.addLabel (excelSheet, 7, fila, pasajero.getPerId().getPerSex().toString(), formatoTexto);
-                    this.addDate  (excelSheet, 8, fila, pasajero.getPerId().getViaPasaportes().getPatFecEmi(), formatoFecha);
-                    this.addDate  (excelSheet, 9, fila, pasajero.getPerId().getViaPasaportes().getPatFecVen(), formatoFecha);
+                    formActTexto = formatoTexto;
+                    formActNumero = formatoNumero;
+                    formActFecha = formatoFecha;
+                }
+                //Procedimientos --> addLabel, addNumber, addDate
+                //Formatos --> formActTexto, formActNumero, formActFecha
+                this.addNumber(excelSheet, 0, ++fila, ++row, formActTexto);
+                this.addLabel (excelSheet, 1, fila, pasajero.getPerId().getPerApe(), formActTexto);
+                this.addLabel (excelSheet, 2, fila, pasajero.getPerId().getPerNom(), formActTexto);
+                if(pasajero.getPerId().getViaPasaportes() != null)
+                    this.addLabel (excelSheet, 3, fila, pasajero.getPerId().getViaPasaportes().getPatNroPas(), formActTexto);
+                else
+                    this.addLabel (excelSheet, 3, fila, null, formActTexto);
+                this.addDate  (excelSheet, 4, fila, pasajero.getPerId().getPerFecNac(), formActFecha);
+                this.addLabel (excelSheet, 5, fila, pasajero.getPerId().getPerLugNac(), formActTexto);
+                this.addLabel (excelSheet, 6, fila, pasajero.getPerId().getPaiId().getPaiNac(), formActTexto);
+                this.addLabel (excelSheet, 7, fila, pasajero.getPerId().getPerSex().toString(), formActTexto);
+                if(pasajero.getPerId().getViaPasaportes() != null) {
+                    this.addDate  (excelSheet, 8, fila, pasajero.getPerId().getViaPasaportes().getPatFecEmi(), formActFecha);
+                    this.addDate  (excelSheet, 9, fila, pasajero.getPerId().getViaPasaportes().getPatFecVen(), formActFecha);
+                }
+                else {
+                    this.addDate  (excelSheet, 8, fila, null, formActFecha);
+                    this.addDate  (excelSheet, 9, fila, null, formActFecha);
                 }
                 //dmezac+ fin
             }

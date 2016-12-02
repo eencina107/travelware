@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 /**
@@ -17,7 +17,7 @@ import javax.inject.Named;
  * @author eencina
  */
 @Named(value = "imagenesInicioBean")
-@SessionScoped
+@ViewScoped
 public class ImagenesInicioBean implements Serializable{
     private List<String> images;
     

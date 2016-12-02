@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -25,7 +25,7 @@ import org.primefaces.context.RequestContext;
  * @author eencina
  */
 @Named(value = "datosGeneralesBean")
-@SessionScoped
+@ViewScoped
 public class DatosGeneralesBean implements Serializable{
     private List<PgeDatosGenerales> datosGenerales;
     private PgeDatosGenerales datoSelected;
@@ -79,19 +79,24 @@ public class DatosGeneralesBean implements Serializable{
         datoGeneral.setGralTel1(this.datoSelected.getGralTel1());
         datoGeneral.setGralTel2(this.datoSelected.getGralTel2());
         datosGeneralesEJB.update(datoGeneral);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! Datos Guardados con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! Datos Guardados con éxito", ""));
         datosGenerales = datosGeneralesEJB.getAll();
         existeRegistro = datosGenerales.size()>0;
         this.datoSelected = datosGenerales.get(0);
+        RequestContext.getCurrentInstance().update("datosGenerales-form");
         this.clean();
-        
+        RequestContext.getCurrentInstance().execute("PF('dlgDatosGeneralesAdd').hide();");
     }
     
     public void deleteDatos(){
+        FacesContext context = FacesContext.getCurrentInstance();
         datosGeneralesEJB.delete(this.datoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! Datos borrados con éxito.", ""));
         datosGenerales = datosGeneralesEJB.getAll();
         existeRegistro = datosGenerales.size()>0;
-        RequestContext.getCurrentInstance().update("datosGenerales-form:dtDatosGenerales");
+        RequestContext.getCurrentInstance().update("datosGenerales-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgDatosGeneralesAdd').hide();");
     }
     
     public void buttonAction(ActionEvent actionEvent){
@@ -121,6 +126,5 @@ public class DatosGeneralesBean implements Serializable{
     public void setExisteRegistro(boolean existeRegistro) {
         this.existeRegistro = existeRegistro;
     }
-    
-    
+
 }

@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="cobro-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtCobro" var="cobro" value="#{cobroBean.cobros}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -49,26 +49,25 @@
                     </p:column>
                     <f:facet name="header">
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
-                                         value="Agregar"  update=":form-add:cobroGr" 
+                                         value="Registrar"  update=":form-add:cobroGr" 
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()" 
                                          actionListener="#{cobroBean.buttonAction}"/>
                         <p:commandButton process="dtCobro" icon="ui-icon-pencil"
+                                         disabled="true" style="display: none"
                                          actionListener="#{cobroBean.setHabilitado(true)}"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:cobroGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()"
-                                         update=":form-add:cobroGr"
                                          />
-                        <p:commandButton process="dtCobro" icon="ui-icon-document"
+                        <p:commandButton process="dtCobro" icon="ui-icon-closethick"
                                          actionListener="#{cobroBean.setHabilitado(false)}"
-                                         value="Borrar" 
+                                         value="Anular" update=":form-add:cobroGr"
                                          oncomplete="document.getElementById('form-add:deleteCobro').style.display='block';
                                                      document.getElementById('form-add:addCobro').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgCobroAdd').show();"
-                                         update=":form-add:cobroGr"
                                          />
 
                     </f:facet>
@@ -149,13 +148,12 @@
                                 action="#{cobroBean.addCobro}"
                                 />
                             <p:commandButton id="deleteCobro" 
-                                value="Borrar" style="display: none"
+                                value="Anular" style="display: none"
                                 update="cobroGr,:cobro-form:dtCobro"
                                 actionListener="#{cobroBean.deleteCobro()}"
-                                oncomplete="PF('dlgCobroAdd').hide()"
                                 >
-                                    <p:confirm header="Borrar Cobro"
-                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
+                                    <p:confirm header="Anular Cobro"
+                                               message="Estas seguro que queres anular?" icon="ui-icon-alert" />
                             </p:commandButton>
                             <p:confirmDialog global="true" showEffect="fade"
                                              hideEffect="fade">

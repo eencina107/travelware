@@ -24,11 +24,11 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import static org.hibernate.internal.util.io.StreamCopier.BUFFER_SIZE;
@@ -41,7 +41,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "viajeDetBean")
-@SessionScoped
+@ViewScoped
 public class ViajeDetBean implements Serializable{
     private List<ViaViajesDet> viajesDet;
     private List<ViaConceptos> conceptos, conceptosReq;
@@ -69,7 +69,7 @@ public class ViajeDetBean implements Serializable{
     private PgeMonedas moneda;
     private ViaViajes viaje;
 
-    String nombreArchivo = "";
+    String nombreArchivo = null;
     String nombreCarpetaImg;
 
     //crea una nueva instancia de ViajeDet
@@ -112,19 +112,19 @@ public class ViajeDetBean implements Serializable{
 
         //Validaciones de concepto
         if (this.viajeDetSelected.getFadId() != null && !(this.viajeDetSelected.getConId().equals(this.viajeDetSelected.getFadId().getConId()))) {
-            context.addMessage(null, new FacesMessage("Advertencia. Concepto de viaje debe ser igual a concepto en detalle de factura: " +
-                                                        this.viajeDetSelected.getFadId().getConId().getConDesc()+". Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Concepto de viaje debe ser igual a concepto en detalle de factura: " +
+                                                        this.viajeDetSelected.getFadId().getConId().getConDesc()+". Verifique.", ""));
             return;
         }
 
         if (this.viajeDetSelected.getFadId() != null && this.viajeDetSelected.getFadId().getFadUti() == 'S' ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Detalle de factura ya fue utilizado. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Detalle de factura ya fue utilizado. Verifique.", ""));
             return;
         }
 
         ViaViajesDet viajeDet = new ViaViajesDet();
         if (this.viajeDetSelected.getVidId()!=null){ //modificacion
-            if (this.nombreArchivo != "")
+            if (this.nombreArchivo != null)
                 viajeDet.setVidImg(this.nombreArchivo);
             else
                 viajeDet.setVidImg(this.viajeDetSelected.getVidImg());
@@ -180,17 +180,20 @@ public class ViajeDetBean implements Serializable{
         viajeDet.getViaId().setViaCantTot(maxCant);
         viajeEJB.update(viajeDet.getViaId());
         
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! El detalle "+viajeDet.getVidDesc()+" del viaje "+viajeSelected.getViaDesc()+" ha sido guardada con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El detalle "+viajeDet.getVidDesc()+" de "+viajeSelected.getViaDesc()+" ha sido guardada con éxito.", ""));
         this.facturasDet = facturaDetEJB.getAllNoUti();
         this.viajesDet = viajeDetEJB.getAll(viajeSelected);
         this.viajes = viajeEJB.getAll();
+        RequestContext.getCurrentInstance().update("viaje-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgViajeDetAdd').hide();");
     }
     
     public void deleteViajeDet(){
         FacesContext context = FacesContext.getCurrentInstance();
-        if (this.viajeDetSelected.getViaId()!= null && this.viajeDetSelected.getViaId().getViaCantVend() > 0 ) {
-            context.addMessage(null, new FacesMessage("Error. No se puede borrar detalle de viaje con paquetes vendidos."));
+        if (this.viajeDetSelected.getViaId()!= null && this.viajeDetSelected.getViaId().getViaCantVend()!= null &&
+                this.viajeDetSelected.getViaId().getViaCantVend() > 0 ) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Error. No se puede borrar detalle de viaje con paquetes vendidos.", ""));
             return;
         }
 
@@ -217,10 +220,14 @@ public class ViajeDetBean implements Serializable{
         this.viajeDetSelected.getViaId().setViaCantTot(maxCant);
         viajeEJB.update(this.viajeDetSelected.getViaId());
 
+        context.addMessage(null, new FacesMessage("Felicidades! El detalle de "+viajeSelected.getViaDesc()+" fue borrado con éxito.", ""));
+
         this.facturasDet = facturaDetEJB.getAllNoUti();
         this.viajesDet = viajeDetEJB.getAll(viajeSelected);
         this.viajes = viajeEJB.getAll();
-        RequestContext.getCurrentInstance().update("viaje-form:dtViaje:dtViajeDet");
+        RequestContext.getCurrentInstance().update("viaje-form");
+        this.clean();
+        //RequestContext.getCurrentInstance().execute("PF('dlgViajeDetAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
@@ -276,7 +283,7 @@ public class ViajeDetBean implements Serializable{
                             event.getFile().getSize() / 1024 + 
                             " Kb Tipo: " + 
                             event.getFile().getContentType() + 
-                                    " Subido correctamente.");
+                                    " Subido correctamente.", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 this.nombreArchivo = event.getFile().getFileName();
 

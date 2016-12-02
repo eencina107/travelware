@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -27,7 +27,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "menuCrudBean")
-@SessionScoped
+@ViewScoped
 public class MenuCrudBean implements Serializable{
     private int menuId;
     private int menSubId;
@@ -75,21 +75,27 @@ public class MenuCrudBean implements Serializable{
     public void addMenu(){
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeMenus men:menus){
-            if (men.getMenDescripcion().toUpperCase().equals(this.menuNuevo.getMenDescripcion())){
-                context.addMessage(null, new FacesMessage("Advertencia. El menú "+this.menuNuevo.getMenDescripcion()+" ya existe"));
-                this.clean();
+            if (men.getMenDescripcion().toUpperCase().equals(this.menuNuevo.getMenDescripcion().toUpperCase())){
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El menú "+this.menuNuevo.getMenDescripcion()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
-            if (men.getMenUbicacion().toUpperCase().equals(this.menuNuevo.getMenUbicacion())){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya hay un menu que utiliza la ubicación "+this.menuNuevo.getMenUbicacion()));
-                this.clean();
+            if (men.getMenUbicacion().toUpperCase().equals(this.menuNuevo.getMenUbicacion().toUpperCase())){
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya hay un menú que utiliza la ubicación "+this.menuNuevo.getMenUbicacion(), ""));
+                //this.clean();
                 return;
             }
             if (men.getMenId() == this.menuNuevo.getMenId() && men.getMenSubId()== this.menuNuevo.getMenSubId()){
-                context.addMessage(null, new FacesMessage("Advertencia. El menú "+this.menuNuevo.getMenId()+"-"+this.menuNuevo.getMenSubId()+" ya existe."));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El menú "+this.menuNuevo.getMenId()+"-"+this.menuNuevo.getMenSubId()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
+        }
+
+        if (this.menuNuevo.getMenSubId() <= 0){
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Submenú debe ser mayor a cero", ""));
+            //this.clean();
+            return;
         }
         
         PgeMenus menu = new PgeMenus();
@@ -101,15 +107,21 @@ public class MenuCrudBean implements Serializable{
         menu.setMenUsuIns(this.loginBean.getUsername());
         menu.setMenFecIns(new Date());
         menuEJB.create(menu);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ menu.getMenDescripcion()+" fue creado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + menu.getMenDescripcion()+" fue creado con éxito.", ""));
         menus= menuEJB.getAll();
+        RequestContext.getCurrentInstance().update("menu-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMenuAdd').hide();");
     }
     
     public void deleteMenu(){
+        FacesContext context = FacesContext.getCurrentInstance();
         menuEJB.delete(this.menuSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.menuSelected.getMenDescripcion() + " fue borrado con éxito.", ""));
         menus= menuEJB.getAll();
-        RequestContext.getCurrentInstance().update("menu-form:dtMenu");
+        RequestContext.getCurrentInstance().update("menu-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMenuUpd').hide();");
     }
     
     public void editMenu(){
@@ -128,9 +140,11 @@ public class MenuCrudBean implements Serializable{
         menu.setMenUsuMod(loginBean.getUsername());
         menu.setMenFecMod(new Date());
         menuEJB.update(menu);
-        context.addMessage(null, new FacesMessage("Felicidades! "+ this.menuSelected.getMenDescripcion()+" fue modificado con éxito!"));
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.menuSelected.getMenDescripcion() + " fue modificado con éxito.", ""));
         menus = menuEJB.getAll();
+        RequestContext.getCurrentInstance().update("menu-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMenuUpd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

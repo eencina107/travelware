@@ -12,9 +12,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -25,12 +26,8 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value= "paisBean")
-@SessionScoped
+@ViewScoped
 public class PaisBean implements Serializable{
-    private int paiId;
-    private String paiDesc;
-    private String paiNac;
-    private String paiUbi;
     private List<PgePaises> paises;
     private PgePaises paisSelected;
     private PgePaises paisNuevo;
@@ -39,8 +36,9 @@ public class PaisBean implements Serializable{
     private LoginBean loginBean;
 
     
-    //crear nueva instancia de PaisBean
+    //crear nueva instancia de Pais
     public PaisBean(){
+
     }
     
     @PostConstruct
@@ -52,26 +50,27 @@ public class PaisBean implements Serializable{
         paisSelected = new PgePaises();
         paises= paisEJB.getAll();
     }
-    
+
     public void clean(){
-        this.paiDesc= null;
-        this.paiNac = null;
-        this.paiUbi = null;
         this.paisSelected= new PgePaises();
         this.paisNuevo = new PgePaises();
     }
-    
+
+    public void buttonAction(ActionEvent actionEvent){
+        paisNuevo = new PgePaises();
+    }
+
     public void addPais(){
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgePaises pai: paises){
             if (pai.getPaiDesc().equals(this.paisNuevo.getPaiDesc())){
-                context.addMessage(null, new FacesMessage("Advertencia. El pais "+this.paisNuevo.getPaiDesc()+" ya existe"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El pais "+this.paisNuevo.getPaiDesc()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
             if (pai.getPaiNac().equals(this.paisNuevo.getPaiNac())){
-                context.addMessage(null, new FacesMessage("Advertencia. La nacionalidad "+this.paisNuevo.getPaiNac()+" ya existe"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. La nacionalidad "+this.paisNuevo.getPaiNac()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -83,15 +82,22 @@ public class PaisBean implements Serializable{
         pais.setPaiUsuIns(loginBean.getUsername());
         pais.setPaiFecIns(new Date());
         paisEJB.create(pais);
-        context.addMessage("Mensaje",new FacesMessage("Felicidades! "+pais.getPaiDesc()+" fue agregado con exito!"));
+        context.addMessage("Mensaje",new FacesMessage("Felicidades! " + pais.getPaiDesc() + " fue agregado con exito.", ""));
         paises = paisEJB.getAll();
+        RequestContext.getCurrentInstance().update("pais-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPaisAdd').hide();");
     }
     
     public void deletePais(){
+        FacesContext context = FacesContext.getCurrentInstance();
         paisEJB.delete(this.getPaisSelected());
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.paisSelected.getPaiDesc()+" fue borrado con éxito.", ""));
         paises=paisEJB.getAll();
-    }
+        RequestContext.getCurrentInstance().update("pais-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPaisUpd').hide();");
+}
     
     public void editPais(){
         //Verificar si es nulo el idPais
@@ -109,11 +115,11 @@ public class PaisBean implements Serializable{
         pais.setPaiUsuMod(loginBean.getUsername());
         pais.setPaiFecMod(new Date());
         paisEJB.update(pais);
-        context.addMessage(null, new FacesMessage("Felicidades! "+ this.paisSelected.getPaiDesc()+" fue modificado con éxito!"));
-        
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.paisSelected.getPaiDesc()+" fue modificado con éxito.", ""));
         paises= paisEJB.getAll();
-        
+        RequestContext.getCurrentInstance().update("pais-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPaisUpd').hide();");
     }
     
     public PgePaises prepareCreate() {
@@ -130,40 +136,7 @@ public class PaisBean implements Serializable{
     public void onCancel(){
         
     }
-      
-        
-    public int getPaiId(){
-        return paiId;
-    }
-    
-    public void setId(int id){
-        this.paiId=id;
-    }
-    
-    public String getPaiDesc(){
-        return paiDesc;
-    }
-    
-    public void setDescripcion(String desc){
-        this.paiDesc=desc;
-    }
-    
-    public String getPaiNac(){
-        return paiNac;
-    }
-    
-    public void setPaiNac(String pai_nac){
-        this.paiNac=pai_nac;
-    }
-    
-    public String getPaiUbi(){
-        return paiUbi;
-    }
-    
-    public void setPaiUbi(String paiUbi){
-        this.paiUbi= paiUbi;
-    }
-        
+
     public List<PgePaises> getPaises(){
         return paises;
     }

@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="ciudad-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtCiudad" var="ciudad" value="#{ciudadBean.ciudades}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -39,23 +39,23 @@
                     </p:column>
                     <f:facet name="header">
                         <p:commandButton process="dtCiudad" icon="ui-icon-document"
-                                         value="Agregar"  oncomplete="PF('dlgCiudadAdd').show()" />
+                                         value="Agregar"
+                                         oncomplete="PF('dlgCiudadAdd').show()"
+                                         actionListener="#{ciudadBean.buttonAction}"/>
                         <p:commandButton process="dtCiudad" icon="ui-icon-pencil"
-                                         value="Editar"
+                                         value="Editar" update=":form-upd:ciudadGrUpd"
                                          actionListener="#{ciudadBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-upd-fs').disabled = false;
                                                      PF('dlgCiudadUpd').show()"
-                                         update=":form-upd:ciudadGrUpd"
                                          />
-                        <p:commandButton process="dtCiudad" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtCiudad" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-upd:ciudadGrUpd"
                                          actionListener="#{ciudadBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-upd:deleteCiudad').style.display='block';
                                                      document.getElementById('form-upd:editCiudad').style.display='none';
                                                      $('#form-upd-fs :input').prop('disabled', true); 
                                                      $('#form-upd-fs :button').prop('disabled', false); 
                                                      PF('dlgCiudadUpd').show();"
-                                         update=":form-upd:ciudadGrUpd"
                                          />
 
                     </f:facet>
@@ -133,7 +133,6 @@
                                 value="Borrar" style="display: none"
                                 update="ciudadGrUpd,:ciudad-form:dtCiudad"
                                 actionListener="#{ciudadBean.deleteCiudad()}"
-                                oncomplete="PF('dlgCiudadUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Ciudad"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

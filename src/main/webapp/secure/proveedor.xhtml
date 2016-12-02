@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="proveedor-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtProveedor" var="proveedor" value="#{proveedorBean.proveedores}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -50,31 +50,28 @@
 
                     <f:facet name="header">
                         <p:commandButton process="dtProveedor" icon="ui-icon-document"
-                                         value="Agregar"   
+                                         value="Agregar" update=":form-add:proveedorGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgProveedorAdd').show();"
                                          actionListener="#{proveedorBean.buttonAction}"
-                                         update=":form-add:proveedorGr"
                                          />
                         <p:commandButton process="dtProveedor" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:proveedorGr"
                                          actionListener="#{proveedorBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgProveedorAdd').show();"
-                                         update=":form-add:proveedorGr"
                                          />
-                        <p:commandButton process="dtProveedor" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtProveedor" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:proveedorGr"
                                          actionListener="#{proveedorBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteProveedor').style.display='block';
                                                      document.getElementById('form-add:addProveedor').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgProveedorAdd').show();"
-                                         update=":form-add:proveedorGr"
                                          />
-                        <p:commandButton icon="ui-icon-document" value="Ver Facturas"
-                                         onclick="window.location='/py.travelware/repfactura?id=#{proveedorBean.proveedorSelected.proId}';"
+                        <p:commandButton icon="ui-icon-search" value="Ver Facturas"
+                                         actionListener="#{proveedorBean.goReporteFacturas}"
                                          />
 
                     </f:facet>
@@ -139,7 +136,6 @@
                                 value="Borrar" style="display: none"
                                 update="proveedorGr,:proveedor-form:dtProveedor"
                                 actionListener="#{proveedorBean.deleteProveedor()}"
-                                oncomplete="PF('dlgProveedorAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Proveedor"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

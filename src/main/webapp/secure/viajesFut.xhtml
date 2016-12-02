@@ -35,18 +35,20 @@
                     </h:outputText>
                 </p:column>
 
-                <p:column headerText="Total" style="width:8%" >
+                <p:column headerText="Total" style="width:8%; text-align: center" >
                     <h:outputText value="#{viaje.viaCantTot}" />
                 </p:column>
 
-                <p:column headerText="Disp." style="width:8%">
+                <p:column headerText="Disp." style="width:8%; text-align: center">
                     <h:outputText value="#{viaje.viaCantTot - viaje.viaCantVend}" />
                 </p:column>
 
                 <p:column  style="width:5%">
                     <p:commandButton icon="ui-icon-document"
                                      style="height: 26px"
-                                     onclick="window.location='/py.travelware/repviaje?id=#{viaje.viaId}';" />
+                                     action="#{pantallaInicioBean.goReporteFactura}" >
+                        <f:setPropertyActionListener target="#{pantallaInicioBean.viajeSelected}" value="#{viaje.viaId}"/>
+                    </p:commandButton>
                 </p:column>
 
 

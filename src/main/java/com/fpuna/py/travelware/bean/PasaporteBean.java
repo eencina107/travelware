@@ -15,10 +15,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.time.DateUtils;
@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "pasaporteBean")
-@SessionScoped
+@ViewScoped
 public class PasaporteBean implements Serializable{
     private List<ViaPasaportes> pasaportes;
     private List<PgePersonas> personas;
@@ -77,14 +77,14 @@ public class PasaporteBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (ViaPasaportes pas:pasaportes){
             if (this.pasaporteSelected!=null && pas.getPatNroPas().equals(this.pasaporteSelected.getPatNroPas()) && !(pas.getPatId().equals(this.pasaporteSelected.getPatId())) ){
-                context.addMessage(null, new FacesMessage("Advertencia. Pasaporte "+this.pasaporteSelected.getPatNroPas()+" ya existe!"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Pasaporte "+this.pasaporteSelected.getPatNroPas()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
-            
             if (this.pasaporteSelected!=null && pas.getPerId().equals(this.pasaporteSelected.getPerId()) && !(pas.getPatId().equals(this.pasaporteSelected.getPatId()))){
-                context.addMessage(null, new FacesMessage("Advertencia. "+ this.pasaporteSelected.getPerId().getPerNom()+" "+this.pasaporteSelected.getPerId().getPerApe()+" ya posee pasaporte."));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                        "Advertencia. " + this.pasaporteSelected.getPerId().getPerNom()+" "+this.pasaporteSelected.getPerId().getPerApe()+" ya posee pasaporte.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -107,15 +107,21 @@ public class PasaporteBean implements Serializable{
         pasaporte.setPatFecVen(this.pasaporteSelected.getPatFecVen());
         pasaporte.setPerId(this.pasaporteSelected.getPerId());
         pasaporteEJB.update(pasaporte);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasaporte "+this.pasaporteSelected.getPatNroPas()+" fue guardado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasaporte "+this.pasaporteSelected.getPatNroPas()+" fue guardado con éxito.", ""));
         pasaportes = pasaporteEJB.getAll();
+        RequestContext.getCurrentInstance().update("pasaporte-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPasaporteAdd').hide();");
     }
     
     public void deletePasaporte(){
+        FacesContext context = FacesContext.getCurrentInstance();
         pasaporteEJB.delete(this.pasaporteSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El pasaporte "+this.pasaporteSelected.getPatNroPas()+" fue borrado con éxito.", ""));
         pasaportes = pasaporteEJB.getAll();
-        RequestContext.getCurrentInstance().update("pasaporte-form:dtPasaporte");
+        RequestContext.getCurrentInstance().update("pasaporte-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPasaporteAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

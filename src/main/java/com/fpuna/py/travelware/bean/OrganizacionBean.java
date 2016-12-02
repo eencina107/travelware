@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import static org.hibernate.internal.util.io.StreamCopier.BUFFER_SIZE;
@@ -38,7 +38,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "organizacionBean")
-@SessionScoped
+@ViewScoped
 public class OrganizacionBean implements Serializable{
     private List<PgeOrganizaciones> organizaciones;
     private List<PgeCiudades> ciudades;
@@ -53,7 +53,7 @@ public class OrganizacionBean implements Serializable{
     private LoginBean loginBean;
     private PgeCiudades ciudad;
     private PgeTipoOrg tipoOrg;
-    String nombreArchivo = "";
+    String nombreArchivo = null;
     String nombreCarpetaImg;
     
     private boolean habilitado;
@@ -93,8 +93,8 @@ public class OrganizacionBean implements Serializable{
         String mensaje;
         for (PgeOrganizaciones org:organizaciones){
             if (org.getOrgDesc().toUpperCase().equals(this.organizacionSelected.getOrgDesc().toUpperCase()) && !Objects.equals(org.getOrgId(), this.organizacionSelected.getOrgId())){
-                context.addMessage(null, new FacesMessage("Advertencia. La organización "+this.organizacionSelected.getOrgDesc()+" ya existe"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. La organización "+this.organizacionSelected.getOrgDesc()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -103,7 +103,7 @@ public class OrganizacionBean implements Serializable{
         organizacion.setOrgDesc(this.organizacionSelected.getOrgDesc());
         //System.out.print("Archivo Logo: " + this.nombreArchivo);
         if (this.organizacionSelected.getOrgId()!=null){ //modificacion
-            if (this.nombreArchivo != "")
+            if (this.nombreArchivo != null)
                 organizacion.setOrgLogo(this.nombreArchivo);
             else
                 organizacion.setOrgLogo(this.organizacionSelected.getOrgLogo());
@@ -128,16 +128,21 @@ public class OrganizacionBean implements Serializable{
         organizacion.setTipOrgId(this.organizacionSelected.getTipOrgId());
         organizacion.setOrgUbi(this.organizacionSelected.getOrgUbi());
         organizacionEJB.update(organizacion);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades!"+mensaje));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + mensaje, ""));
         organizaciones = organizacionEJB.getAll();
-        RequestContext.getCurrentInstance().update("organizacion-form:dtOrganizacion");
-        this.clean();        
+        RequestContext.getCurrentInstance().update("organizacion-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgOrganizacionAdd').hide();");
     }
     
     public void deleteOrganizacion(){
+        FacesContext context = FacesContext.getCurrentInstance();
         organizacionEJB.delete(this.organizacionSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.organizacionSelected.getOrgDesc() + " fue borrado con éxito.", ""));
         organizaciones = organizacionEJB.getAll();
-        RequestContext.getCurrentInstance().update("organizacion-form:dtOrganizacion");
+        RequestContext.getCurrentInstance().update("organizacion-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgOrganizacionAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
@@ -189,7 +194,7 @@ public class OrganizacionBean implements Serializable{
                             event.getFile().getSize() / 1024 + 
                             " Kb Tipo: " + 
                             event.getFile().getContentType() + 
-                                    " Subido correctamente.");
+                                    " Subido correctamente.", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 this.nombreArchivo = event.getFile().getFileName();
 

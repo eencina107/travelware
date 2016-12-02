@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="usuRol-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtUsuRol" var="usuRol" value="#{usuRolBean.usuRoles}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -37,13 +37,12 @@
                                                      PF('dlgUsuRolAdd').show()" 
                                          actionListener="#{usuRolBean.buttonAction}"/>
                         <p:commandButton process="dtUsuRol" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar"  update=":form-add:usuRolGr"
                                          actionListener="#{usuRolBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgUsuRolAdd').show()"
-                                         update=":form-add:usuRolGr"
                                          />
-                        <p:commandButton process="dtUsuRol" icon="ui-icon-document"
+                        <p:commandButton process="dtUsuRol" icon="ui-icon-trash"
                                          value="Borrar" 
                                          actionListener="#{usuRolBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteUsuRol').style.display='block';
@@ -99,7 +98,6 @@
                                 value="Borrar" style="display: none"
                                 update="usuRolGr,:usuRol-form:dtUsuRol"
                                 actionListener="#{usuRolBean.deleteUsuRol()}"
-                                oncomplete="PF('dlgUsuRolAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Relación Usuario-Rol"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

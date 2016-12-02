@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="persona-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtPersona" var="persona" value="#{personaBean.personas}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -71,21 +71,19 @@
                                                      PF('dlgPersonaAdd').show()" 
                                          actionListener="#{personaBean.buttonAction}"/>
                         <p:commandButton process="dtPersona" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:personaGr"
                                          actionListener="#{personaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPersonaAdd').show()"
-                                         update=":form-add:personaGr"
                                          />
-                        <p:commandButton process="dtPersona" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtPersona" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:personaGr"
                                          actionListener="#{personaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePersona').style.display='block';
                                                      document.getElementById('form-add:addPersona').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPersonaAdd').show();"
-                                         update=":form-add:personaGr"
                                          />
 
                     </f:facet>
@@ -141,11 +139,17 @@
                         <p:outputLabel value="Fecha de Nacimiento" for="fecNac" />
                         <p:calendar id="fecNac" value="#{personaBean.personaSelected.perFecNac}" pattern="dd/MM/yyyy" mask="true" />
                         <p:outputLabel value="Lugar de Nacimiento" for="lugNac" />
-                        <p:inputText id="lugNac" required="true"
+                        <p:inputText id="lugNac"
                                      value="#{personaBean.personaSelected.perLugNac}" />
                         <p:outputLabel value="eMail" for="email" />
-                        <p:inputText id="email" required="true"
+                        <p:inputText id="email"
                                      value="#{personaBean.personaSelected.perEmail}" />
+                        <p:outputLabel value="Teléfono" for="tel" />
+                        <p:inputText id="tel"
+                                     value="#{personaBean.personaSelected.perTel}" />
+                        <p:outputLabel value="Dirección" for="direc" />
+                        <p:inputTextarea id="direc" rows="2" cols="40" autoResize="false"
+                                     value="#{personaBean.personaSelected.perDir}" />
                         <p:outputLabel value="Documento" for="perDoc" />
                         <p:fileUpload id="perDoc" fileUploadListener="#{personaBean.handleFileUpload}" mode="advanced" dragDropSupport="true"
                                       update="messages" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
@@ -160,7 +164,6 @@
                                 value="Borrar" style="display: none"
                                 update="personaGr,:persona-form:dtPersona"
                                 actionListener="#{personaBean.deletePersona()}"
-                                oncomplete="PF('dlgPersonaAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Persona"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

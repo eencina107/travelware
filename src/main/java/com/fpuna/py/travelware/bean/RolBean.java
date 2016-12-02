@@ -12,9 +12,9 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -25,7 +25,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "rolBean")
-@SessionScoped
+@ViewScoped
 public class RolBean implements Serializable{
     private int rolId;
     private String rolDesc;

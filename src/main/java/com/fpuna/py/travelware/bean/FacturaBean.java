@@ -18,10 +18,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.time.DateUtils;
@@ -33,7 +33,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "facturaBean")
-@SessionScoped
+@ViewScoped
 public class FacturaBean implements Serializable{
     private List<ComFacturas> facturas;
     private List<ComProveedores> proveedores;
@@ -85,7 +85,7 @@ public class FacturaBean implements Serializable{
     public void addFactura(){
         FacesContext context = FacesContext.getCurrentInstance();
         if (this.facturaSelected.getProId()==null) {
-                context.addMessage(null, new FacesMessage("Advertencia. Proveedor no válido. Verifique."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Proveedor no válido. Verifique.", ""));
                 return;
         }
         
@@ -94,8 +94,9 @@ public class FacturaBean implements Serializable{
                     fac.getFacNro().equals(this.facturaSelected.getFacNro()) &&
                     fac.getFacNroTim().equals(this.facturaSelected.getFacNroTim()) &&
                     fac.getProId().getProId().equals(this.facturaSelected.getProId().getProId()) ){
-                context.addMessage(null, new FacesMessage("Advertencia. "+ this.facturaSelected.getFacNro()+" ya existe para el proveedor "+fac.getProId().getProDesc()));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                         "Advertencia. " + this.facturaSelected.getFacNro()+" ya existe para el proveedor "+fac.getProId().getProDesc(), ""));
+                //this.clean();
                 return;
             }
         }
@@ -103,7 +104,8 @@ public class FacturaBean implements Serializable{
         //Validaciones de facturas
         if ((this.facturaSelected.getFacTotal() != null) && (this.facturaSelected.getFacCambio() != null) &&
                 (this.facturaSelected.getFacTotal().compareTo(BigDecimal.ZERO) < 0 || this.facturaSelected.getFacCambio().compareTo(BigDecimal.ZERO) < 0 )) {
-            context.addMessage(null, new FacesMessage("Advertencia. Monto de la factura o tipo de cambio no pueden ser negativos. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                     "Advertencia. Monto de la factura o tipo de cambio no pueden ser negativos. Verifique.", ""));
             return;
         }
         
@@ -143,15 +145,21 @@ public class FacturaBean implements Serializable{
         factura.setFacImg(this.facturaSelected.getFacImg());
         
         facturaEJB.update(factura);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue guardada con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue guardada con éxito.", ""));
         facturas = facturaEJB.getAll();
+        RequestContext.getCurrentInstance().update("factura-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgFacturaAdd').hide();");
     }
     
     public void deleteFactura(){
+        FacesContext context = FacesContext.getCurrentInstance();
         facturaEJB.delete(this.facturaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue borrada con éxito.", ""));
         facturas = facturaEJB.getAll();
-        RequestContext.getCurrentInstance().update("factura-form:dtFactura");
+        RequestContext.getCurrentInstance().update("factura-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgFacturaAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

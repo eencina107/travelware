@@ -10,7 +10,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="pasaporte-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtPasaporte" var="pasaporte" value="#{pasaporteBean.pasaportes}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -72,7 +72,7 @@
                                                          oncomplete="PF('dlgVisaAdd').show()"
                                                          update=":form-add-visa:visaGr"
                                                          />
-                                        <p:commandButton process="dtVisa" icon="ui-icon-document"
+                                        <p:commandButton process="dtVisa" icon="ui-icon-trash"
                                                          value="Borrar Visa" actionListener="#{visaBean.deleteVisa}">
                                             <p:confirm header="Borrar Visa"
                                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -95,21 +95,18 @@
                                                      PF('dlgPasaporteAdd').show()" 
                                          actionListener="#{pasaporteBean.buttonAction}"/>
                         <p:commandButton process="dtPasaporte" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:pasaporteGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPasaporteAdd').show()"
-                                         update=":form-add:pasaporteGr"
                                          />
-                        <p:commandButton process="dtPasaporte" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtPasaporte" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:pasaporteGr"
                                          oncomplete="document.getElementById('form-add:deletePasaporte').style.display='block';
                                                      document.getElementById('form-add:addPasaporte').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPasaporteAdd').show();"
-                                         update=":form-add:pasaporteGr"
                                          />
-
                     </f:facet>
                 </p:dataTable>
             </h:form>
@@ -159,7 +156,6 @@
                                 value="Borrar" style="display: none"
                                 update="pasaporteGr,:pasaporte-form:dtPasaporte"
                                 actionListener="#{pasaporteBean.deletePasaporte()}"
-                                oncomplete="PF('dlgPasaporteAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Pasaporte"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

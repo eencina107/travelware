@@ -8,41 +8,43 @@
 
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
-            
+
             <h:form>
-                <p:contentFlow value="#{pantallaInicioBean.listaViajesFuturos}" var="viaje" style="height: 200px">
+                <p:contentFlow value="#{pantallaInicioBean.listaViajesFuturos}" var="viaje" style="height: 250px">
                     <p:graphicImage  value="#{viajeImgBean.image}" styleClass="content" >
                         <f:param value="#{viaje.viaId}" name="viaId"></f:param>
                     </p:graphicImage>
                 </p:contentFlow>
-                <p:panel id="pasaportesVenc" header="Pasaportes Vencidos">
-                    <h:outputText value="#{pantallaInicioBean.cantPasaportesVencidos} se encuentra(n) vencido(s)" />
-                    <br/>
-                    <p:commandButton value="Mostrar" 
-                                     icon="ui-icon-extlink" 
-                                     actionListener="#{pantallaInicioBean.mostrarDialogPasaportesVencidos}"
-                                     rendered="#{not (pantallaInicioBean.cantPasaportesVencidos eq '0')}"/>
-                </p:panel>
-                <p:panel id="viajesFut" header="Próximos Viajes">
-                    <h:outputText value="#{pantallaInicioBean.cantViajesFuturos} se encuentra(n) próximo(s)" />
-                    <br/>
-                    <p:commandButton value="Mostrar" 
-                                     icon="ui-icon-extlink" 
-                                     actionListener="#{pantallaInicioBean.mostrarDialogViajesFuturos()}"
-                                     rendered="#{not (pantallaInicioBean.cantViajesFuturos eq '0')}"/>
-                </p:panel>
-                <p:panel id="contactosPend" header="Contactos Pendientes">
-                    <h:outputText value="#{pantallaInicioBean.cantContactosPendientes} se encuentra(n) pendiente(s)" />
-                    <br/>
-                    <p:commandButton value="Mostrar" 
-                                     icon="ui-icon-extlink" 
-                                     actionListener="#{pantallaInicioBean.mostrarDialogContactosPendientes()}"
-                                     rendered="#{not (pantallaInicioBean.cantContactosPendientes eq '0')}"/>
-                </p:panel>
+                <p:panelGrid columns="3" style="width: 100%">
+                    <p:panel id="pasaportesVenc" header="Pasaportes Vencidos" >
+                        <h:outputText value="#{pantallaInicioBean.cantPasaportesVencidos} se encuentra(n) vencido(s)" />
+                        <br/>
+                        <p:commandButton value="Mostrar" 
+                                         icon="ui-icon-extlink" 
+                                         actionListener="#{pantallaInicioBean.mostrarDialogPasaportesVencidos}"
+                                         rendered="#{not (pantallaInicioBean.cantPasaportesVencidos eq '0')}"/>
+                    </p:panel>
+                    <p:panel id="viajesFut" header="Próximos Viajes" >
+                        <h:outputText value="#{pantallaInicioBean.cantViajesFuturos} se encuentra(n) próximo(s)" />
+                        <br/>
+                        <p:commandButton value="Mostrar" 
+                                         icon="ui-icon-extlink" 
+                                         actionListener="#{pantallaInicioBean.mostrarDialogViajesFuturos()}"
+                                         rendered="#{not (pantallaInicioBean.cantViajesFuturos eq '0')}"/>
+                    </p:panel>
+                    <p:panel id="contactosPend" header="Contactos Pendientes" >
+                        <h:outputText value="#{pantallaInicioBean.cantContactosPendientes} se encuentra(n) pendiente(s)" />
+                        <br/>
+                        <p:commandButton value="Mostrar" 
+                                         icon="ui-icon-extlink" 
+                                         actionListener="#{pantallaInicioBean.mostrarDialogContactosPendientes()}"
+                                         rendered="#{not (pantallaInicioBean.cantContactosPendientes eq '0')}"/>
+                    </p:panel>
+                </p:panelGrid>
             </h:form>
 
         </ui:define>
-            
+
     </ui:composition>
 
 </html>

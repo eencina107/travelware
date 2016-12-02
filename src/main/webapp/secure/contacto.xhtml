@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="contacto-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtContacto" var="contacto" value="#{contactoBean.contactos}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -53,29 +53,26 @@
                     </p:column>
                     <f:facet name="header">
                         <p:commandButton process="dtContacto" icon="ui-icon-document"
-                                         value="Agregar"   
+                                         value="Agregar" update=":form-add:contactoGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgContactoAdd').show()" 
                                          actionListener="#{contactoBean.buttonAction}"
-                                         update=":form-add:contactoGr"
                                          />
                         <p:commandButton process="dtContacto" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:contactoGr" style="display: none"
                                          actionListener="#{contactoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgContactoAdd').show()"
-                                         update=":form-add:contactoGr"
                                          disabled="true"
                                          />
-                        <p:commandButton process="dtContacto" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtContacto" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:contactoGr"
                                          actionListener="#{contactoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteContacto').style.display='block';
                                                      document.getElementById('form-add:addContacto').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgContactoAdd').show();"
-                                         update=":form-add:contactoGr"
                                          />
 
                     </f:facet>
@@ -145,7 +142,6 @@
                                 value="Borrar" style="display: none"
                                 update="contactoGr,:contacto-form:dtContacto"
                                 actionListener="#{contactoBean.deleteContacto()}"
-                                oncomplete="PF('dlgContactoAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Contacto"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -212,7 +208,6 @@
                                                          PF('dlgPersBusqAdd').hide()"
                                              />
                         </f:facet>
-
                     </p:dataTable>
                 </h:form>
             </p:dialog>

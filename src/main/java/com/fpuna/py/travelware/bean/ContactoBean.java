@@ -15,10 +15,10 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -29,7 +29,7 @@ import org.primefaces.event.SelectEvent;
  * @author olimp
  */
 @Named(value = "contactoBean")
-@SessionScoped
+@ViewScoped
 public class ContactoBean implements Serializable{
     private List<ConContactos> contactos;
     private List<PgePersonas> personas;
@@ -104,17 +104,23 @@ public class ContactoBean implements Serializable{
         con.setConIdPersonaCont(this.contactoSelected.getConIdPersonaCont());
         con.setConIdUsuarioCont(this.contactoSelected.getConIdUsuarioCont());
         con.setConObservacion(this.contactoSelected.getConObservacion());
-        
+
         contactoEJB.update(con);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + "El contacto fue agregado con éxito."));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El contacto fue agregado con éxito.", ""));
         contactos = contactoEJB.getAll();
+        RequestContext.getCurrentInstance().update("contacto-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgContactoAdd').hide();");
     }
     
     public void deleteContacto(){
+        FacesContext context = FacesContext.getCurrentInstance();
         contactoEJB.delete(contactoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El contacto fue borrado con éxito.", ""));
         contactos = contactoEJB.getAll();
-        RequestContext.getCurrentInstance().update("contacto-form:dtContacto");
+        RequestContext.getCurrentInstance().update("contacto-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgContactoAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

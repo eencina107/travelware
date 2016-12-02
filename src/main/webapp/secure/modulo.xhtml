@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="modulo-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtModulo" var="modulo" value="#{moduloBean.modulos}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -24,7 +24,9 @@
                     <p:ajax event="rowSelect" listener="#{moduloBean.onRowSelect}" />
                     <f:facet name="header">
                         <p:commandButton process="dtModulo" icon="ui-icon-document"
-                                         value="Agregar"  oncomplete="PF('dlgModuloAdd').show()" />
+                                         value="Agregar" update=":form-add:moduloGr"
+                                         oncomplete="PF('dlgModuloAdd').show()"
+                                         actionListener="#{moduloBean.buttonAction}"/>
                         <p:commandButton process="dtModulo" icon="ui-icon-pencil"
                                          value="Editar"
                                          actionListener="#{moduloBean.setHabilitado(true)}"
@@ -32,7 +34,7 @@
                                                      PF('dlgModuloUpd').show()"
                                          update=":form-upd:moduloGrUpd"
                                          />
-                        <p:commandButton process="dtModulo" icon="ui-icon-document"
+                        <p:commandButton process="dtModulo" icon="ui-icon-trash"
                                          value="Borrar" 
                                          actionListener="#{moduloBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-upd:deleteModulo').style.display='block';
@@ -101,7 +103,7 @@
 
                         </h:panelGroup>
                         <p:outputLabel value="Abrev." for="abreviatura2" />
-                        <p:inputText id="abreviatura2" required="true"
+                        <p:inputText id="abreviatura2" required="true" maxlength="3" 
                                      value="#{moduloBean.moduloSelected.modAbr}" />
                         <p:outputLabel value="Estado" for="modEstado2" />
                         <p:selectOneMenu id="modEstado2" required="true"
@@ -121,7 +123,6 @@
                                 value="Borrar" style="display: none"
                                 update="moduloGrUpd,:modulo-form:dtModulo"
                                 actionListener="#{moduloBean.deleteModulo()}"
-                                oncomplete="PF('dlgModuloUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Modulo"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

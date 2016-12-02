@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="usuario-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtUsuario" var="usuario" value="#{usuarioBean.usuarios}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -57,7 +57,7 @@
                                                      PF('dlgUsuarioAdd').show()"
                                          update=":form-add:usuarioGr"
                                          />
-                        <p:commandButton process="dtUsuario" icon="ui-icon-document"
+                        <p:commandButton process="dtUsuario" icon="ui-icon-trash"
                                          value="Borrar" 
                                          actionListener="#{atractivoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteUsuario').style.display='block';
@@ -108,7 +108,6 @@
                                 value="Borrar" style="display: none"
                                 update="usuarioGr,:usuario-form:dtUsuario"
                                 actionListener="#{usuarioBean.deleteUsuario()}"
-                                oncomplete="PF('dlgUsuarioAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Usuario"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

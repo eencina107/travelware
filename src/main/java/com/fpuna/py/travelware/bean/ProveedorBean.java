@@ -11,13 +11,14 @@ import com.fpuna.py.travelware.dao.ProveedorDao;
 import com.fpuna.py.travelware.model.PgePersonas;
 import com.fpuna.py.travelware.model.PgeOrganizaciones;
 import com.fpuna.py.travelware.model.ComProveedores;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -30,7 +31,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "proveedorBean")
-@SessionScoped
+@ViewScoped
 public class ProveedorBean implements Serializable{
     private List<ComProveedores> proveedores;
     private List<PgePersonas> personas;
@@ -89,13 +90,13 @@ public class ProveedorBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (ComProveedores pro:proveedores){
             if (pro.getPerId()!=null && pro.getPerId().equals(this.proveedorSelected.getPerId()) && this.proveedorSelected.getProId()!=null && !pro.getProId().equals(this.proveedorSelected.getProId())){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un proveedor para esta persona"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya existe un proveedor para esta persona.", ""));
+                //this.clean();
                 return;
             }
             if (pro.getOrgId()!=null && pro.getOrgId().equals(this.proveedorSelected.getOrgId()) && this.proveedorSelected.getProId()!=null && !pro.getProId().equals(this.proveedorSelected.getProId())){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un proveedor para esta organizacion"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya existe un proveedor para esta organizacion.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -120,21 +121,34 @@ public class ProveedorBean implements Serializable{
         proveedor.setProNroTim(proveedorSelected.getProNroTim());
         proveedor.setProFecVen(proveedorSelected.getProFecVen());
         proveedorEJB.update(proveedor);
-        context.addMessage(null, new FacesMessage("Felicidades! "+ proveedor.getProDesc()+" fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! " + proveedor.getProDesc() + " fue guardado con éxito.", ""));
         proveedores=proveedorEJB.getAll();
-        RequestContext.getCurrentInstance().update("proveedor-form:dtProveedor");
+        RequestContext.getCurrentInstance().update("proveedor-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgProveedorAdd').hide();");
     }
     
     public void deleteProveedor(){
+        FacesContext context = FacesContext.getCurrentInstance();
         proveedorEJB.delete(proveedorSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + proveedorSelected.getProDesc() + " fue borrado con éxito.", ""));
         proveedores=proveedorEJB.getAll();
-        RequestContext.getCurrentInstance().update("proveedor-form:dtProveedor");
+        RequestContext.getCurrentInstance().update("proveedor-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgProveedorAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
         this.proveedorSelected = (ComProveedores) event.getObject();
         RequestContext.getCurrentInstance().update("proveedor-form:dtProveedor");
+    }
+    
+    public void goReporteFacturas(){
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfactura?id="+proveedorSelected.getProId());
+        } catch (IOException e) {
+            System.out.println("Error en servlet repViaje - "+e);
+        }
     }
 
     public List<ComProveedores> getProveedores() {

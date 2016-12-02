@@ -19,6 +19,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -30,13 +31,8 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "atractivoBean")
-@SessionScoped
+@ViewScoped
 public class AtractivoBean implements Serializable{
-    private int atrId;
-    private int ciuId;
-    private String atrDesc;
-    private byte[] atrImg;
-    private String atrUbi;
     private List<PgeAtractivos> atractivos;
     private List<PgeCiudades> ciudades;
     private PgeAtractivos atractivoSelected;
@@ -74,19 +70,15 @@ public class AtractivoBean implements Serializable{
     
     
     private void clean() {
-        this.atrDesc = null;
-        this.atrImg = null;
-        this.atrUbi = null;
         this.atractivoSelected = new PgeAtractivos();
-
     }
     
     public void addAtractivo(){
         FacesContext context = FacesContext.getCurrentInstance();
             for (PgeAtractivos atr:atractivos){
                 if (atr.getAtrDesc().toUpperCase().equals(this.atractivoSelected.getAtrDesc().toUpperCase()) && (this.atractivoSelected.getAtrId()!=null && !Objects.equals(this.atractivoSelected.getAtrId(), atr.getAtrId()))){
-                    context.addMessage(null, new FacesMessage("Advertencia. El atractivo "+this.atractivoSelected.getAtrDesc()+" ya existe"));
-                    this.clean();
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El atractivo "+this.atractivoSelected.getAtrDesc()+" ya existe.", ""));
+                    //this.clean();
                     return;
                 }
             }
@@ -103,19 +95,25 @@ public class AtractivoBean implements Serializable{
         atractivo.setAtrUsuIns(loginBean.getUsername());
         atractivoEJB.update(atractivo);
         if (this.atractivoSelected.getAtrId()!=null){
-            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ atractivo.getAtrDesc()+" fue actualizado con éxito!"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! " + atractivo.getAtrDesc() + " fue modificado con éxito.", ""));
         }
         else{
-            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ atractivo.getAtrDesc()+" fue creado con éxito!"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! " + atractivo.getAtrDesc() + " fue creado con éxito.", ""));
         }
         atractivos = atractivoEJB.getAll();
+        RequestContext.getCurrentInstance().update("atractivo-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgAtractivoAdd').hide();");
     }
     
     public void deleteAtractivo(){
+        FacesContext context = FacesContext.getCurrentInstance();
         atractivoEJB.delete(this.atractivoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.atractivoSelected.getAtrDesc() + " fue borrado con éxito.", ""));
         atractivos = atractivoEJB.getAll();
-        RequestContext.getCurrentInstance().update("atractivo-form:dtAtractivo");
+        RequestContext.getCurrentInstance().update("atractivo-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgAtractivoAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
@@ -128,51 +126,11 @@ public class AtractivoBean implements Serializable{
             this.atractivoSelected.setAtrImg(event.getFile().getContents());
         }
         catch (Exception e){
-            FacesMessage message = new FacesMessage("Error!", event.getFile().getFileName() + e);
+            FacesMessage message = new FacesMessage("Error! " + event.getFile().getFileName() + e, "");
             return;
         }
-        FacesMessage message = new FacesMessage("Felicidades! "+ event.getFile().getFileName() + " fue subido con éxito.");
+        FacesMessage message = new FacesMessage("Felicidades " + event.getFile().getFileName() + " fue subido con éxito.", "");
         FacesContext.getCurrentInstance().addMessage(null, message);
-    }
-    
-    public int getAtrId() {
-        return atrId;
-    }
-
-    public void setAtrId(int atrId) {
-        this.atrId = atrId;
-    }
-
-    public int getCiuId() {
-        return ciuId;
-    }
-
-    public void setCiuId(int ciuId) {
-        this.ciuId = ciuId;
-    }
-
-    public String getAtrDesc() {
-        return atrDesc;
-    }
-
-    public void setAtrDesc(String atrDesc) {
-        this.atrDesc = atrDesc;
-    }
-
-    public byte[] getAtrImg() {
-        return atrImg;
-    }
-
-    public void setAtrImg(byte[] atrImg) {
-        this.atrImg = atrImg;
-    }
-
-    public String getAtrUbi() {
-        return atrUbi;
-    }
-
-    public void setAtrUbi(String atrUbi) {
-        this.atrUbi = atrUbi;
     }
 
     public List<PgeAtractivos> getAtractivos() {

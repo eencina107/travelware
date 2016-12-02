@@ -10,7 +10,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="viaje-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtViaje" var="viaje" value="#{viajeBean.viajes}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -22,7 +22,7 @@
                     <p:ajax event="rowSelect" listener="#{viajeBean.onRowSelect}" />
                     <p:ajax event="rowToggle" listener="#{viajeDetBean.onRowToggle(viaje)}"  update=":viaje-form:growl" />
 
-                    <p:column headerText="Nombre" style="width: 30%"
+                    <p:column headerText="Nombre" style="width: 20%"
                               sortBy="#{viaje.viaDesc}">
                         <h:outputText value="#{viaje.viaDesc}" />
                     </p:column>
@@ -47,12 +47,12 @@
                         <h:outputText value="#{viaje.viaCost}" />
                     </p:column>
 
-                    <p:column headerText="Cant. Total" style="width: 8%"
+                    <p:column headerText="Cant. Total" style="width: 7%; text-align: center"
                               sortBy="#{viaje.viaCantTot}">
                         <h:outputText value="#{viaje.viaCantTot}" />
                     </p:column>
 
-                    <p:column headerText="Cant. Vendida" style="width: 8%"
+                    <p:column headerText="Cant. Vendida" style="width: 7%; text-align: center"
                               sortBy="#{viaje.viaCantVend}">
                         <h:outputText value="#{viaje.viaCantVend}" />
                     </p:column>
@@ -65,6 +65,14 @@
 
                     <p:column headerText="Detalles" style="width: 3%">
                         <p:rowToggler />
+                    </p:column>
+
+                    <p:column headerText=""  style="width: 6%">
+                        <p:commandButton icon="ui-icon-plus"
+                                         value="Pasajero"  update=":form-add-pasajero:pasajeroGr" 
+                                         disabled ="#{!viajeBean.isDisponible(viaje)}"
+                                         oncomplete="PF('dlgPasajeroAdd').show()" 
+                                         actionListener="#{pasajeroBean.buttonAction2(viaje)}"/>
                     </p:column>
 
                     <p:rowExpansion>
@@ -114,11 +122,11 @@
                                                          oncomplete="PF('dlgViajeDetAdd').show()" 
                                                          actionListener="#{viajeDetBean.buttonAction}"/>
                                         <p:commandButton process="dtViajeDet" icon="ui-icon-pencil"
-                                                         value="Editar Detalle" disabled="true"
+                                                         value="Editar Detalle" disabled="true" style="display: none"
                                                          oncomplete="PF('dlgViajeDetAdd').show()"
                                                          update=":form-add-viajeDet:viajeDetGr"
                                                          />
-                                        <p:commandButton process="dtViajeDet" icon="ui-icon-document"
+                                        <p:commandButton process="dtViajeDet" icon="ui-icon-trash"
                                                          value="Borrar Detalle" actionListener="#{viajeDetBean.deleteViajeDet}">
                                             <p:confirm header="Borrar Detalle de Viaje"
                                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -142,24 +150,22 @@
                                                      PF('dlgViajeAdd').show()" 
                                          actionListener="#{viajeBean.buttonAction}"/>
                         <p:commandButton process="dtViaje" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:viajeGr"
                                          actionListener="#{viajeBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgViajeAdd').show()"
-                                         update=":form-add:viajeGr"
                                          />
-                        <p:commandButton process="dtViaje" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtViaje" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:viajeGr"
                                          actionListener="#{viajeBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteViaje').style.display='block';
                                                      document.getElementById('form-add:addViaje').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgViajeAdd').show();"
-                                         update=":form-add:viajeGr"
                                          />
-                        <p:commandButton icon="ui-icon-document" value="Listado Pasajeros"
-                                         onclick="window.location='/py.travelware/repviaje?id=#{viajeBean.viajeSelected.viaId}';"
+                        <p:commandButton icon="ui-icon-search" value="Listado Pasajeros"
+                                         actionListener="#{viajeBean.goReporte}"
                                          />
 
 
@@ -227,7 +233,6 @@
                                 value="Borrar" style="display: none"
                                 update="viajeGr,:viaje-form:dtViaje"
                                 actionListener="#{viajeBean.deleteViaje()}"
-                                oncomplete="PF('dlgViajeAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Viaje"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -317,6 +322,111 @@
                             action="#{viajeDetBean.addViajeDet()}"
                             />
                     </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog header="Pasajeros" widgetVar="dlgPasajeroAdd"
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="form-add-pasajero">
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" />
+                    <p:panelGrid columns="2" columnClasses="column" id="pasajeroGr">  
+                        <p:outputLabel value="Viaje" for="viaje" />
+                        <h:panelGroup>
+                            <p:selectOneMenu id="viaje" required="true" disabled="true"
+                                             value="#{pasajeroBean.pasajeroSelected.viaId}" converter="viajeConverter">
+                                <f:selectItems value="#{pasajeroBean.viajes}" 
+                                               var="viaje" 
+                                               itemLabel="#{viaje.viaDesc} - #{pasajeroBean.getSimpleDateFormat(viaje.viaFecSali)} - #{viaje.viaCost} #{viaje.monId.monAbreviatura}" 
+                                               itemValue="#{viaje}" />
+                            </p:selectOneMenu>
+                            <h:inputHidden value="#{pasajeroBean.pasajeroSelected.pviId}" />
+                        </h:panelGroup>
+                        <p:outputLabel value="Nro. Doc. Persona" for="persona1" />
+                        <p:inputText id="persona1" required="true"
+                                     value="#{pasajeroBean.pasajeroSelected.perId}" converter="personaConverter">
+                            <p:ajax event="dblclick" oncomplete="PF('dlgPersBusqAdd').show()" />
+                            <p:ajax event="blur" update="personaDesc" />
+                        </p:inputText>
+
+                        <p:outputLabel value="Persona" for="personaDesc" />
+                        <p:inputText id="personaDesc" disabled="true" style="width:270px"
+                                     value="#{pasajeroBean.pasajeroSelected.perId.perNom} #{pasajeroBean.pasajeroSelected.perId.perApe}" />
+                        <p:outputLabel value="Relación" for="relacion" />
+                        <p:selectOneMenu id="relacion"
+                                         value="#{pasajeroBean.pasajeroSelected.pasRel}" >
+                            <f:selectItem itemLabel="Pasajero" itemValue="P" />
+                            <f:selectItem itemLabel="Acompañante" itemValue="A" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Preferencia de Asiento" for="prefAsi" />
+                        <p:selectOneMenu id="prefAsi"
+                                         value="#{pasajeroBean.pasajeroSelected.pasPrefAsi}" >
+                            <f:selectItem itemLabel="Pasillo" itemValue="P" />
+                            <f:selectItem itemLabel="Ventanilla" itemValue="V" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Preferencia de Comida" for="prefComi" />
+                        <p:inputText id="prefComi" required="true"
+                                     value="#{pasajeroBean.pasajeroSelected.pasPrefComi }" />
+                        <p:spacer />
+                        <p:commandButton id="addPasajero" 
+                            value="Grabar"
+                            update="pasajeroGr,:viaje-form:dtViaje"
+                            action="#{pasajeroBean.addPasajero}"
+                            />
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog header="Búsqueda de Personas" widgetVar="dlgPersBusqAdd" width="60%" 
+                      modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <h:form id="persona-form">
+                    <p:growl id="growl" showDetail="true" sticky="true" />
+
+                    <p:dataTable id="dtPersona" var="persona" value="#{personaBean.personas}"
+                                 rows="10" paginator="true" paginatorPosition="bottom"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 selection="#{personaBean.personaSelected}" rowKey="#{persona}"
+                                 selectionMode="single">
+
+                        <p:ajax event="rowSelect"  listener="#{personaBean.onRowSelect}" />
+                        <p:column headerText="Nro. Doc." style="width: 12%"
+                                  filterBy="#{persona.perNroDoc}" filterMatchMode="exact"
+                                  sortBy="#{persona.perNroDoc}">
+                            <h:outputText value="#{persona.perNroDoc}" />
+                        </p:column>
+                        <p:column headerText="Nombre" 
+                                  filterBy="#{persona.perNom}" filterMatchMode="contains"
+                                  sortBy="#{persona.perNom}">
+                            <h:outputText value="#{persona.perNom}" />
+                        </p:column>
+                        <p:column headerText="Apellido"
+                                  filterBy="#{persona.perApe}" filterMatchMode="contains"
+                                  sortBy="#{persona.perApe}">
+                            <h:outputText value="#{persona.perApe}"></h:outputText>
+                        </p:column>
+                        <p:column headerText="Nacionalidad">
+                            <h:outputText value="#{persona.paiId.paiNac}" />
+                        </p:column>
+                        <p:column headerText="Fecha de Nacimiento"  style="width: 10%">
+                            <h:outputText value="#{persona.perFecNac}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+
+                        </p:column>
+                        <p:column headerText="Sexo" style="width: 7%">
+                            <h:outputText value="#{persona.perSex eq  'M' ? 'Masculino':'Femenino'}" />
+                        </p:column>
+
+                        <f:facet name="header" >
+                            <p:commandButton process="dtPersona" icon="ui-icon-pencil"
+                                             value="Seleccionar" 
+                                             oncomplete="document.getElementById('form-add-pasajero:persona1').value=#{personaBean.personaSelected.perNroDoc};
+                                                         document.getElementById('form-add-pasajero:persona1').onblur();
+                                                         PF('dlgPersBusqAdd').hide()"
+                                             />
+                        </f:facet>
+
+                    </p:dataTable>
                 </h:form>
             </p:dialog>
 

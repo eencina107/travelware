@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "usuRolBean")
-@SessionScoped
+@ViewScoped
 public class UsuRolBean implements Serializable{
     private List<PgeUsuRoles> usuRoles;
     private List<PgeRoles> roles;
@@ -42,8 +42,6 @@ public class UsuRolBean implements Serializable{
     private RolDao rolEJB;
     @EJB
     private UsuarioDao usuarioEJB;
-    private PgeRoles rol;
-    private PgeUsuarios usuario;
     private LoginBean loginBean;
     
     private boolean habilitado;
@@ -52,7 +50,7 @@ public class UsuRolBean implements Serializable{
     public UsuRolBean(){
         
     }
-    
+
     @PostConstruct
     public void init(){
         clean();
@@ -60,10 +58,6 @@ public class UsuRolBean implements Serializable{
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         loginBean = (LoginBean) session.getAttribute("loginBean");
         usuRolSelected = new PgeUsuRoles();
-        rol = new PgeRoles();
-        usuRolSelected.setRolId(rol);
-        usuario = new PgeUsuarios();
-        usuRolSelected.setUsuId(usuario);
         usuRoles = usuRolEJB.getAll();
         roles = rolEJB.getAll();
         usuarios = usuarioEJB.getAll();
@@ -72,25 +66,21 @@ public class UsuRolBean implements Serializable{
 
     private void clean() {
         this.usuRolSelected = new PgeUsuRoles();
-        this.rol = new PgeRoles();
-        this.usuario = new PgeUsuarios();
     }
-    
+
     public void buttonAction(ActionEvent actionEvent){
         usuRolSelected = new PgeUsuRoles();
-        this.rol = new PgeRoles();
-        this.usuario = new PgeUsuarios();
-        usuRolSelected.setRolId(rol);
-        usuRolSelected.setUsuId(usuario);
         habilitado = true;
     }
     
     public void addUsuRol(){
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgeUsuRoles ur:usuRoles){
-            if (ur.getRolId().equals(rol) && ur.getUsuId().equals(usuario)){
-                context.addMessage("Mensaje", new FacesMessage("Advertencia. Este usuario ya se encuentra en este rol"));
-                this.clean();
+            if (!ur.getUsuRolId().equals(this.usuRolSelected.getUsuRolId()) &&
+                    ur.getRolId().equals(this.usuRolSelected.getRolId()) && ur.getUsuId().equals(this.usuRolSelected.getUsuId())){
+                context.addMessage("Mensaje", new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + this.usuRolSelected.getUsuId().getUsuCod()+
+                                                                    " ya se encuentra relacionado a " + this.usuRolSelected.getRolId().getRolDesc(), ""));
+                //this.clean();
                 return;
             }
         }
@@ -111,16 +101,21 @@ public class UsuRolBean implements Serializable{
         usuRol.setRolId(this.usuRolSelected.getRolId());
         usuRol.setUsuId(this.usuRolSelected.getUsuId());
         usuRolEJB.update(usuRol);
-        context.addMessage(null, new FacesMessage("Felicidades! La relación fue guardada con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! La relación fue guardada con éxito.", ""));
         usuRoles = usuRolEJB.getAll();
         RequestContext.getCurrentInstance().update("usuRol-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgUsuRolAdd').hide();");
     }
     
     public void deleteUsuRol(){
+        FacesContext context = FacesContext.getCurrentInstance();
         usuRolEJB.delete(usuRolSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! La relación fue borrada con éxito.", ""));
         usuRoles = usuRolEJB.getAll();
-        RequestContext.getCurrentInstance().update("usuRol-form:dtUsuRol");
+        RequestContext.getCurrentInstance().update("usuRol-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgUsuRolAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
@@ -160,22 +155,6 @@ public class UsuRolBean implements Serializable{
         this.usuRolSelected = usuRolSelected;
     }
 
-    public PgeRoles getRol() {
-        return rol;
-    }
-
-    public void setRol(PgeRoles rol) {
-        this.rol = rol;
-    }
-
-    public PgeUsuarios getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(PgeUsuarios usuario) {
-        this.usuario = usuario;
-    }
-    
     public boolean isHabilitado() {
         return habilitado;
     }

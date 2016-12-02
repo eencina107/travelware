@@ -66,7 +66,7 @@
                                      value="#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perNom} #{pantallaInicioBean.contactoSelected.conIdPersonaCont.perApe} (#{pantallaInicioBean.contactoSelected.conIdPersonaCont.perNroDoc})" />
 
                         <p:outputLabel value="Tipo" for="tipo" />
-                        <p:inputText id="tipo"  disabled="true"
+                        <p:inputText id="tipo"  disabled="true" 
                                      value="#{pantallaInicioBean.contactoSelected.conTipo eq  'D' ? 'Visita' : pantallaInicioBean.contactoSelected.conEstado eq 'T' ? 'Llamada' : 'E-mail'}" />
 
                         <p:outputLabel value="Teléfono" for="tel" />

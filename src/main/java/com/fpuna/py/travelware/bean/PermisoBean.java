@@ -15,8 +15,8 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -28,7 +28,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "permisoBean")
-@SessionScoped
+@ViewScoped
 public class PermisoBean implements Serializable{
     private List<PgePermisos> permisos;
     private List<PgeRoles> roles;
@@ -81,8 +81,8 @@ public class PermisoBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (PgePermisos per:permisos){
             if (per.getPgeMenus().equals(this.menu) && per.getRolId().equals(this.rol)){
-                context.addMessage("Mensaje", new FacesMessage("Advertencia. El permiso ya existe"));
-                this.clean();
+                context.addMessage("Mensaje", new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El permiso ya existe.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -94,16 +94,21 @@ public class PermisoBean implements Serializable{
         permiso.setPgeMenus(this.permisoSelected.getPgeMenus());
         permiso.setRolId(this.permisoSelected.getRolId());
         permisoEJB.update(permiso);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! El permiso fue guardado con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El permiso fue guardado con éxito.", ""));
         permisos = permisoEJB.getAll();
-        RequestContext.getCurrentInstance().update("permiso-form:dtPermiso");
+        RequestContext.getCurrentInstance().update("permiso-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPermisoAdd').hide();");
     }
     
     public void deletePermiso(){
+        FacesContext context = FacesContext.getCurrentInstance();
         permisoEJB.delete(permisoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El permiso fue borrado con éxito.", ""));
         permisos = permisoEJB.getAll();
-        RequestContext.getCurrentInstance().update("permiso-form:dtPermiso");
+        RequestContext.getCurrentInstance().update("permiso-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPermisoAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

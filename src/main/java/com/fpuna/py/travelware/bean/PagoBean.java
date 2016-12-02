@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -33,7 +33,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "pagoBean")
-@SessionScoped
+@ViewScoped
 public class PagoBean implements Serializable{
     private List<ComPagos> pagos;
     private List<ComFacturas> facturas;
@@ -113,17 +113,17 @@ public class PagoBean implements Serializable{
 
         //Validaciones de pagos de facturas
         if (this.pagoSelected.getPgoCambio().compareTo(BigDecimal.ZERO) < 0 || this.pagoSelected.getPgoMonto().compareTo(BigDecimal.ZERO) < 0 ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Monto de pago o tipo de cambio no pueden ser negativos. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Monto de pago o tipo de cambio no pueden ser negativos. Verifique.", ""));
             return;
         }
         if ( !this.pagoSelected.getMonId().equals(this.pagoSelected.getFacId().getMonId()) ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Moneda de pago debe ser igual a moneda de factura ("
-                                                            +this.pagoSelected.getFacId().getMonId().getMonDesc()+"). Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Moneda de pago debe ser igual a moneda de factura ("
+                                                            +this.pagoSelected.getFacId().getMonId().getMonDesc()+"). Verifique.", ""));
             return;
         }
         if ( this.pagoSelected.getPgoMonto().compareTo(this.pagoSelected.getFacId().getFacSaldo()) > 0 ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Monto de pago no puede ser mayor a saldo de la factura ("
-                                                            +this.pagoSelected.getFacId().getFacSaldo()+"). Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Monto de pago no puede ser mayor a saldo de la factura ("
+                                                            +this.pagoSelected.getFacId().getFacSaldo()+"). Verifique.", ""));
             return;
         }
         
@@ -161,22 +161,28 @@ public class PagoBean implements Serializable{
             this.pagoSelected.getFacId().setFacEst('P');
         facturaEJB.update(this.pagoSelected.getFacId());
         
-        context.addMessage(null, new FacesMessage("Felicidades! El pago fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! El pago fue guardado con éxito.", ""));
         pagos = pagoEJB.getAll();
         facturas = facturaEJB.getAll();
-        RequestContext.getCurrentInstance().update("pagos-form:dtPagos");
+        RequestContext.getCurrentInstance().update("pago-form");
+        RequestContext.getCurrentInstance().update("factura-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPagoAdd').hide();");
     }
     
     public void deletePago(){
+        FacesContext context = FacesContext.getCurrentInstance();
         pagoEJB.delete(this.pagoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El pago fue borrado con éxito.", ""));
         pagos = pagoEJB.getAll();
-        RequestContext.getCurrentInstance().update("pagos-form:dtPagos");
+        RequestContext.getCurrentInstance().update("pago-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPagoAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
         this.pagoSelected = (ComPagos) event.getObject();
-        RequestContext.getCurrentInstance().update("pagos-form:dtPagos");
+        RequestContext.getCurrentInstance().update("pago-form:dtPagos");
     }
 
     public List<ComPagos> getPagos() {

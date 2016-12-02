@@ -12,9 +12,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -25,11 +26,8 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "profesionBean")
-@SessionScoped
+@ViewScoped
 public class ProfesionBean implements Serializable{
-    private int profesionId;
-    private String profesionDesc;
-    private String profesionObs;
     private List<PgeProfesiones> profesiones;
     private PgeProfesiones profesionSelected;
     private PgeProfesiones profesionNuevo;
@@ -53,18 +51,20 @@ public class ProfesionBean implements Serializable{
     }
     
     private void clean() {
-        this.profesionDesc= null;
-        this.profesionObs= null;
         this.profesionSelected= null;
         this.profesionNuevo= new PgeProfesiones();
+    }
+    
+    public void buttonAction(ActionEvent actionEvent){
+        profesionNuevo = new PgeProfesiones();
     }
     
     public void addProfesion(){
         FacesContext context= FacesContext.getCurrentInstance();
         for (PgeProfesiones prof: profesiones){
             if (prof.getPrfDesc().toUpperCase().equals(this.profesionNuevo.getPrfDesc().toUpperCase())){
-                context.addMessage(null, new FacesMessage("Advertencia. La profesión "+this.profesionNuevo.getPrfDesc()+" ya existe."));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. La profesión "+this.profesionNuevo.getPrfDesc()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -75,15 +75,22 @@ public class ProfesionBean implements Serializable{
         profesion.setPrfUsuIns(loginBean.getUsername());
         profesion.setPrfFecIns(new Date());
         profesionEJB.create(profesion);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + profesion.getPrfDesc()+" fue creado con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! La profesión " + profesion.getPrfDesc() + " fue creada con éxito.", ""));
         profesiones= profesionEJB.getAll();
+        RequestContext.getCurrentInstance().update("profesion-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgProfesionAdd').hide();");
     }
     
     public void deleteProfesion(){
+        FacesContext context = FacesContext.getCurrentInstance();
         profesionEJB.delete(this.getProfesionSelected());
+        context.addMessage(null, new FacesMessage("Felicidades! La profesión " + this.getProfesionSelected().getPrfDesc() + " fue borrada con éxito.", ""));
         profesiones = profesionEJB.getAll();
-    }
+        RequestContext.getCurrentInstance().update("profesion-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgProfesionUpd').hide();");
+}
     
     public void editProfesion(){
         if (this.profesionSelected.getPrfId()==null){
@@ -98,37 +105,16 @@ public class ProfesionBean implements Serializable{
         profesion.setPrfUsuMod(loginBean.getUsername());
         profesion.setPrfFecMod(new Date());
         profesionEJB.update(profesion);
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! La profesión " + profesion.getPrfDesc() + " fue modificada con éxito.", ""));
         profesiones=profesionEJB.getAll();
+        RequestContext.getCurrentInstance().update("profesion-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgProfesionUpd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
         this.profesionSelected = (PgeProfesiones) event.getObject();
         RequestContext.getCurrentInstance().update("profesion-form:dtProfesion");
-    }
-
-    public int getProfesionId() {
-        return profesionId;
-    }
-
-    public void setProfesionId(int profesionId) {
-        this.profesionId = profesionId;
-    }
-
-    public String getProfesionDesc() {
-        return profesionDesc;
-    }
-
-    public void setProfesionDesc(String profesionDesc) {
-        this.profesionDesc = profesionDesc;
-    }
-
-    public String getProfesionObs() {
-        return profesionObs;
-    }
-
-    public void setProfesionObs(String profesionObs) {
-        this.profesionObs = profesionObs;
     }
 
     public List<PgeProfesiones> getProfesiones() {
@@ -163,6 +149,4 @@ public class ProfesionBean implements Serializable{
         this.profesionEJB = profesionEJB;
     }
 
-   
-    
 }

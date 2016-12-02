@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="cajasChicas-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtCajasChicas" var="cajasChicas" value="#{cajaChicaBean.cajasChicas}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -51,21 +51,19 @@
                                                      PF('dlgCajasChicasAdd').show()" 
                                          actionListener="#{cajaChicaBean.buttonAction}" disabled="#{cajaChicaBean.existeRegistro}"/>
                         <p:commandButton process="dtCajasChicas" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:cajasChicasGr"
                                          actionListener="#{cajaChicaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCajasChicasAdd').show()"
-                                         update=":form-add:cajasChicasGr"
                                          />
-                        <p:commandButton process="dtCajasChicas" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtCajasChicas" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:cajasChicasGr"
                                          actionListener="#{cajaChicaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteCajaChica').style.display='block';
                                                      document.getElementById('form-add:addCajaChica').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgCajasChicasAdd').show();"
-                                         update=":form-add:cajasChicasGr"
                                          />
 
                     </f:facet>
@@ -117,7 +115,6 @@
                                 value="Borrar" style="display: none"
                                 update="cajasChicasGr,:cajasChicas-form:dtCajasChicas"
                                 actionListener="#{cajaChicaBean.deleteCaja()}"
-                                oncomplete="PF('dlgCajasChicasAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Caja Chica"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

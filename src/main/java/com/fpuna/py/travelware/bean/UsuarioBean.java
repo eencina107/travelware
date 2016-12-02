@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -28,7 +28,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "usuarioBean")
-@SessionScoped
+@ViewScoped
 public class UsuarioBean implements Serializable{
     private List<PgeUsuarios> usuarios;
     private List<PgePersonas> personas;
@@ -78,9 +78,9 @@ public class UsuarioBean implements Serializable{
         for (PgeUsuarios usu:usuarios){
             if (usu.getUsuCod().equals(this.usuarioSelected.getUsuCod()) &&
                     ((this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())) || this.usuarioSelected.getUsuId()==null)){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario con éste codigo"));
-                usuarios = usuarioEJB.getAll();
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya existe un usuario con éste codigo", ""));
+                //usuarios = usuarioEJB.getAll();
+                //this.clean();
                 return;
             }
         }
@@ -88,8 +88,8 @@ public class UsuarioBean implements Serializable{
         for (PgeUsuarios usu:usuarios){
             if (usu.getPerId().equals(this.usuarioSelected.getPerId()) &&
                     ((this.usuarioSelected.getUsuId()!=null && !usu.getUsuId().equals(this.usuarioSelected.getUsuId())) || this.usuarioSelected.getUsuId()==null)){
-                context.addMessage(null, new FacesMessage("Advertencia. Ya existe un usuario para esta persona"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Ya existe un usuario para esta persona", ""));
+                //this.clean();
                 return;
             }
         }
@@ -115,16 +115,21 @@ public class UsuarioBean implements Serializable{
         usuario.setUsuEst('A');
         usuario.setUsuPass(usuarioSelected.getUsuPass());
         usuarioEJB.update(usuario);
-        context.addMessage(null, new FacesMessage("Felicidades! " + usuario.getUsuCod()+" fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! " + usuario.getUsuCod() + " fue guardado con éxito.", ""));
         usuarios=usuarioEJB.getAll();
-        RequestContext.getCurrentInstance().update("usuario-form:dtUsuario");
+        RequestContext.getCurrentInstance().update("usuario-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgUsuarioAdd').hide();");
     }
     
     public void deleteUsuario(){
+        FacesContext context = FacesContext.getCurrentInstance();
         usuarioEJB.delete(usuarioSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + usuarioSelected.getUsuCod() + " fue borrado con éxito.", ""));
         usuarios=usuarioEJB.getAll();
-        RequestContext.getCurrentInstance().update("usuario-form:dtUsuario");
+        RequestContext.getCurrentInstance().update("usuario-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgUsuarioAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

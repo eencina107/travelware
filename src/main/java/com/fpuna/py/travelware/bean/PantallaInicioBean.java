@@ -12,6 +12,7 @@ import com.fpuna.py.travelware.dao.ViajeDao;
 import com.fpuna.py.travelware.model.ConContactos;
 import com.fpuna.py.travelware.model.ViaPasaportes;
 import com.fpuna.py.travelware.model.ViaViajes;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,10 +21,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -34,11 +34,12 @@ import org.primefaces.event.SelectEvent;
  * @author olimp
  */
 @Named(value = "pantallaInicioBean")
-@SessionScoped
+@ViewScoped
 public class PantallaInicioBean implements Serializable {
     private List<ViaPasaportes> listaPasaportesVencidos;
     private List<ViaViajes> listaViajesFuturos;
     private List<ConContactos> listaContactosPendientes;
+    private Integer viajeSelected;
 
     @EJB
     private PasaporteDao pasaporteDAO;
@@ -94,7 +95,7 @@ public class PantallaInicioBean implements Serializable {
         con.setConIdUsuarioCont(this.contactoSelected.getConIdUsuarioCont());
         con.setConObservacion(this.contactoSelected.getConObservacion());
         
-        contactoDao.update(con);
+        contactoDao.update(con); 
         context.addMessage("Mensaje", new FacesMessage("Felicidades! " + "El contacto fue actualizado con éxito."));
         this.clean();
         this.listaContactosPendientes = contactoDao.getPendientesByUsuario(usuarioDao.getByName(loginBean.getUsername()));
@@ -172,6 +173,14 @@ public class PantallaInicioBean implements Serializable {
         options.put("modal", true);
         RequestContext.getCurrentInstance().openDialog("pasaportesVenc", options, null);
     }
+    
+    public void goReporteFactura(){
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repviaje?id="+viajeSelected.toString());
+        } catch (IOException e) {
+            System.out.println("Error en servlet repViaje - "+e);
+        }
+    }
 
     public void mostrarDialogViajesFuturos() {
         this.listaViajesFuturos = viajeDao.getAllFuturos();
@@ -191,4 +200,14 @@ public class PantallaInicioBean implements Serializable {
         //options.put("height", 200);
         RequestContext.getCurrentInstance().openDialog("contactosPend", options, null);
     }
+
+    public Integer getViajeSelected() {
+        return viajeSelected;
+    }
+
+    public void setViajeSelected(Integer viajeSelected) {
+        this.viajeSelected = viajeSelected;
+    }
+    
+    
 }

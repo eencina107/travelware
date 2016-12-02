@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="moneda-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtMoneda" var="moneda" value="#{monedaBean.monedas}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -26,15 +26,15 @@
 <!--                        <p:column headerText="ID" sortBy="#{pais.paiId}">
                             <h:outputText value="#{pais.paiId}" />
                         </p:column>-->
-                    <p:column headerText="Nombre" style="width: 250px"
+                    <p:column headerText="Nombre" 
                               sortBy="#{moneda.monDesc}">
                         <h:outputText value="#{moneda.monDesc}" />
                     </p:column>
-                    <p:column headerText="Abrev." style="width: 250px"
+                    <p:column headerText="Abrev." 
                               sortBy="#{moneda.monAbreviatura}">
                         <h:outputText value="#{moneda.monAbreviatura}" />
                     </p:column>
-                    <p:column headerText="País" style="width:32px;text-align: center">
+                    <p:column headerText="País" >
                         <h:outputText value="#{moneda.paiId.paiDesc}"></h:outputText>
                     </p:column>
                     <f:facet name="header">
@@ -44,21 +44,19 @@
                                                      PF('dlgMonedaAdd').show()" 
                                          actionListener="#{monedaBean.buttonAction}"/>
                         <p:commandButton process="dtMoneda" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar"  update=":form-add:monedaGr"
                                          actionListener="#{monedaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgMonedaAdd').show()"
-                                         update=":form-add:monedaGr"
                                          />
-                        <p:commandButton process="dtMoneda" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtMoneda" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:monedaGr"
                                          actionListener="#{monedaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteMoneda').style.display='block';
                                                      document.getElementById('form-add:addMoneda').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgMonedaAdd').show();"
-                                         update=":form-add:monedaGr"
                                          />
 
                     </f:facet>
@@ -78,11 +76,8 @@
                             <h:inputHidden value="#{monedaBean.monedaSelected.monId}" />
 
                         </h:panelGroup>
-                        <p:outputLabel value="Abrev." for="abrev" />
-                        <p:inputText id="abrev" required="true"
-                                     value="#{monedaBean.monedaSelected.monAbreviatura}" />
-                        <p:outputLabel value="País" for="pais" />
-                        <p:selectOneMenu id="pais" required="true"
+                        <p:outputLabel value="País" for="pais2" />
+                        <p:selectOneMenu id="pais2" required="true"
                                          disabled="#{!monedaBean.isHabilitado()}" 
                                          value="#{monedaBean.monedaSelected.paiId}" converter="paisConverter">
 
@@ -91,6 +86,9 @@
                                            itemLabel="#{pais.paiDesc}" 
                                            itemValue="#{pais}" />
                         </p:selectOneMenu>
+                        <p:outputLabel value="Abrev." for="abrev" />
+                        <p:inputText id="abrev" required="true" maxlength="3" 
+                                     value="#{monedaBean.monedaSelected.monAbreviatura}" />
                         <p:spacer />
                         <h:panelGroup>
                             <p:commandButton id='addMoneda'

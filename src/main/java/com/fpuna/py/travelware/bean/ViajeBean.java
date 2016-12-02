@@ -5,10 +5,10 @@
  */
 package com.fpuna.py.travelware.bean;
 
-import com.fpuna.py.travelware.dao.ViajeDao;
 import com.fpuna.py.travelware.dao.MonedaDao;
-import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.dao.ViajeDao;
 import com.fpuna.py.travelware.model.PgeMonedas;
+import com.fpuna.py.travelware.model.ViaViajes;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,9 +23,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import static org.hibernate.internal.util.io.StreamCopier.BUFFER_SIZE;
+import org.primefaces.context.ApplicationContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -35,7 +37,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "viajeBean")
-@SessionScoped
+@ViewScoped
 public class ViajeBean implements Serializable{
     private List<ViaViajes> viajes;
     private List<PgeMonedas> monedas;
@@ -49,7 +51,7 @@ public class ViajeBean implements Serializable{
 
     private PgeMonedas moneda;
 
-    String nombreArchivo = "";
+    String nombreArchivo = null;
     String nombreCarpetaImg;
 
     private boolean habilitado;
@@ -85,15 +87,15 @@ public class ViajeBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (ViaViajes via:viajes){
             if (via.getViaDesc().equals(this.viajeSelected.getViaDesc()) && this.viajeSelected.getViaId() == null){
-                context.addMessage(null, new FacesMessage("Advertencia. " +  this.viajeSelected.getViaDesc()+" ya existe. Verifique."));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + this.viajeSelected.getViaDesc()+" ya existe. Verifique.", ""));
+                //this.clean();
                 return;
             }
         }
         
         ViaViajes viaje = new ViaViajes();
         if (this.viajeSelected.getViaId()!= null){ //modificacion
-            if (this.nombreArchivo != "")
+            if (this.nombreArchivo != null)
                 viaje.setViaImg(this.nombreArchivo);
             else
                 viaje.setViaImg(this.viajeSelected.getViaImg());
@@ -120,15 +122,30 @@ public class ViajeBean implements Serializable{
         viaje.setMonId(this.viajeSelected.getMonId());
         viaje.setViaCost(this.viajeSelected.getViaCost());
         viajeEJB.update(viaje);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + viaje.getViaDesc()+" fue agregado con éxito."));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! " + viaje.getViaDesc()+" fue guardado con éxito.", ""));
         viajes = viajeEJB.getAll();
+        RequestContext.getCurrentInstance().update("viaje-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgViajeAdd').hide();");
     }
     
     public void deleteViaje(){
+        FacesContext context = FacesContext.getCurrentInstance();
         viajeEJB.delete(this.viajeSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.viajeSelected.getViaDesc() + " fue borrado con éxito.", ""));
         viajes = viajeEJB.getAll();
-        RequestContext.getCurrentInstance().update("viaje-form:dtViaje");
+        RequestContext.getCurrentInstance().update("viaje-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgViajeAdd').hide();");
+    }
+    
+    public void goReporte() {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repviaje?id="+viajeSelected.getViaId().toString());
+        } catch (IOException e) {
+            System.out.println("Error en servlet repViaje - "+e);
+        }
+        
     }
     
     public void onRowSelect(SelectEvent event){
@@ -180,7 +197,7 @@ public class ViajeBean implements Serializable{
                             event.getFile().getSize() / 1024 + 
                             " Kb Tipo: " + 
                             event.getFile().getContentType() + 
-                                    " Subido correctamente.");
+                                    " Subido correctamente.", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 this.nombreArchivo = event.getFile().getFileName();
 
@@ -235,4 +252,8 @@ public class ViajeBean implements Serializable{
     public void setHabilitado(boolean habilitado) {
         this.habilitado = habilitado;
     }   
+
+    public boolean isDisponible(ViaViajes viaje){
+        return viajeEJB.isDisponible(viaje);
+    }
 }

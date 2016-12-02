@@ -10,7 +10,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="pasajero-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
                 <p:dataTable id="dtPasajero" var="pasajero" value="#{pasajeroBean.pasajeros}"
                              rows="10" paginator="true" paginatorPosition="bottom"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -71,7 +71,7 @@
                             <p:column headerText="Monto" sortBy="#{gasto.gasMonto}">
                                 <h:outputText value="#{gasto.gasMonto}"/>
                             </p:column>
-                            <f:facet name="header">
+                            <f:facet name="footer">
                                 <p:commandButton process="dtGasto" icon="ui-icon-document"
                                                  value="Agregar Gasto"  update=":form-add-gasto:gastoGr" 
                                                  oncomplete="PF('dlgGastoAdd').show()" 
@@ -81,7 +81,7 @@
                                                  oncomplete="PF('dlgGastoAdd').show()"
                                                  update=":form-add-gasto:gastoGr"
                                                  />
-                                <p:commandButton process="dtGasto" icon="ui-icon-document"
+                                <p:commandButton process="dtGasto" icon="ui-icon-trash"
                                                  value="Borrar Gasto" actionListener="#{gastoBean.deleteGasto}">
                                     <p:confirm header="Borrar Gasto"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -104,21 +104,19 @@
                                                      PF('dlgPasajeroAdd').show()" 
                                          actionListener="#{pasajeroBean.buttonAction}"/>
                         <p:commandButton process="dtPasajero" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:pasajeroGr"
                                          actionListener="#{pasajeroBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPasajeroAdd').show()"
-                                         update=":form-add:pasajeroGr"
                                          />
-                        <p:commandButton process="dtPasajero" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtPasajero" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:pasajeroGr"
                                          actionListener="#{pasajeroBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePasajero').style.display='block';
                                                      document.getElementById('form-add:addPasajero').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgPasajeroAdd').show();"
-                                         update=":form-add:pasajeroGr"
                                          />
 
                     </f:facet>
@@ -181,7 +179,6 @@
                                 value="Borrar" style="display: none"
                                 update="pasajeroGr,:pasajero-form:dtPasajero"
                                 actionListener="#{pasajeroBean.deletePasajero()}"
-                                oncomplete="PF('dlgPasajeroAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Pasajero"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

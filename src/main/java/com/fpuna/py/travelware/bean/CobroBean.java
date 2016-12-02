@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -34,7 +34,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "cobroBean")
-@SessionScoped
+@ViewScoped
 public class CobroBean implements Serializable{
     private List<PagCobros> cobros;
     private List<PgePersonas> personas;
@@ -137,21 +137,27 @@ public class CobroBean implements Serializable{
         cobro.setCobAnulado('N');
         cobro.setPerId(persona);
         cobroEJB.update(cobro);
-        context.addMessage(null, new FacesMessage("Felicidades! El cobro fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! El cobro fue guardado con éxito.", ""));
         cobros = cobroEJB.getAll();
-        RequestContext.getCurrentInstance().update("cobros-form:dtCobros");
+        RequestContext.getCurrentInstance().update("cobro-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCobroAdd').hide();");
     }
     
     public void deleteCobro(){
+        //
+        FacesContext context = FacesContext.getCurrentInstance();
         cobroEJB.delete(this.cobroSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El cobro fue anulado con éxito.", ""));
         cobros = cobroEJB.getAll();
-        RequestContext.getCurrentInstance().update("cobros-form:dtCobros");
+        RequestContext.getCurrentInstance().update("cobro-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCobroAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
         this.cobroSelected = (PagCobros) event.getObject();
-        RequestContext.getCurrentInstance().update("cobros-form:dtCobros");
+        RequestContext.getCurrentInstance().update("cobro-form:dtCobros");
     }
 
     public List<PagCobros> getCobros() {

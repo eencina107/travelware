@@ -10,7 +10,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="factura-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtFactura" var="factura" value="#{facturaBean.facturas}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -59,19 +59,11 @@
                         <p:rowToggler />
                     </p:column>
 
-                    <p:column headerText="">
-                        <p:dataTable id="dtPago" var="pago" value="#{pagoBean.pagos}"
-                                     rows="10" paginator="false" paginatorPosition="bottom"
-                                     selection="#{pagoBean.pagoSelected}" rowKey="#{pago}"
-                                     selectionMode="single">
-
-                            <f:facet name="footer">
-                                <p:commandButton process="dtPago" icon="ui-icon-document"
-                                                 value="Pagar"  update=":form-add-pago:pagoGr" 
-                                                 oncomplete="PF('dlgPagoAdd').show()" 
-                                                 actionListener="#{pagoBean.buttonAction2(factura)}"/>
-                            </f:facet>
-                        </p:dataTable>
+                    <p:column headerText=""  style="width: 6%">
+                        <p:commandButton icon="ui-icon-document"
+                                         value="Pagar"  update=":form-add-pago:pagoGr" 
+                                         oncomplete="PF('dlgPagoAdd').show()" 
+                                         actionListener="#{pagoBean.buttonAction2(factura)}"/>
                     </p:column>
 
                     <p:rowExpansion>
@@ -132,9 +124,9 @@
                                                          oncomplete="PF('dlgFacturaDetAdd').show()"
                                                          update=":form-add-facturaDet:facturaDetGr"
                                                          />
-                                        <p:commandButton process="dtFacturaDet" icon="ui-icon-document"
+                                        <p:commandButton process="dtFacturaDet" icon="ui-icon-trash"
                                                          value="Borrar Detalle" actionListener="#{facturaDetBean.deleteFacturaDet}">
-                                            <p:confirm header="Borrar FacturaDet"
+                                            <p:confirm header="Borrar Detalle de Factura"
                                                        message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
                                         </p:commandButton>
                                         <p:confirmDialog global="true" showEffect="fade"
@@ -155,21 +147,19 @@
                                                      PF('dlgFacturaAdd').show()" 
                                          actionListener="#{facturaBean.buttonAction}"/>
                         <p:commandButton process="dtFactura" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:facturaGr"
                                          actionListener="#{facturaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgFacturaAdd').show()"
-                                         update=":form-add:facturaGr"
                                          />
-                        <p:commandButton process="dtFactura" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtFactura" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:facturaGr"
                                          actionListener="#{facturaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteFactura').style.display='block';
                                                      document.getElementById('form-add:addFactura').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgFacturaAdd').show();"
-                                         update=":form-add:facturaGr"
                                          />
 
                     </f:facet>
@@ -218,7 +208,7 @@
                                            itemValue="#{moneda}" />
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Tipo de Cambio" for="cambio" />
+                        <p:outputLabel value="Cambio" for="cambio" />
                         <p:inputText id="cambio"
                                      value="#{facturaBean.facturaSelected.facCambio}" />
 
@@ -271,7 +261,6 @@
                                 value="Borrar" style="display: none"
                                 update="facturaGr,:factura-form:dtFactura"
                                 actionListener="#{facturaBean.deleteFactura()}"
-                                oncomplete="PF('dlgFacturaAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Factura"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
@@ -401,7 +390,7 @@
                         <p:spacer />
                         <p:commandButton
                             value="Grabar"
-                            update="pagoGr,:factura-form:dtFactura:dtPago"
+                            update="pagoGr,:factura-form:dtFactura"
                             action="#{pagoBean.addPago}"
                             />
                     </p:panelGrid>

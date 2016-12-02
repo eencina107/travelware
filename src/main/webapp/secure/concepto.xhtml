@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="concepto-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtConcepto" var="concepto" value="#{conceptoBean.conceptos}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -44,28 +44,25 @@
 
                     <f:facet name="header">
                         <p:commandButton process="dtConcepto" icon="ui-icon-document"
-                                         value="Agregar"   
+                                         value="Agregar" update=":form-add:conceptoGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgConceptoAdd').show()" 
                                          actionListener="#{conceptoBean.buttonAction}"
-                                         update=":form-add:conceptoGr"
                                          />
                         <p:commandButton process="dtConcepto" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:conceptoGr"
                                          actionListener="#{conceptoBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgConceptoAdd').show()"
-                                         update=":form-add:conceptoGr"
                                          />
-                        <p:commandButton process="dtConcepto" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtConcepto" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:conceptoGr"
                                          actionListener="#{conceptoBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteConcepto').style.display='block';
                                                      document.getElementById('form-add:addConcepto').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgConceptoAdd').show();"
-                                         update=":form-add:conceptoGr"
                                          />
 
                     </f:facet>
@@ -113,7 +110,6 @@
                                 value="Borrar" style="display: none"
                                 update="conceptoGr,:concepto-form:dtConcepto"
                                 actionListener="#{conceptoBean.deleteConcepto()}"
-                                oncomplete="PF('dlgConceptoAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Concepto"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

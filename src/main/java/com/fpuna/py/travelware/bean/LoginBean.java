@@ -54,6 +54,16 @@ public class LoginBean implements Serializable{
     private ModuloDao moduloEJB;
     
     private  PgeUsuarios usuario;
+    private int intentosFallidos=0;
+    private boolean mostrarBotones=true;
+
+    public boolean isMostrarBotones() {
+        return mostrarBotones;
+    }
+
+    public void setMostrarBotones(boolean mostrarBotones) {
+        this.mostrarBotones = mostrarBotones;
+    }
     private List<PgeRoles> roles;
     private MenuModel model= new DefaultMenuModel();
 
@@ -86,6 +96,8 @@ public class LoginBean implements Serializable{
         loggedIn = usuario != null;
         
         if (loggedIn) {
+            intentosFallidos =0;
+            mostrarBotones = true;
             logger.info("Se inició sesión como " + username);
             roles = rolDaoEJB.getRolesByUsuario(usuario);
             model=new DefaultMenuModel();
@@ -99,6 +111,10 @@ public class LoginBean implements Serializable{
             return "home";
             } else {
             loggedIn = false;
+            intentosFallidos++;
+            if (intentosFallidos>=5){
+                mostrarBotones=false;
+            }
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error de acceso", "El usuario y la contraseña no coinciden");
             FacesContext.getCurrentInstance().addMessage(null, message);
             logger.info("Se intentó ingresar como " + username);
@@ -107,8 +123,18 @@ public class LoginBean implements Serializable{
             password = null;
             RequestContext.getCurrentInstance().update("loginPage");
             RequestContext.getCurrentInstance().update("mensajes");
+            RequestContext.getCurrentInstance().update("userNameInput");
+            RequestContext.getCurrentInstance().update("passwordInput");
             return "login";
         }
+    }
+
+    public int getIntentosFallidos() {
+        return intentosFallidos;
+    }
+
+    public void setIntentosFallidos(int intentosFallidos) {
+        this.intentosFallidos = intentosFallidos;
     }
     
     /**

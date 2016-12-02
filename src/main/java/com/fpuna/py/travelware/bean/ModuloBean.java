@@ -16,6 +16,8 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -26,12 +28,9 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "moduloBean")
-@SessionScoped
+@ViewScoped
 public class ModuloBean implements Serializable{
     private int modId;
-    private String modDesc;
-    private String modAbr;
-    private Character modEst;
     private List<PgeModulos> modulos;
     private PgeModulos moduloSelected;
     private PgeModulos moduloNuevo;
@@ -47,30 +46,6 @@ public class ModuloBean implements Serializable{
 
     public void setModId(int modId) {
         this.modId = modId;
-    }
-
-    public String getModDesc() {
-        return modDesc;
-    }
-
-    public void setModDesc(String modDesc) {
-        this.modDesc = modDesc;
-    }
-
-    public String getModAbr() {
-        return modAbr;
-    }
-
-    public void setModAbr(String modAbr) {
-        this.modAbr = modAbr;
-    }
-
-    public Character getModEst() {
-        return modEst;
-    }
-
-    public void setModEst(Character modEst) {
-        this.modEst = modEst;
     }
 
     public List<PgeModulos> getModulos() {
@@ -121,35 +96,31 @@ public class ModuloBean implements Serializable{
     }
     
     public void clean(){
-        this.modDesc= null;
-        this.modAbr= null;
-        this.modEst = null;
         this.moduloSelected=null;
         this.moduloNuevo= new PgeModulos();        
     }
     
+    public void buttonAction(ActionEvent actionEvent){
+        moduloNuevo = new PgeModulos();
+        habilitado = true;
+    }
+
     public void addModulo(){
         FacesContext context= FacesContext.getCurrentInstance();
         for (PgeModulos mod: modulos){
             if(mod.getModDesc().equals(this.moduloNuevo.getModDesc())){
-                context.addMessage(null, new FacesMessage("Advertencia. El módulo "+this.moduloNuevo.getModDesc()+" ya existe"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El módulo "+this.moduloNuevo.getModDesc()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
             if(mod.getModAbr().equals(this.moduloNuevo.getModAbr())){
-                context.addMessage(null, new FacesMessage("Advertencia. El módulo "+this.moduloNuevo.getModAbr()+" ya existe"));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El módulo "+this.moduloNuevo.getModAbr()+" ya existe.", ""));
+                //this.clean();
                 return;
             }
         }
         this.moduloNuevo.setModEstado(Character.toUpperCase(this.moduloNuevo.getModEstado()));
-        this.moduloNuevo.setModAbr(this.moduloNuevo.getModAbr().toUpperCase());
-        if ((!this.moduloNuevo.getModEstado().toString().equals("A")) && (!this.moduloNuevo.getModEstado().toString().equals("I"))){
-            context.addMessage(null, new FacesMessage("Advertencia. Estado inválido, introduzca A para activo o I para inactivo"));
-            this.clean();
-            return;
-        }
-        
+        this.moduloNuevo.setModAbr(this.moduloNuevo.getModAbr().toUpperCase());        
         
         PgeModulos modulo= new PgeModulos();
         modulo.setModAbr(this.moduloNuevo.getModAbr());
@@ -158,14 +129,21 @@ public class ModuloBean implements Serializable{
         modulo.setModUsuIns(loginBean.getUsername());
         modulo.setModFecIns(new Date());
         moduloEJB.create(modulo);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ modulo.getModDesc() + " fue creado con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El módulo " + modulo.getModDesc() + " fue creado con éxito.", ""));
         modulos = moduloEJB.getAll();
+        RequestContext.getCurrentInstance().update("modulo-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgModuloAdd').hide();");
     }
     
     public void deleteModulo(){
+        FacesContext context = FacesContext.getCurrentInstance();
         moduloEJB.delete(this.getModuloSelected());
+        context.addMessage(null, new FacesMessage("Felicidades! El módulo " + this.getModuloSelected().getModDesc() + " fue borrado con éxito.", ""));
         modulos= moduloEJB.getAll();
+        RequestContext.getCurrentInstance().update("modulo-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgModuloUpd').hide();");
     }
     
     public void editModulo(){
@@ -182,9 +160,11 @@ public class ModuloBean implements Serializable{
         modulo.setModFecMod(new Date());
         modulo.setModUsuMod(loginBean.getUsername());
         moduloEJB.update(modulo);
-        context.addMessage(null, new FacesMessage("Felicidades! "+ this.moduloSelected.getModDesc()+" fue modificado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! El módulo " + this.moduloSelected.getModDesc()+" fue modificado con éxito.", ""));
         modulos= moduloEJB.getAll();
+        RequestContext.getCurrentInstance().update("modulo-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgModuloUpd').hide();");
     }
     
     public PgeModulos prepareCreate(){

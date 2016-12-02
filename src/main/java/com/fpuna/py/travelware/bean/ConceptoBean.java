@@ -12,8 +12,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -26,7 +26,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "conceptoBean")
-@SessionScoped
+@ViewScoped
 public class ConceptoBean implements Serializable{
     private List<ViaConceptos> conceptos;
     private ViaConceptos conceptoSelected;
@@ -67,8 +67,8 @@ public class ConceptoBean implements Serializable{
         FacesContext context = FacesContext.getCurrentInstance();
         for (ViaConceptos con:conceptos){
             if (con.getConDesc().equals(this.conceptoSelected.getConDesc()) && con.getConId()!=this.conceptoSelected.getConId()) {
-                context.addMessage(null, new FacesMessage("Advertencia. El concepto "+this.conceptoSelected.getConDesc()+" ya existe. Verifique."));
-                this.clean();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El concepto "+this.conceptoSelected.getConDesc()+" ya existe. Verifique.", ""));
+                //this.clean();
                 return;
             }
         }
@@ -91,16 +91,22 @@ public class ConceptoBean implements Serializable{
         concepto.setConReq(conceptoSelected.getConReq());
 
         conceptoEJB.update(concepto);
-        context.addMessage(null, new FacesMessage("Felicidades! " + concepto.getConDesc()+" fue guardado con éxito."));
+        context.addMessage(null, new FacesMessage("Felicidades! " + concepto.getConDesc()+" fue guardado con éxito.", ""));
         conceptos=conceptoEJB.getAll();
         RequestContext.getCurrentInstance().update("concepto-form:dtConcepto");
+        RequestContext.getCurrentInstance().update("concepto-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgConceptoAdd').hide();");
     }
     
     public void deleteConcepto(){
+        FacesContext context = FacesContext.getCurrentInstance();
         conceptoEJB.delete(conceptoSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + conceptoSelected.getConDesc()+" fue borrado con éxito.", ""));
         conceptos=conceptoEJB.getAll();
-        RequestContext.getCurrentInstance().update("concepto-form:dtConcepto");
+        RequestContext.getCurrentInstance().update("concepto-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgConceptoAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

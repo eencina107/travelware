@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="profesion-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtProfesion" var="profesion" value="#{profesionBean.profesiones}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -26,26 +26,26 @@
                     <p:column headerText="Nombre" sortBy="#{profesion.prfDesc}">
                         <h:outputText value="#{profesion.prfDesc}" />
                     </p:column>
-                    <p:column headerText="Estado" sortBy="#{profesion.prfObs}">
+                    <p:column headerText="Observación" sortBy="#{profesion.prfObs}">
                         <h:outputText value="#{profesion.prfObs}" />
                     </p:column>
                                         <f:facet name="header">
                         <p:commandButton process="dtProfesion" icon="ui-icon-document"
-                                         value="Agregar"  oncomplete="PF('dlgProfesionAdd').show()" />
+                                         value="Agregar" update=":form-add:profesionGr"
+                                         oncomplete="PF('dlgProfesionAdd').show()"
+                                         actionListener="#{profesionBean.buttonAction}"/>
                         <p:commandButton process="dtProfesion" icon="ui-icon-pencil"
-                                         value="Editar"
+                                         value="Editar" update=":form-upd:profesionGrUpd"
                                          oncomplete="document.getElementById('form-upd-fs').disabled = false;
                                                      PF('dlgProfesionUpd').show()"
-                                         update=":form-upd:profesionGrUpd"
                                          />
-                        <p:commandButton process="dtProfesion" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtProfesion" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-upd:profesionGrUpd"
                                          oncomplete="document.getElementById('form-upd:deleteProfesion').style.display='block';
                                                      document.getElementById('form-upd:editProfesion').style.display='none';
                                                      $('#form-upd-fs :input').prop('disabled', true); 
                                                      $('#form-upd-fs :button').prop('disabled', false); 
                                                      PF('dlgProfesionUpd').show();"
-                                         update=":form-upd:profesionGrUpd"
                                          />
 
                     </f:facet>
@@ -65,7 +65,7 @@
 
                         </h:panelGroup>
                         <p:outputLabel value="Observación" for="observacion" />
-                        <p:inputText id="observacion" required="true"
+                        <p:inputText id="observacion"
                                      value="#{profesionBean.profesionNuevo.prfObs}"/>
                         <p:spacer />
                         <p:commandButton
@@ -91,7 +91,7 @@
 
                         </h:panelGroup>
                         <p:outputLabel value="Observación" for="observacion2" />
-                        <p:inputText id="observacion2" required="true"
+                        <p:inputText id="observacion2"
                                      value="#{profesionBean.profesionSelected.prfObs}" />
                         <p:spacer />
                         <h:panelGroup>
@@ -104,7 +104,6 @@
                                 value="Borrar" style="display: none"
                                 update="profesionGrUpd,:profesion-form:dtProfesion"
                                 actionListener="#{profesionBean.deleteProfesion()}"
-                                oncomplete="PF('dlgProfesionUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Profesion"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.time.DateUtils;
@@ -39,7 +39,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "movCajaBean")
-@SessionScoped
+@ViewScoped
 public class MovCajaBean implements Serializable{
     private List<ComMovCajas> movCajas;
     private List<ComCajas> cajas;
@@ -119,22 +119,22 @@ public class MovCajaBean implements Serializable{
 
         //Validaciones de movimientos de caja chica
         if (this.movCajaSelected.getMovCambio().compareTo(BigDecimal.ZERO) < 0 || this.movCajaSelected.getMovMonto().compareTo(BigDecimal.ZERO) < 0 ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Monto de movimiento o tipo de cambio no pueden ser negativos. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Monto de movimiento o tipo de cambio no pueden ser negativos. Verifique.",""));
             return;
         }
         if ( !this.movCajaSelected.getMonId().equals(this.movCajaSelected.getCajId().getMonId()) ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Moneda del movimiento debe ser igual a moneda de la caja chica ("
-                                                            +this.movCajaSelected.getCajId().getMonId().getMonDesc()+"). Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Moneda del movimiento debe ser igual a moneda de la caja chica ("
+                                                            +this.movCajaSelected.getCajId().getMonId().getMonDesc()+"). Verifique.", ""));
             return;
         }
         if ( nuevoSaldo.compareTo(BigDecimal.ZERO) < 0 ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Saldo de la caja chica (" +this.movCajaSelected.getCajId().getCajSaldo()
-                                                            +") insuficiente para el movimiento. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Saldo de la caja chica (" +this.movCajaSelected.getCajId().getCajSaldo()
+                                                            +") insuficiente para el movimiento. Verifique.", ""));
             return;
         }
         if ( nuevoSaldo.compareTo(this.movCajaSelected.getCajId().getCajLim()) > 0 ) {
-            context.addMessage(null, new FacesMessage("Advertencia. Saldo no puede superar al límite de la caja chica ("
-                                                            +this.movCajaSelected.getCajId().getCajLim()+"). Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Saldo no puede superar al límite de la caja chica ("
+                                                            +this.movCajaSelected.getCajId().getCajLim()+"). Verifique.",""));
             return;
         }
         
@@ -188,14 +188,16 @@ public class MovCajaBean implements Serializable{
             factura.setFacFecIns(new Date());
         }
 
-        context.addMessage(null, new FacesMessage("Felicidades! El movimiento de caja chica fue guardado con éxito"));
+        context.addMessage(null, new FacesMessage("Felicidades! El movimiento de caja chica fue guardado con éxito", ""));
         movCajas = movCajaEJB.getAll();
         cajas = cajaEJB.getAll();
-        RequestContext.getCurrentInstance().update("movCaja-form:dtMovCaja");
+        RequestContext.getCurrentInstance().update("movCaja-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMovCajaAdd').hide();");
     }
     
     public void deleteMovCaja(){
+        FacesContext context = FacesContext.getCurrentInstance();
         //Obtenemos el nuevo saldo de caja chica
         BigDecimal nuevoSaldo = getNuevoSaldo("Del");
 
@@ -204,8 +206,11 @@ public class MovCajaBean implements Serializable{
         cajaEJB.update(this.movCajaSelected.getCajId());
 
         movCajaEJB.delete(this.movCajaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El movimiento de caja chica fue borrado con éxito.", ""));
         movCajas = movCajaEJB.getAll();
-        RequestContext.getCurrentInstance().update("movCaja-form:dtMovCaja");
+        RequestContext.getCurrentInstance().update("movCaja-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMovCajaAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

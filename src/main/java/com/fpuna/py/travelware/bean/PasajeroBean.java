@@ -21,15 +21,13 @@ import com.fpuna.py.travelware.model.ViaGastos;
 import com.fpuna.py.travelware.model.ViaViajesDet;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -42,7 +40,7 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "pasajeroBean")
-@SessionScoped
+@ViewScoped
 public class PasajeroBean implements Serializable {
 
     private List<ViaPasajeros> pasajeros;
@@ -105,14 +103,21 @@ public class PasajeroBean implements Serializable {
         habilitado = true;
     }
 
+    public void buttonAction2(ViaViajes viaje) {
+        this.pasajeroSelected = new ViaPasajeros();
+        this.pasajeroSelected.setViaId(viaje);
+        habilitado = true;
+    }
+
     public void addPasajero() {
         boolean nuevo = false;
         FacesContext context = FacesContext.getCurrentInstance();
         if (pasajeros != null) {
             for (ViaPasajeros pas : pasajeros) {
                 if (pas.getPerId().equals(this.pasajeroSelected.getPerId()) && pas.getViaId().equals(this.pasajeroSelected.getViaId()) && this.pasajeroSelected.getPviId() == null ) {
-                    context.addMessage(null, new FacesMessage("Advertencia. Esta persona ya se encuentra registrada para el viaje "+pas.getViaId().getViaDesc()));
-                    this.clean();
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                             "Advertencia. " + "Esta persona ya se encuentra registrada para el viaje "+pas.getViaId().getViaDesc(), ""));
+                    //this.clean();
                     return;
                 }
             }
@@ -121,8 +126,14 @@ public class PasajeroBean implements Serializable {
         this.pasaportes = pasaporteEJB.getAll();
         Integer cantPas = pasaporteEJB.getCantPasaportes(this.pasajeroSelected.getPerId());
         if (cantPas.equals(0)){
-            context.addMessage(null, new FacesMessage("Advertencia. "+ this.pasajeroSelected.getPerId().getPerNom()+" "+this.pasajeroSelected.getPerId().getPerApe()+" no posee pasaporte. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                     "Advertencia. " + this.pasajeroSelected.getPerId().getPerNom()+" "+this.pasajeroSelected.getPerId().getPerApe()+" no posee pasaporte. Verifique.", ""));
             //this.clean();
+            return;
+        }
+
+        if(!viajeEJB.isDisponible(this.pasajeroSelected.getViaId())) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. "+this.pasajeroSelected.getViaId().getViaDesc()+" no dispoble para la venta. Verifique.", ""));
             return;
         }
 
@@ -146,9 +157,9 @@ public class PasajeroBean implements Serializable {
         pasajeroEJB.update(pasajero);
 
         if (nuevo) {
+            Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend();
             //Actualizamos la cantidad de pasajes vendidos en el viaje
-            Integer cantVend = pasajero.getViaId().getViaCantVend() + 1;
-            pasajero.getViaId().setViaCantVend(cantVend);
+            pasajero.getViaId().setViaCantVend(++cantVend);
             viajeEJB.update(pasajero.getViaId());
 
             //Agregamos los gastos del pasajero
@@ -167,14 +178,17 @@ public class PasajeroBean implements Serializable {
                 }
             }
         }
-        
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasajero fue guardado con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasajero fue guardado con éxito", ""));
         pasajeros = pasajeroEJB.getAll();
         viajes = viajeEJB.getAllDisp();
+        RequestContext.getCurrentInstance().update("pasajero-form");
+        RequestContext.getCurrentInstance().update("viaje-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPasajeroAdd').hide();");
     }
 
     public void deletePasajero() {
+        FacesContext context = FacesContext.getCurrentInstance();
         //Borramos los gastos del pasajero
         this.gastos = gastoEJB.getAll(this.pasajeroSelected);
         for (ViaGastos gasto :this.getGastos()) {
@@ -184,15 +198,18 @@ public class PasajeroBean implements Serializable {
 
         //Borramos el pasajero
         pasajeroEJB.delete(this.pasajeroSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! El pasajero fue borrado con éxito.", ""));
 
+        Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend();
         //Actualizamos la cantidad de pasajes vendidos en el viaje
-        Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend() - 1;
-        this.pasajeroSelected.getViaId().setViaCantVend(cantVend);
+        this.pasajeroSelected.getViaId().setViaCantVend(--cantVend);
         viajeEJB.update(this.pasajeroSelected.getViaId());
 
         pasajeros = pasajeroEJB.getAll();
         viajes = viajeEJB.getAllDisp();
-        RequestContext.getCurrentInstance().update("pasajero-form:dtPasajero");
+        RequestContext.getCurrentInstance().update("pasajero-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgPasajeroAdd').hide();");
     }
 
     public void onRowSelect(SelectEvent event) {

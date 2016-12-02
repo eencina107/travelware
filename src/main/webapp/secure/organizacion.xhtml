@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="organizacion-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtOrganizacion" var="organizacion" value="#{organizacionBean.organizaciones}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -57,21 +57,19 @@
                                                      PF('dlgOrganizacionAdd').show()" 
                                          actionListener="#{organizacionBean.buttonAction}"/>
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:organizacionGr"
                                          actionListener="#{organizacionBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgOrganizacionAdd').show()"
-                                         update=":form-add:organizacionGr"
                                          />
-                        <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtOrganizacion" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:organizacionGr"
                                          actionListener="#{organizacionBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteOrganizacion').style.display='block';
                                                      document.getElementById('form-add:addOrganizacion').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgOrganizacionAdd').show();"
-                                         update=":form-add:organizacionGr"
                                          />
 
                     </f:facet>
@@ -137,7 +135,6 @@
                                 value="Borrar" style="display: none"
                                 update="organizacionGr,:organizacion-form:dtOrganizacion"
                                 actionListener="#{organizacionBean.deleteOrganizacion()}"
-                                oncomplete="PF('dlgOrganizacionAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Organizacion"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -30,7 +30,7 @@ import org.primefaces.event.SelectEvent;
  * @author damia_000
  */
 @Named(value = "facturaDetBean")
-@SessionScoped
+@ViewScoped
 public class FacturaDetBean implements Serializable{
     private List<ComFacturasDet> facturasDet;
     private List<ViaConceptos> conceptos;
@@ -77,8 +77,8 @@ public class FacturaDetBean implements Serializable{
             for (ComFacturasDet facturaDet:facturasDet){
                 if (this.facturaDetSelected.getFadId()!=null && facturaDet.getFadId() != this.facturaDetSelected.getFadId() &&
                         facturaDet.getFadNroSec() == this.facturaDetSelected.getFadNroSec()) {
-                    context.addMessage(null, new FacesMessage("Advertencia. "+ this.facturaDetSelected.getFacId().getFacNro()+" "+
-                                                                               this.facturaDetSelected.getFadNroSec()+" ya existe. Verifique."));
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. "+ this.facturaDetSelected.getFacId().getFacNro()+" "+
+                                                                               this.facturaDetSelected.getFadNroSec()+" ya existe. Verifique.", ""));
                     this.clean();
                     return;
                 }
@@ -90,15 +90,15 @@ public class FacturaDetBean implements Serializable{
               (this.facturaDetSelected.getFadMtoImp()!=null && this.facturaDetSelected.getFadMtoImp().compareTo(BigDecimal.ZERO) < 0) ||
               (this.facturaDetSelected.getFadMtoExe()!=null && this.facturaDetSelected.getFadMtoExe().compareTo(BigDecimal.ZERO) < 0) ||
               (this.facturaDetSelected.getFadValUni()!=null && this.facturaDetSelected.getFadValUni().compareTo(BigDecimal.ZERO) < 0) ){
-            context.addMessage(null, new FacesMessage("Advertencia. Monto del Detalle no puede ser negativo. Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Monto del Detalle no puede ser negativo. Verifique.", ""));
             return;
         }
 
         //Validaciones de monto de factura
         if ((this.facturaDetSelected.getConId()!=null && this.facturaDetSelected.getFadCant()==null) ||
               (this.facturaDetSelected.getConId()!=null && this.facturaDetSelected.getFadValUni()==null)) {
-            context.addMessage(null, new FacesMessage("Advertencia. Debe ingresar cantidad y valor unitario para " + 
-                                                        this.facturaDetSelected.getConId().getConDesc() + ". Verifique."));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. Debe ingresar cantidad y valor unitario para " + 
+                                                        this.facturaDetSelected.getConId().getConDesc() + ". Verifique.", ""));
             return;
         }
 
@@ -133,15 +133,21 @@ public class FacturaDetBean implements Serializable{
         facturaDet.setFadMtoTot(this.facturaDetSelected.getFadMtoGra().add(this.facturaDetSelected.getFadMtoImp().add(this.facturaDetSelected.getFadMtoExe())));
         
         facturaDetEJB.update(facturaDet);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! El detalle "+nroSec+" de la factura "+facturaSelected.getFacNro()+" ha sido guardada con éxito"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El detalle "+nroSec+" de la factura "+facturaSelected.getFacNro()+" ha sido guardada con éxito.", ""));
         facturasDet = facturaDetEJB.getAll(facturaSelected);
+        RequestContext.getCurrentInstance().update("factura-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgFacturaDetAdd').hide();");
     }
     
     public void deleteFacturaDet(){
+        FacesContext context = FacesContext.getCurrentInstance();
         facturaDetEJB.delete(this.facturaDetSelected);
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! El detalle de la factura "+facturaSelected.getFacNro()+" ha sido borrado con éxito.", ""));
         facturasDet = facturaDetEJB.getAll(facturaSelected);
-        RequestContext.getCurrentInstance().update("factura-form:dtFactura:dtFacturaDet");
+        RequestContext.getCurrentInstance().update("factura-form");
+        this.clean();
+        //RequestContext.getCurrentInstance().execute("PF('dlgFacturaDetAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){

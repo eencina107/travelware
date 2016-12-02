@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="datosGenerales-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtDatosGenerales" var="datosGenerales" value="#{datosGeneralesBean.datosGenerales}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -55,21 +55,20 @@
                                          value="Agregar"  update=":form-add:datosGeneralesGr" 
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgDatosGeneralesAdd').show()" 
-                                         actionListener="#{datosGeneralesBean.buttonAction}" disabled="#{datosGeneralesBean.existeRegistro}"/>
+                                         actionListener="#{datosGeneralesBean.buttonAction}"
+                                         disabled="#{datosGeneralesBean.existeRegistro}"/>
                         <p:commandButton process="dtDatosGenerales" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:datosGeneralesGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgDatosGeneralesAdd').show()"
-                                         update=":form-add:datosGeneralesGr"
                                          />
-                        <p:commandButton process="dtDatosGenerales" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtDatosGenerales" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:datosGeneralesGr"
                                          oncomplete="document.getElementById('form-add:deleteDatosGenerales').style.display='block';
                                                      document.getElementById('form-add:addDatosGenerales').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgDatosGeneralesAdd').show();"
-                                         update=":form-add:datosGeneralesGr"
                                          />
 
                     </f:facet>
@@ -120,7 +119,6 @@
                                 value="Borrar" style="display: none"
                                 update="datosGeneralesGr,:datosGenerales-form:dtDatosGenerales"
                                 actionListener="#{datosGeneralesBean.deleteDatos()}"
-                                oncomplete="PF('dlgDatosGeneralesAdd').hide()"
                                 >
                                     <p:confirm header="Borrar DatosGenerales"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

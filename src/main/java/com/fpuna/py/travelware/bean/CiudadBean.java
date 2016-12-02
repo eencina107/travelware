@@ -14,9 +14,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -27,12 +28,8 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "ciudadBean")
-@SessionScoped
+@ViewScoped
 public class CiudadBean implements Serializable{
-    private int ciuId;
-    private int paiId;
-    private String ciuDesc;
-    private String ciuUbi;
     private List<PgeCiudades> ciudades;
     private List<PgePaises> paises;
     private PgeCiudades ciudadSelected;
@@ -68,38 +65,48 @@ public class CiudadBean implements Serializable{
     }
 
     private void clean() {
-        this.ciuDesc = null;
-        this.ciuUbi= null;
         this.ciudadSelected= new PgeCiudades();
         this.ciudadNuevo = new PgeCiudades();
     }
     
-   public void addCiudad(){
-       FacesContext context = FacesContext.getCurrentInstance();
-       for (PgeCiudades ciu: ciudades){
-           if (ciu.getCiuDesc().toUpperCase().equals(this.ciudadNuevo.getCiuDesc().toUpperCase())){
-               context.addMessage(null, new FacesMessage("Advertencia. La ciudad "+this.ciudadNuevo.getCiuDesc()+" ya existe"));
-               this.clean();
-               return;
-           }
-       }
+    public void buttonAction(ActionEvent actionEvent){
+        ciudadNuevo = new PgeCiudades();
+        habilitado = true;
+    }
+    
+    public void addCiudad(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        for (PgeCiudades ciu: ciudades){
+            if (ciu.getCiuDesc().toUpperCase().equals(this.ciudadNuevo.getCiuDesc().toUpperCase())){
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + this.ciudadNuevo.getCiuDesc() + " ya existe.", ""));
+                //this.clean();
+                return;
+            }
+        }
        
-       PgeCiudades ciudad = new PgeCiudades();
-       ciudad.setCiuDesc(this.ciudadNuevo.getCiuDesc());
-       ciudad.setPaiId(this.ciudadNuevo.getPaiId());
-       ciudad.setCiuUbi(this.ciudadNuevo.getCiuUbi());
-       ciudad.setCiuUsuIns(loginBean.getUsername());
-       ciudad.setCiuFecIns(new Date());
-       ciudadEJB.create(ciudad);
-       context.addMessage("Mensaje", new FacesMessage("Felcicidades! "+ ciudad.getCiuDesc()+" fue creada con éxito!"));
-       ciudades = ciudadEJB.getAll();
-       this.clean();
-   }
+        PgeCiudades ciudad = new PgeCiudades();
+        ciudad.setCiuDesc(this.ciudadNuevo.getCiuDesc());
+        ciudad.setPaiId(this.ciudadNuevo.getPaiId());
+        ciudad.setCiuUbi(this.ciudadNuevo.getCiuUbi());
+        ciudad.setCiuUsuIns(loginBean.getUsername());
+        ciudad.setCiuFecIns(new Date());
+        ciudadEJB.create(ciudad);
+        context.addMessage("Mensaje", new FacesMessage("Felcicidades! " + ciudad.getCiuDesc()+" fue creado con éxito.", ""));
+        ciudades = ciudadEJB.getAll();
+        RequestContext.getCurrentInstance().update("ciudad-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCiudadAdd').hide();");
+    }
    
-   public void deleteCiudad(){
-       ciudadEJB.delete(this.ciudadSelected);
-       ciudades= ciudadEJB.getAll();
-   }
+    public void deleteCiudad(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        ciudadEJB.delete(this.ciudadSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! " + this.ciudadSelected.getCiuDesc() + " fue borrado con éxito.", ""));
+        ciudades= ciudadEJB.getAll();
+        RequestContext.getCurrentInstance().update("ciudad-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCiudadUpd').hide();");
+    }
    
    public void editCiudad(){
        if (this.ciudadSelected.getCiuId() == null){
@@ -115,9 +122,11 @@ public class CiudadBean implements Serializable{
        ciudad.setCiuUsuIns(loginBean.getUsername());
        ciudad.setCiuFecIns(new Date());
        ciudadEJB.update(ciudad);
-       context.addMessage(null, new FacesMessage("Felicidades! "+ ciudad.getCiuDesc()+" fue modificado con éxito!"));
+       context.addMessage(null, new FacesMessage("Felicidades! " + ciudad.getCiuDesc() + " fue modificado con éxito.", ""));
        ciudades = ciudadEJB.getAll();
-       this.clean();
+        RequestContext.getCurrentInstance().update("ciudad-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCiudadUpd').hide();");
    }
    
    public void onRowSelect(SelectEvent event){
@@ -128,38 +137,6 @@ public class CiudadBean implements Serializable{
    public void onCancel(){
         
    }
-
-    public int getCiuId() {
-        return ciuId;
-    }
-
-    public void setCiuId(int ciuId) {
-        this.ciuId = ciuId;
-    }
-
-    public int getPaiId() {
-        return paiId;
-    }
-
-    public void setPaiId(int paiId) {
-        this.paiId = paiId;
-    }
-
-    public String getCiuDesc() {
-        return ciuDesc;
-    }
-
-    public void setCiuDesc(String ciuDesc) {
-        this.ciuDesc = ciuDesc;
-    }
-
-    public String getCiuUbi() {
-        return ciuUbi;
-    }
-
-    public void setCiuUbi(String ciuUbi) {
-        this.ciuUbi = ciuUbi;
-    }
 
     public List<PgeCiudades> getCiudades() {
         return ciudades;

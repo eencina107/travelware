@@ -10,7 +10,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="tipoOrg-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtTipoOrg" var="tipoOrg" value="#{tipoOrgBean.tiposOrg}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -35,19 +35,17 @@
                                                      PF('dlgTipoOrgAdd').show()" 
                                          actionListener="#{tipoOrgBean.buttonAction}"/>
                         <p:commandButton process="dtTipoOrg" icon="ui-icon-pencil"
-                                         value="Editar" 
+                                         value="Editar" update=":form-add:tipoOrgGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgTipoOrgAdd').show()"
-                                         update=":form-add:tipoOrgGr"
                                          />
-                        <p:commandButton process="dtTipoOrg" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtTipoOrg" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-add:tipoOrgGr"
                                          oncomplete="document.getElementById('form-add:deleteTipoOrg').style.display='block';
                                                      document.getElementById('form-add:addTipoOrg').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 
                                                      $('#form-add-fs :button').prop('disabled', false); 
                                                      PF('dlgTipoOrgAdd').show();"
-                                         update=":form-add:tipoOrgGr"
                                          />
 
                     </f:facet>
@@ -64,11 +62,11 @@
                         <h:panelGroup>
                             <p:inputText id="codigo" required="true"
                                          maxlength='2'
-                                         value="#{tipoOrgBean.tipCodigo}" />
+                                         value="#{tipoOrgBean.tipoOrgSelected.tipCodigo}" />
                         </h:panelGroup>
                         <p:outputLabel value="Descripción" for="descripcion" />
                         <p:inputText id="descripcion" required="true"
-                                     value="#{tipoOrgBean.tipDescripcion}" />
+                                     value="#{tipoOrgBean.tipoOrgSelected.tipDescripcion}" />
                         <p:spacer />
                         <h:panelGroup>
                             <p:commandButton id="addTipoOrg" 
@@ -80,7 +78,6 @@
                                 value="Borrar" style="display: none"
                                 update="tipoOrgGr,:tipoOrg-form:dtTipoOrg"
                                 actionListener="#{tipoOrgBean.deleteTipoOrg()}"
-                                oncomplete="PF('dlgTipoOrgAdd').hide()"
                                 >
                                     <p:confirm header="Borrar Tipo de Organizacion"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

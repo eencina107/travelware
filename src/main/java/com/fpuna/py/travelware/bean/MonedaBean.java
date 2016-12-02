@@ -14,11 +14,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
@@ -29,10 +28,8 @@ import org.primefaces.event.SelectEvent;
  * @author eencina
  */
 @Named(value = "monedaBean")
-@RequestScoped
+@ViewScoped
 public class MonedaBean implements Serializable{
-    private int monId;
-    private int paiId;
     private String monDesc;
     private List<PgeMonedas> monedas;
     private List<PgePaises> paises;
@@ -71,6 +68,7 @@ public class MonedaBean implements Serializable{
     }
     
     public void buttonAction(ActionEvent actionEvent){
+        System.out.println("aqui!");
         monedaSelected = new PgeMonedas();
         habilitado = true;
     }
@@ -80,15 +78,15 @@ public class MonedaBean implements Serializable{
         if (monedas !=null){
             for (PgeMonedas mon:monedas){
                 if (mon.getMonDesc().equalsIgnoreCase(this.monedaSelected.getMonDesc()) && mon.getPaiId().equals(this.monedaSelected.getPaiId())){
-                    context.addMessage(null, new FacesMessage("Advertencia. El "+this.monedaSelected.getMonDesc()+" de "+this.monedaSelected.getPaiId().getPaiDesc()+" ya existe"));
-                    this.clean();
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El "+this.monedaSelected.getMonDesc()+" de "+this.monedaSelected.getPaiId().getPaiDesc()+" ya existe.", ""));
+                    //this.clean();
                     return ;
                 }
             }
         }
         
         PgeMonedas moneda= new PgeMonedas();
-        if (this.monedaSelected.getMonId()!= null){
+        if (this.monedaSelected.getMonId()!= null){ //modificacion
             moneda.setMonId(this.monedaSelected.getMonId());
         }
         moneda.setMonDesc(this.monedaSelected.getMonDesc());
@@ -98,43 +96,30 @@ public class MonedaBean implements Serializable{
         moneda.setMonFecIns(new Date());
         monedaEJB.update(moneda);
         if (this.monedaSelected.getMonId()!=null) {
-            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ moneda.getMonDesc()
-                    +" fue actualizado con éxito"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! " + moneda.getMonDesc() + " fue actualizado con éxito.", ""));
         }
         else{
-            context.addMessage("Mensaje", new FacesMessage("Felicidades! "+ moneda.getMonDesc()
-                    +" fue creado con éxito"));
+            context.addMessage("Mensaje", new FacesMessage("Felicidades! " + moneda.getMonDesc() + " fue creado con éxito.", ""));
         }
         monedas = monedaEJB.getAll();
+        RequestContext.getCurrentInstance().update("moneda-form");
         this.clean();
-
+        RequestContext.getCurrentInstance().execute("PF('dlgMonedaAdd').hide();");
     }
     
     public void deleteMoneda(){
+        FacesContext context = FacesContext.getCurrentInstance();
         monedaEJB.delete(this.monedaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades!" + this.monedaSelected.getMonDesc() + " fue borrado con éxito.", ""));
         monedas = monedaEJB.getAll();
-        RequestContext.getCurrentInstance().update("moneda-form:dtMoneda");
+        RequestContext.getCurrentInstance().update("moneda-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgMonedaAdd').hide();");
     }
     
     public void onRowSelect(SelectEvent event){
         this.monedaSelected = (PgeMonedas) event.getObject();
       //  RequestContext.getCurrentInstance().update("moneda-form:dtMoneda");
-    }
-
-    public int getMonId() {
-        return monId;
-    }
-
-    public void setMonId(int monId) {
-        this.monId = monId;
-    }
-
-    public int getPaiId() {
-        return paiId;
-    }
-
-    public void setPaiId(int paiId) {
-        this.paiId = paiId;
     }
 
     public String getMonDesc() {
@@ -159,22 +144,6 @@ public class MonedaBean implements Serializable{
 
     public void setMonedaEJB(MonedaDao monedaEJB) {
         this.monedaEJB = monedaEJB;
-    }
-
-    public PaisDao getPaisEJB() {
-        return paisEJB;
-    }
-
-    public void setPaisEJB(PaisDao paisEJB) {
-        this.paisEJB = paisEJB;
-    }
-
-    public PgePaises getPais() {
-        return pais;
-    }
-
-    public void setPais(PgePaises pais) {
-        this.pais = pais;
     }
 
     public List<PgePaises> getPaises() {

@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="pais-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtPais" var="pais" value="#{paisBean.paises}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -24,21 +24,21 @@
                     <p:ajax event="rowSelect" listener="#{paisBean.onRowSelect}" />
                     <f:facet name="header" >
                         <p:commandButton process="dtPais" icon="ui-icon-document"
-                                         value="Agregar"  oncomplete="PF('dlgPaisAdd').show()" />
+                                         value="Agregar"  update=":form-add:paisGr" 
+                                         oncomplete="PF('dlgPaisAdd').show()"
+                                         actionListener="#{paisBean.buttonAction}"/>
                         <p:commandButton process="dtPais" icon="ui-icon-pencil" 
-                                         value="Editar"
+                                         value="Editar" update=":form-upd:paisGrUpd" 
                                          oncomplete="document.getElementById('form-upd-fs').disabled = false;
                                                      PF('dlgPaisUpd').show()" 
-                                         update=":form-upd:paisGrUpd" 
                                          />
-                        <p:commandButton process="dtPais" icon="ui-icon-document"
-                                         value="Borrar" 
+                        <p:commandButton process="dtPais" icon="ui-icon-trash"
+                                         value="Borrar" update=":form-upd:paisGrUpd"
                                          oncomplete="document.getElementById('form-upd:deletePais').style.display='block';
                                                      document.getElementById('form-upd:editPais').style.display='none';
                                                      $('#form-upd-fs :input').prop('disabled', true); 
                                                      $('#form-upd-fs :button').prop('disabled', false); 
                                                      PF('dlgPaisUpd').show();"
-                                         update=":form-upd:paisGrUpd"
                                          />
 
                     </f:facet>
@@ -119,7 +119,6 @@
                                 value="Borrar" style="display: none"
                                 update="paisGrUpd,:pais-form:dtPais"
                                 actionListener="#{paisBean.deletePais()}"
-                                oncomplete="PF('dlgPaisUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Pais"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />

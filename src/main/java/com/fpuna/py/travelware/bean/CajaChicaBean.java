@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
@@ -27,7 +27,7 @@ import org.primefaces.context.RequestContext;
  * @author damia_000
  */
 @Named(value = "cajaChicaBean")
-@SessionScoped
+@ViewScoped
 public class CajaChicaBean implements Serializable{
     private List<ComCajas> cajasChicas;
     private List<PgeMonedas> monedas;
@@ -88,18 +88,24 @@ public class CajaChicaBean implements Serializable{
         cajaChica.setCajLim(this.cajaSelected.getCajLim());
         cajaChica.setCajSaldo(this.cajaSelected.getCajSaldo());
         cajaChicaEJB.update(cajaChica);
-        context.addMessage("Mensaje", new FacesMessage("Felicidades! Caja Chica guardada con éxito!"));
+        context.addMessage("Mensaje", new FacesMessage("Felicidades! Caja Chica guardada con éxito.", ""));
         cajasChicas = cajaChicaEJB.getAll();
         existeRegistro = cajasChicas.size()>0;
         this.cajaSelected = cajasChicas.get(0);
+        RequestContext.getCurrentInstance().update("cajasChicas-form");
         this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCajasChicasAdd').hide();");
     }
     
     public void deleteCaja(){
+        FacesContext context = FacesContext.getCurrentInstance();
         cajaChicaEJB.delete(this.cajaSelected);
+        context.addMessage(null, new FacesMessage("Felicidades! Caja Chica borrada con éxito.", ""));
         cajasChicas = cajaChicaEJB.getAll();
         existeRegistro = cajasChicas.size()>0;
-        RequestContext.getCurrentInstance().update("cajasChicas-form:dtCajasChicas");
+        RequestContext.getCurrentInstance().update("cajasChicas-form");
+        this.clean();
+        RequestContext.getCurrentInstance().execute("PF('dlgCajasChicasAdd').hide();");
     }
     
     public void buttonAction(ActionEvent actionEvent){

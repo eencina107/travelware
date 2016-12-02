@@ -12,7 +12,7 @@
     <ui:composition template="/WEB-INF/base.xhtml">
         <ui:define name="content">
             <h:form id="menu-form">
-                <p:growl id="growl" showDetail="true" sticky="true" />
+                <p:growl id="growl" showDetail="true" life="3000"/>
 
                 <p:dataTable id="dtMenu" var="menu" value="#{menuCrudBean.menus}"
                              rows="10" paginator="true" paginatorPosition="bottom"
@@ -53,7 +53,7 @@
                                                      PF('dlgMenuUpd').show()"
                                          update=":form-upd:menuGrUpd"
                                          />
-                        <p:commandButton process="dtMenu" icon="ui-icon-document"
+                        <p:commandButton process="dtMenu" icon="ui-icon-trash"
                                          value="Borrar" 
                                          actionListener="#{menuCrudBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-upd:deleteMenu').style.display='block';
@@ -74,19 +74,20 @@
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="menuGr">                           
 
-                        <p:outputLabel value="Descripcion" for="descripcion" />
+                        <p:outputLabel value="Descripción" for="descripcion" />
                         <h:panelGroup>
                             <p:inputText id="descripcion" required="true"
                                          value="#{menuCrudBean.menuNuevo.menDescripcion}" />
                             <h:inputHidden value="#{menuCrudBean.menuNuevo.menCod}" />
                         </h:panelGroup>
 
-                        <p:outputLabel value="Mrnú" for="menuId" />
+                        <p:outputLabel value="Menú" for="menuId" />
                         <p:selectOneMenu id="menuId" required="true" value="#{menuCrudBean.menuNuevo.menId}">
-                            <f:selectItem itemLabel="Parametros Generales" itemValue="1" />
+                            <f:selectItem itemLabel="Parámetros Generales" itemValue="1" />
                             <f:selectItem itemLabel="Viajes" itemValue="2" />
                             <f:selectItem itemLabel="Pagos" itemValue="3" />
                             <f:selectItem itemLabel="Compras" itemValue="4" />
+                            <f:selectItem itemLabel="Seguridad" itemValue="5" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="SubMenú" for="subMenuId" />
@@ -167,7 +168,6 @@
                                 value="Borrar" style="display: none"
                                 update="menuGrUpd,:menu-form:dtMenu" 
                                 actionListener="#{menuCrudBean.deleteMenu()}"
-                                oncomplete="PF('dlgMenuUpd').hide()"
                                 >
                                     <p:confirm header="Borrar Menú"
                                                message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
