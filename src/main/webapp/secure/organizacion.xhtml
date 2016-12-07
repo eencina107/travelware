@@ -57,22 +57,13 @@
                                                      PF('dlgOrganizacionAdd').show()" 
                                          actionListener="#{organizacionBean.buttonAction}"/>
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-pencil"
-<<<<<<< HEAD
                                          value="Editar" update=":form-add:organizacionGr"
-=======
-                                         value="Editar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{organizacionBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgOrganizacionAdd').show()"
                                          />
-<<<<<<< HEAD
                         <p:commandButton process="dtOrganizacion" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:organizacionGr"
-=======
-                        <p:commandButton process="dtOrganizacion" icon="ui-icon-document"
-                                         value="Borrar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{organizacionBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteOrganizacion').style.display='block';
                                                      document.getElementById('form-add:addOrganizacion').style.display='none';

@@ -71,22 +71,13 @@
                                                      PF('dlgPersonaAdd').show()" 
                                          actionListener="#{personaBean.buttonAction}"/>
                         <p:commandButton process="dtPersona" icon="ui-icon-pencil"
-<<<<<<< HEAD
                                          value="Editar" update=":form-add:personaGr"
-=======
-                                         value="Editar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{personaBean.setHabilitado(true)}"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgPersonaAdd').show()"
                                          />
-<<<<<<< HEAD
                         <p:commandButton process="dtPersona" icon="ui-icon-trash"
                                          value="Borrar" update=":form-add:personaGr"
-=======
-                        <p:commandButton process="dtPersona" icon="ui-icon-document"
-                                         value="Borrar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{personaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deletePersona').style.display='block';
                                                      document.getElementById('form-add:addPersona').style.display='none';

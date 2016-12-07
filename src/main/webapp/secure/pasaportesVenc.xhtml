@@ -27,8 +27,16 @@
                     <h:outputText value="#{pasaporte.perId.perNom} #{pasaporte.perId.perApe}" />
                 </p:column>
 
-                <p:column headerText="Cédula Id.">
+                <p:column headerText="Cédula">
                     <h:outputText value="#{pasaporte.perId.perNroDoc}" />
+                </p:column>
+                
+                <p:column headerText="Teléfono">
+                    <h:outputText value="#{pasaporte.perId.perTel}" />
+                </p:column>
+                
+                <p:column headerText="Email" style="width: 60px">
+                    <h:outputText value="#{pasaporte.perId.perEmail}" />
                 </p:column>
 
                 <p:column headerText="Fecha Venc.">

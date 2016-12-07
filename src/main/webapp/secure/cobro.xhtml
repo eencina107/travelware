@@ -54,26 +54,15 @@
                                                      PF('dlgCobroAdd').show()" 
                                          actionListener="#{cobroBean.buttonAction}"/>
                         <p:commandButton process="dtCobro" icon="ui-icon-pencil"
-<<<<<<< HEAD
                                          disabled="true" style="display: none"
                                          actionListener="#{cobroBean.setHabilitado(true)}"
                                          value="Editar" update=":form-add:cobroGr"
-=======
-                                         actionListener="#{cobroBean.setHabilitado(true)}"
-                                         value="Editar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()"
                                          />
-<<<<<<< HEAD
                         <p:commandButton process="dtCobro" icon="ui-icon-closethick"
                                          actionListener="#{cobroBean.setHabilitado(false)}"
                                          value="Anular" update=":form-add:cobroGr"
-=======
-                        <p:commandButton process="dtCobro" icon="ui-icon-document"
-                                         actionListener="#{cobroBean.setHabilitado(false)}"
-                                         value="Borrar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          oncomplete="document.getElementById('form-add:deleteCobro').style.display='block';
                                                      document.getElementById('form-add:addCobro').style.display='none';
                                                      $('#form-add-fs :input').prop('disabled', true); 

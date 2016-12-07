@@ -62,13 +62,8 @@
                                                      PF('dlgMovCajaAdd').show()"
                                          
                                          />
-<<<<<<< HEAD
                         <p:commandButton process="dtMovCaja" icon="ui-icon-closethick"
                                          value="Anular" update=":form-add:movCajaGr"
-=======
-                        <p:commandButton process="dtMovCaja" icon="ui-icon-document"
-                                         value="Borrar" 
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                                          actionListener="#{movCajaBean.setHabilitado(false)}"
                                          oncomplete="document.getElementById('form-add:deleteMovCaja').style.display='block';
                                                      document.getElementById('form-add:addMovCaja').style.display='none';
@@ -152,13 +147,8 @@
                                 update="movCajaGr,:movCaja-form:dtMovCaja"
                                 actionListener="#{movCajaBean.deleteMovCaja()}"
                                 > 
-<<<<<<< HEAD
                                     <p:confirm header="Anular Transacción"
                                                message="Estas seguro que queres anular?" icon="ui-icon-alert" />
-=======
-                                    <p:confirm header="Borrar Transacción"
-                                               message="Estas seguro que queres borrar?" icon="ui-icon-alert" />
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
                             </p:commandButton>
                             <p:confirmDialog global="true" showEffect="fade"
                                              hideEffect="fade">

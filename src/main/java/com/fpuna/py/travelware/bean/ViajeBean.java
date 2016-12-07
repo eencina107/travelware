@@ -252,11 +252,8 @@ public class ViajeBean implements Serializable{
     public void setHabilitado(boolean habilitado) {
         this.habilitado = habilitado;
     }   
-<<<<<<< HEAD
 
     public boolean isDisponible(ViaViajes viaje){
         return viajeEJB.isDisponible(viaje);
     }
-=======
->>>>>>> ed7c8ab95f4e17d7d3de0c1366b38e8d1895c766
 }
