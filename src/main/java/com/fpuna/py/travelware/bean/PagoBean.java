@@ -102,10 +102,12 @@ public class PagoBean implements Serializable{
     }
     
     public void buttonAction2(ComFacturas factura){
-        this.pagoSelected = new ComPagos();
+        this.pagoSelected = pagoEJB.getCuotaAPagar(factura);
         Integer nro = secuenciaEJB.getSec(clave)+1;
-        this.pagoSelected.setPgoNro(nro.toString());
-        this.pagoSelected.setFacId(factura);
+//        this.pagoSelected.setPgoNro(nro.toString());
+//        this.pagoSelected.setMonId(factura.getMonId());
+//        this.pagoSelected.setPgoCambio(factura.getFacCambio());
+//        this.pagoSelected.setFacId(factura);
     }
 
     public void addPago(){

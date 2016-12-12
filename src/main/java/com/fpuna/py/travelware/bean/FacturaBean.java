@@ -8,9 +8,14 @@ package com.fpuna.py.travelware.bean;
 import com.fpuna.py.travelware.dao.FacturaDao;
 import com.fpuna.py.travelware.dao.ProveedorDao;
 import com.fpuna.py.travelware.dao.MonedaDao;
+import com.fpuna.py.travelware.dao.PagoDao;
+import com.fpuna.py.travelware.dao.ViajeDao;
+import com.fpuna.py.travelware.dao.ViajeDetDao;
 import com.fpuna.py.travelware.model.ComProveedores;
 import com.fpuna.py.travelware.model.ComFacturas;
 import com.fpuna.py.travelware.model.PgeMonedas;
+import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.model.ViaViajesDet;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -38,6 +43,7 @@ public class FacturaBean implements Serializable{
     private List<ComFacturas> facturas;
     private List<ComProveedores> proveedores;
     private List<PgeMonedas> monedas;
+    
     private ComFacturas facturaSelected;
     @EJB
     private FacturaDao facturaEJB;
@@ -45,6 +51,9 @@ public class FacturaBean implements Serializable{
     private ProveedorDao proveedorEJB;
     @EJB
     private MonedaDao monedaEJB;
+    @EJB
+    private PagoDao pagoEJB;
+    
     private LoginBean loginBean;
     private PgeMonedas moneda;
     private Date fecha;
@@ -65,12 +74,17 @@ public class FacturaBean implements Serializable{
         this.loginBean = (LoginBean) session.getAttribute("loginBean");
         this.facturaSelected = new ComFacturas();
         this.facturaSelected.setMonId(this.moneda);
+        this.facturaSelected.setFacFecha(DateUtils.round(new Date(), Calendar.DATE));
         this.facturas = facturaEJB.getAll();
         this.proveedores = proveedorEJB.getAll();
         this.monedas = monedaEJB.getAll();
         this.fecha = new Date();
         this.fecha = DateUtils.round(this.fecha, Calendar.MONTH);
         habilitado = true;
+    }
+    
+    public void cambioProveedor(){
+    //    this.facturaSelected.setFacNroTim(this.facturaSelected.getProId().getProNroTim());
     }
 
     private void clean() {
@@ -92,8 +106,7 @@ public class FacturaBean implements Serializable{
         for (ComFacturas fac:facturas){
             if (this.facturaSelected!=null && !(fac.getFacId().equals(this.facturaSelected.getFacId())) &&
                     fac.getFacNro().equals(this.facturaSelected.getFacNro()) &&
-                    fac.getFacNroTim().equals(this.facturaSelected.getFacNroTim()) &&
-                    fac.getProId().getProId().equals(this.facturaSelected.getProId().getProId()) ){
+                    fac.getFacEst().equals(this.facturaSelected.getFacEst())){
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
                                          "Advertencia. " + this.facturaSelected.getFacNro()+" ya existe para el proveedor "+fac.getProId().getProDesc(), ""));
                 //this.clean();
@@ -145,6 +158,8 @@ public class FacturaBean implements Serializable{
         factura.setFacImg(this.facturaSelected.getFacImg());
         
         facturaEJB.update(factura);
+        factura=facturaEJB.getLast();
+        pagoEJB.agregarCuotasFactura(factura);
         context.addMessage("Mensaje", new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue guardada con éxito.", ""));
         facturas = facturaEJB.getAll();
         RequestContext.getCurrentInstance().update("factura-form");
@@ -155,7 +170,7 @@ public class FacturaBean implements Serializable{
     public void deleteFactura(){
         FacesContext context = FacesContext.getCurrentInstance();
         facturaEJB.delete(this.facturaSelected);
-        context.addMessage(null, new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue borrada con éxito.", ""));
+        context.addMessage(null, new FacesMessage("Felicidades! La factura "+this.facturaSelected.getFacNro()+" fue anulada con éxito.", ""));
         facturas = facturaEJB.getAll();
         RequestContext.getCurrentInstance().update("factura-form");
         this.clean();

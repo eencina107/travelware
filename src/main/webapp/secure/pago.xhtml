@@ -41,10 +41,12 @@
                         <h:outputText value="#{pago.monId.monDesc}"></h:outputText>
                     </p:column>
                     <p:column headerText="Cambio" >
-                        <h:outputText value="#{pago.pgoCambio}"></h:outputText>
+                        <h:outputText value="#{pago.pgoCambio}" style="text-align: right"></h:outputText>
                     </p:column>
-                    <p:column headerText="Monto Pagado" >
-                        <h:outputText value="#{pago.pgoMonto}"></h:outputText>
+                    <p:column headerText="Monto Pagado" style="text-align: center" >
+                        <h:outputText value="#{pago.pgoMonto}">
+                            <f:convertNumber pattern="###,###.00" maxFractionDigits="2" locale="es_PY"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Observación">
                         <h:outputText value="#{pago.pgoObservacion}"></h:outputText>

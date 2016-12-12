@@ -7,9 +7,13 @@ package com.fpuna.py.travelware.bean;
 
 import com.fpuna.py.travelware.dao.ConceptoDao;
 import com.fpuna.py.travelware.dao.FacturaDetDao;
+import com.fpuna.py.travelware.dao.ViajeDao;
+import com.fpuna.py.travelware.dao.ViajeDetDao;
 import com.fpuna.py.travelware.model.ViaConceptos;
 import com.fpuna.py.travelware.model.ComFacturas;
 import com.fpuna.py.travelware.model.ComFacturasDet;
+import com.fpuna.py.travelware.model.ViaViajes;
+import com.fpuna.py.travelware.model.ViaViajesDet;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -36,11 +40,19 @@ public class FacturaDetBean implements Serializable{
     private List<ViaConceptos> conceptos;
     private ComFacturasDet facturaDetSelected;
     private ComFacturas facturaSelected;
+    private List<ViaViajes> viajes;
+    private List<ViaViajesDet> detallesViaje;
+    
+    private ViaViajes viajeSelected;
 
     @EJB
     private FacturaDetDao facturaDetEJB;
     @EJB
     private ConceptoDao conceptoEJB;
+    @EJB
+    private ViajeDao viajeEJB;
+    @EJB
+    private ViajeDetDao viajeDetEJB;
 
     private LoginBean loginBean;
 
@@ -60,11 +72,18 @@ public class FacturaDetBean implements Serializable{
         this.facturaDetSelected = new ComFacturasDet();
         this.facturaDetSelected.setConId(this.concepto);
         this.conceptos = conceptoEJB.getAll();
+        
+        this.viajes = viajeEJB.getAll();
     }
 
     private void clean() {
         this.facturaDetSelected = new ComFacturasDet();
         this.concepto = new ViaConceptos();
+    }
+    
+    
+    public void seleccionViaje(){
+        this.detallesViaje = viajeDetEJB.getAll(this.viajeSelected);
     }
     
     public void buttonAction(ActionEvent actionEvent){
@@ -138,6 +157,30 @@ public class FacturaDetBean implements Serializable{
         RequestContext.getCurrentInstance().update("factura-form");
         this.clean();
         RequestContext.getCurrentInstance().execute("PF('dlgFacturaDetAdd').hide();");
+    }
+
+    public List<ViaViajes> getViajes() {
+        return viajes;
+    }
+
+    public void setViajes(List<ViaViajes> viajes) {
+        this.viajes = viajes;
+    }
+
+    public List<ViaViajesDet> getDetallesViaje() {
+        return detallesViaje;
+    }
+
+    public void setDetallesViaje(List<ViaViajesDet> detallesViaje) {
+        this.detallesViaje = detallesViaje;
+    }
+
+    public ViaViajes getViajeSelected() {
+        return viajeSelected;
+    }
+
+    public void setViajeSelected(ViaViajes viajeSelected) {
+        this.viajeSelected = viajeSelected;
     }
     
     public void deleteFacturaDet(){
