@@ -14,7 +14,10 @@ import com.fpuna.py.travelware.model.PagCobros;
 import com.fpuna.py.travelware.model.PgeMonedas;
 import com.fpuna.py.travelware.model.PgePersonas;
 import com.fpuna.py.travelware.model.ViaViajes;
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -42,6 +45,7 @@ public class CobroBean implements Serializable{
     private List<PgeMonedas> monedas;
     
     private PagCobros cobroSelected;
+    private ViaViajes viajeSelected;
     
     @EJB
     private CobroDao cobroEJB;
@@ -83,6 +87,7 @@ public class CobroBean implements Serializable{
         FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         this.loginBean = (LoginBean) session.getAttribute("loginBean");
+        this.viajeSelected = new ViaViajes();
         this.cobroSelected.setPerId(this.persona);
         this.cobroSelected.setMonId(this.moneda);
         this.cobroSelected.setViaId(this.viaje);
@@ -95,6 +100,7 @@ public class CobroBean implements Serializable{
 
     private void clean() {
         this.cobroSelected = new PagCobros();
+        this.viajeSelected = new ViaViajes();
         Integer nro = secuenciaEJB.getSec(clave)+1;
         this.cobroSelected.setCobNro(nro.toString());
         this.persona = new PgePersonas();
@@ -112,6 +118,16 @@ public class CobroBean implements Serializable{
     public void addCobro(){
         FacesContext context = FacesContext.getCurrentInstance();
         
+        if(this.cobroSelected.getCobEstado() == 'P') {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, 
+                    "Advertencia. " + "Cuota " + this.cobroSelected.getCobNro() + " ya se encuentra cobrada. Verifique.", ""));
+            return;
+        }
+        if(this.cobroSelected.getCobAnulado() == 'S') {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + "Cobro se encuentra anulado. Verifique.", ""));
+            return;
+        }
+
         PagCobros cobro = new PagCobros();
         if (this.cobroSelected.getCobId()!= null){ //modificacion
             cobro.setCobId(this.cobroSelected.getCobId());
@@ -128,35 +144,70 @@ public class CobroBean implements Serializable{
         cobro.setCobCambio(this.cobroSelected.getCobCambio());
         cobro.setCobForPago(this.cobroSelected.getCobForPago());
         cobro.setCobMonto(this.cobroSelected.getCobMonto());
-        cobro.setCobMontoLetras(this.Convertir(this.cobroSelected.getCobMonto().toString(), false));
+        cobro.setCobMontoLetras(this.Convertir(this.cobroSelected.getCobMonto().toString(), this.cobroSelected.getMonId(), false));
         cobro.setCobNro(this.cobroSelected.getCobNro());
         cobro.setCobObservacion(this.cobroSelected.getCobObservacion());
         cobro.setCobTipo(this.cobroSelected.getCobTipo());
         cobro.setMonId(this.cobroSelected.getMonId());
         cobro.setViaId(this.cobroSelected.getViaId());
         cobro.setCobAnulado('N');
-        cobro.setPerId(persona);
+        cobro.setPerId(this.cobroSelected.getPerId());
+        cobro.setCobEstado('P');
+        cobro.setCobFecPago(new Date());
+        cobro.setCobFacNro("003-001-"+String.format("%0$7s",cobroEJB.getSeqFacNro()).replace(" ", "0")); //nro. de factura
         cobroEJB.update(cobro);
         context.addMessage(null, new FacesMessage("Felicidades! El cobro fue guardado con éxito.", ""));
         cobros = cobroEJB.getAll();
         RequestContext.getCurrentInstance().update("cobro-form");
-        this.clean();
         RequestContext.getCurrentInstance().execute("PF('dlgCobroAdd').hide();");
+        this.goReporte(cobro);
+        this.clean();
     }
     
     public void deleteCobro(){
         //
         FacesContext context = FacesContext.getCurrentInstance();
-        cobroEJB.delete(this.cobroSelected);
+        if(!(this.cobroSelected.getCobEstado() == 'P')) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + "Cobro no realizado. No se puede anular.", ""));
+            return;
+        }
+        if(this.cobroSelected.getCobAnulado() == 'S') {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. " + "Cobro ya se encuentra anulado. Verifique.", ""));
+            return;
+        }
+
+        PagCobros cobro = new PagCobros();
+
+        cobro.setCobUsuIns(loginBean.getUsername());
+        cobro.setCobFecIns(new Date());
+
+        cobro.setCobMonto(this.cobroSelected.getCobMonto());
+        cobro.setMonId(this.cobroSelected.getMonId());
+        cobro.setCobNro(String.valueOf(cobroEJB.getMaxCuota(this.cobroSelected.getPerId(), this.cobroSelected.getViaId()).add(BigDecimal.ONE)));
+        cobro.setCobEstado('I'); //Ingresado se actualiza en el momento del pago
+        cobro.setCobForPago("N"); //se actualiza en el momento del pago
+        cobro.setCobTipo("CAN"); //Cancelacion. Ultima cuota
+        cobro.setViaId(this.cobroSelected.getViaId());
+        cobro.setCobAnulado('N');
+        cobro.setPerId(this.cobroSelected.getPerId());
+        cobroEJB.update(cobro);
+
+        this.cobroSelected.setCobFecAnu(new Date());
+        this.cobroSelected.setCobNcrNro("003-001-"+String.format("%0$7s",cobroEJB.getSeqNcrNro()).replace(" ", "0")); //nro. nota de credito
+        cobroEJB.delete(this.cobroSelected);        
         context.addMessage(null, new FacesMessage("Felicidades! El cobro fue anulado con éxito.", ""));
         cobros = cobroEJB.getAll();
         RequestContext.getCurrentInstance().update("cobro-form");
-        this.clean();
         RequestContext.getCurrentInstance().execute("PF('dlgCobroAdd').hide();");
+        this.goReporte(this.cobroSelected, "ncr");
+        this.clean();
     }
     
     public void onRowSelect(SelectEvent event){
-        this.cobroSelected = (PagCobros) event.getObject();
+        this.cobroSelected = (PagCobros) event.getObject();//document.getElementById('form-add-fs').disabled = false;
+        
+        //RequestContext.getCurrentInstance().execute("document.getElementById('cobro-form:dtCobro:btneditar').aria-disabled = false;");
+        RequestContext.getCurrentInstance().update("cobro-form:dtCobro:btneditar");
         RequestContext.getCurrentInstance().update("cobro-form:dtCobros");
     }
 
@@ -200,6 +251,16 @@ public class CobroBean implements Serializable{
         this.cobroSelected = cobroSelected;
     }
 
+    public ViaViajes getViajeSelected() {
+        return viajeSelected;
+    }
+
+    public void setViajeSelected(ViaViajes viajeSelected) {
+        this.viajeSelected = viajeSelected;
+        cobros = cobroEJB.getAll(viajeSelected);
+        RequestContext.getCurrentInstance().update("cobro-form:dtCobro");
+    }
+
     public PgePersonas getPersona() {
         return persona;
     }
@@ -237,9 +298,9 @@ public class CobroBean implements Serializable{
         return secuenciaEJB.getSec(this.clave)+1;
     }
     
-     public String Convertir(String numero, boolean mayusculas) {
+     public String Convertir(String numero, PgeMonedas moneda, boolean mayusculas) {
         String literal = "";
-        String parte_decimal;    
+        String parte_decimal = "";    
         //si el numero utiliza (.) en lugar de (,) -> se reemplaza
         numero = numero.replace(".", ",");
         //si el numero no tiene parte decimal, se le agrega ,00
@@ -251,7 +312,8 @@ public class CobroBean implements Serializable{
             //se divide el numero 0000000,00 -> entero y decimal
             String Num[] = numero.split(",");            
             //de da formato al numero decimal
-            parte_decimal = Num[1] + "/100 Guaraníes.";
+            if (!moneda.getMonAbreviatura().equalsIgnoreCase("GS") && Integer.parseInt(Num[1]) > 0)
+                parte_decimal = Num[1] + "/100";
             //se convierte el numero a literal
             if (Integer.parseInt(Num[0]) == 0) {//si el valor es cero
                 literal = "cero ";
@@ -268,9 +330,9 @@ public class CobroBean implements Serializable{
             }
             //devuelve el resultado en mayusculas o minusculas
             if (mayusculas) {
-                return (literal + parte_decimal).toUpperCase();
+                return (moneda.getMonDesc() + " " + literal + parte_decimal).toUpperCase();
             } else {
-                return (literal + parte_decimal);
+                return (moneda.getMonDesc() + " " + literal + parte_decimal);
             }
         } else {//error, no se puede convertir
             return literal = null;
@@ -342,5 +404,30 @@ public class CobroBean implements Serializable{
             n = getUnidades(millon) + "millon ";
         }
         return n + getMiles(miles);        
+    }
+
+    public void goReporte(PagCobros cob) {
+        try {
+            System.out.println("cob.getCobId() "+cob.getCobId());
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId());
+        } catch (IOException e) {
+            System.out.println("Error en servlet repFacturaPDF - "+e);
+        }
+        
+    }
+
+    public void goReporte(PagCobros cob, String tipo) {
+        try {
+            System.out.println("cob.getCobId() "+cob.getCobId());
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId()+"&tp="+tipo);
+        } catch (IOException e) {
+            System.out.println("Error en servlet repFacturaPDF - "+e);
+        }
+        
+    }
+
+    public String getSimpleDateFormat(Date fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(fecha);
     }
 }

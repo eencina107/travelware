@@ -366,6 +366,9 @@
                         <p:outputLabel value="Preferencia de Comida" for="prefComi" />
                         <p:inputText id="prefComi" required="true"
                                      value="#{pasajeroBean.pasajeroSelected.pasPrefComi }" />
+                        <p:outputLabel value="Cantidad de cuotas" for="canCuotas" />
+                        <p:inputText id="canCuotas" required="true" type="number"
+                                     value="#{pasajeroBean.canCuotas }"/>
                         <p:spacer />
                         <p:commandButton id="addPasajero" 
                             value="Grabar"

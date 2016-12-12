@@ -21,42 +21,68 @@
                              selection="#{cobroBean.cobroSelected}" rowKey="#{cobro}"
                              selectionMode="single">
 
-                    <p:ajax event="rowSelect" listener="#{cobroBean.onRowSelect}" />
+                    <p:ajax event="rowSelect" listener="#{cobroBean.onRowSelect}" 
+                                         oncomplete="document.getElementById('cobro-form:dtCobro:btneditar').setAttribute('aria-disabled',false);
+                                         document.getElementById('cobro-form:dtCobro:btneditar').className = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left';
+                                         document.getElementById('cobro-form:dtCobro:btneditar').disabled = false;"
+                            />
 
-                    <p:column headerText="Cliente" style="width: 240px">
-                        <h:outputText value="#{cobro.perId.perNom} #{cobro.perId.perApe}" />
-                    </p:column>
-                    <p:column headerText="Viaje" >
+                    <p:column headerText="Viaje" style="width: 230px" filterBy="#{cobro.viaId}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu id="viaje" required="true" onchange="PF('dtCobro').filter()" 
+                                             value="#{cobroBean.viajeSelected}" converter="viajeConverter" >
+                                <f:selectItems value="#{cobroBean.viajes}" 
+                                               var="viaje" 
+                                               itemLabel="#{viaje.viaDesc} - #{cobroBean.getSimpleDateFormat(viaje.viaFecSali)}" 
+                                               itemValue="#{viaje}">
+                                </f:selectItems>
+                            </p:selectOneMenu>    
+                        </f:facet>         
                         <h:outputText value="#{cobro.viaId.viaDesc}"/>
                     </p:column>
-                    <p:column headerText="Tipo" >
+                    <p:column headerText="Cliente" style="width: 230px" filterBy="#{cobro.perId.perNom} #{cobro.perId.perApe}" filterMatchMode="contains">
+                        <h:outputText value="#{cobro.perId.perNom} #{cobro.perId.perApe}" />
+                    </p:column>
+                    <p:column headerText="Tipo"  style="width: 80px">
                         <h:outputText value="#{cobro.cobTipo eq  'CTA' ? 'Cuota':'Cancelación'}" />
                     </p:column>
-                    <p:column headerText="Forma de Pago" >
-                        <h:outputText value="#{cobro.cobForPago eq  'EFE' ? 'Efectivo':'Cheque'}"/>
+                    <p:column headerText="Cuota" style="width: 40px; text-align: center">
+                        <h:outputText value="#{cobro.cobNro}" />
                     </p:column>
                     <p:column headerText="Moneda">
                         <h:outputText value="#{cobro.monId.monDesc}"></h:outputText>
                     </p:column>
-                    <p:column headerText="Cambio" >
+                    <p:column headerText="Cambio">
                         <h:outputText value="#{cobro.cobCambio}"></h:outputText>
                     </p:column>
-                    <p:column headerText="Monto Pagado" >
+                    <p:column headerText="Monto">
                         <h:outputText value="#{cobro.cobMonto}"></h:outputText>
                     </p:column>
-                    <p:column headerText="Observación">
-                        <h:outputText value="#{cobro.cobObservacion}"></h:outputText>
+                    <p:column headerText="Pagado" style="width: 40px; text-align: center">
+                        <h:outputText value="#{cobro.cobEstado eq  'P' ? 'S':'N'}" />
+                    </p:column>
+                    <p:column headerText="Anulado" style="width: 45px; text-align: center">
+                        <h:outputText value="#{cobro.cobAnulado}" />
+                    </p:column>
+                    <p:column headerText="Fecha de Pago" >
+                        <h:outputText value="#{cobro.cobFecPago}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Forma de Pago" >
+                        <h:outputText value="#{cobro.cobForPago eq  'EFE' ? 'Efectivo':cobro.cobForPago eq  'N' ? '':'Cheque'}"/>
                     </p:column>
                     <f:facet name="header">
                         <p:commandButton process="dtCobro" icon="ui-icon-document"
-                                         value="Registrar"  update=":form-add:cobroGr" 
+                                         disabled="true" style="display: none"
+                                         value="Agregar"  update=":form-add:cobroGr" 
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()" 
                                          actionListener="#{cobroBean.buttonAction}"/>
                         <p:commandButton process="dtCobro" icon="ui-icon-pencil"
-                                         disabled="true" style="display: none"
+                                         disabled="true" id="btneditar" widgetVar="primeBtnEditar"
                                          actionListener="#{cobroBean.setHabilitado(true)}"
-                                         value="Editar" update=":form-add:cobroGr"
+                                         value="Registrar" update=":form-add:cobroGr"
                                          oncomplete="document.getElementById('form-add-fs').disabled = false;
                                                      PF('dlgCobroAdd').show()"
                                          />
@@ -80,23 +106,23 @@
                     <fieldset id="form-add-fs">
                     <p:messages id="messages" showDetail="false" autoUpdate="true" />
                     <p:panelGrid columns="2" columnClasses="column" id="cobroGr">                           
-                        <p:outputLabel value="Nro. Documento" for="nroDoc" />
+                        <p:outputLabel value="Nro. Cuota" for="nroCuo" />
                         <h:panelGroup>
-                            <p:inputText id="nroDoc" required="true"
+                            <p:inputText id="nroCuo" required="true"
                                          value="#{cobroBean.cobroSelected.cobNro}"/>
                             <h:inputHidden value="#{cobroBean.cobroSelected.cobId}" />
 
                         </h:panelGroup>
                         <p:outputLabel value="Nro. Doc. Persona" for="persona1" />
                         <p:inputText id="persona1" required="true"
-                                     value="#{cobroBean.persona}" converter="personaConverter">
+                                     value="#{cobroBean.cobroSelected.perId}" converter="personaConverter">
                             <p:ajax event="dblclick" oncomplete="PF('dlgPersBusqAdd').show()" />
                             <p:ajax event="blur" update="personaDesc" />
                         </p:inputText>
 
                         <p:outputLabel value="Persona" for="personaDesc" />
                         <p:inputText id="personaDesc" disabled="true" style="width:270px"
-                                     value="#{cobroBean.persona.perNom} #{cobroBean.persona.perApe}" />
+                                     value="#{cobroBean.cobroSelected.perId.perNom} #{cobroBean.cobroSelected.perId.perApe}" />
                         <p:outputLabel value="Viaje" for="viaje" />
                         <p:selectOneMenu id="viaje" required="true"
                                          disabled="#{!cobroBean.isHabilitado()}" 
@@ -114,13 +140,6 @@
                             <f:selectItem itemLabel="Cuota" itemValue="CTA" />
                             <f:selectItem itemLabel="Cancelación" itemValue="CAN" />
                         </p:selectOneMenu>
-                        <p:outputLabel for="forPago" value="Forma de Pago" />
-                        <p:selectOneMenu id="forPago"
-                                         disabled="#{!cobroBean.isHabilitado()}" 
-                                         value="#{cobroBean.cobroSelected.cobForPago}" style="width:125px">
-                            <f:selectItem itemLabel="Efectivo" itemValue="EFE" />
-                            <f:selectItem itemLabel="Cheque" itemValue="CHE" />
-                        </p:selectOneMenu>
                         <p:outputLabel value="Moneda" for="moneda" />
                         <p:selectOneMenu id="moneda" required="true"
                                          disabled="#{!cobroBean.isHabilitado()}" 
@@ -137,6 +156,14 @@
                         <p:outputLabel value="Monto" for="monto" />
                         <p:inputText id="monto" required="true"
                                      value="#{cobroBean.cobroSelected.cobMonto}" />
+                        <p:outputLabel for="forPago" value="Forma de Pago" />
+                        <p:selectOneMenu id="forPago"
+                                         disabled="#{!cobroBean.isHabilitado()}" 
+                                         value="#{cobroBean.cobroSelected.cobForPago}" style="width:125px">
+                            <f:selectItem itemLabel="" itemValue="N" />
+                            <f:selectItem itemLabel="Efectivo" itemValue="EFE" />
+                            <f:selectItem itemLabel="Cheque" itemValue="CHE" />
+                        </p:selectOneMenu>
                         <p:outputLabel value="Observación" for="observacion" />
                         <p:inputText id="observacion" required="true"
                                      value="#{cobroBean.cobroSelected.cobObservacion}" />

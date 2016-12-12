@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -26,7 +26,7 @@ import org.primefaces.model.menu.MenuModel;
  * @author eencina
  */
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class MenuBean {
     private MenuModel model= new DefaultMenuModel();
     List<PgeMenus> menus;

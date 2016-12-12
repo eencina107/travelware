@@ -10,6 +10,11 @@
         <servlet-name>RepFactura</servlet-name>
         <servlet-class>com.fpuna.py.travelware.servlet.RepFactura</servlet-class>
     </servlet>
+    <servlet>
+        <description>Reporte de Factura en PDF</description>
+        <servlet-name>RepFacturaPDF</servlet-name>
+        <servlet-class>com.fpuna.py.travelware.servlet.RepFacturaPDF</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GeneraExcel</servlet-name>
         <url-pattern>/generaexcel</url-pattern>
@@ -21,6 +26,10 @@
     <servlet-mapping>
         <servlet-name>RepFactura</servlet-name>
         <url-pattern>/repfactura</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RepFacturaPDF</servlet-name>
+        <url-pattern>/repfacturapdf</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

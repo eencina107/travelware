@@ -5,6 +5,7 @@
  */
 package com.fpuna.py.travelware.bean;
 
+import com.fpuna.py.travelware.dao.CobroDao;
 import com.fpuna.py.travelware.dao.PasajeroDao;
 import com.fpuna.py.travelware.dao.PersonaDao;
 import com.fpuna.py.travelware.dao.PrecioViajeDao;
@@ -12,6 +13,7 @@ import com.fpuna.py.travelware.dao.ViajeDao;
 import com.fpuna.py.travelware.dao.PasaporteDao;
 import com.fpuna.py.travelware.dao.GastoDao;
 import com.fpuna.py.travelware.dao.ViajeDetDao;
+import com.fpuna.py.travelware.model.PagCobros;
 import com.fpuna.py.travelware.model.PgePersonas;
 import com.fpuna.py.travelware.model.ViaPasajeros;
 import com.fpuna.py.travelware.model.ViaPreViajes;
@@ -21,6 +23,8 @@ import com.fpuna.py.travelware.model.ViaGastos;
 import com.fpuna.py.travelware.model.ViaViajesDet;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -68,11 +72,14 @@ public class PasajeroBean implements Serializable {
     private GastoDao gastoEJB;
     @EJB
     private ViajeDetDao viajeDetEJB;
+    @EJB
+    private CobroDao cobroEJB;
 
     private LoginBean loginBean;
     
     private boolean habilitado;
-
+    private int canCuotas;
+    
     //crea una nueva instancia de Pasajero
     public PasajeroBean() {
 
@@ -90,7 +97,7 @@ public class PasajeroBean implements Serializable {
         this.viajes = viajeEJB.getAllDisp();
         this.personas = personaEJB.getAll();
         this.gastos = gastoEJB.getAll(this.pasajeroSelected);
-        habilitado = true;
+        this.habilitado = true;
     }
 
     private void clean() {
@@ -162,8 +169,9 @@ public class PasajeroBean implements Serializable {
             pasajero.getViaId().setViaCantVend(++cantVend);
             viajeEJB.update(pasajero.getViaId());
 
-            //Agregamos los gastos del pasajero
             pasajero = pasajeroEJB.getByViaIdPerId(pasajero.getViaId(), pasajero.getPerId());
+
+            //Agregamos los gastos del pasajero
             this.viajesDet = viajeDetEJB.getAll(pasajero.getViaId());
             for (ViaViajesDet vd :this.viajesDet) {
                 if (vd.getVidTip() == 'I') {
@@ -177,6 +185,38 @@ public class PasajeroBean implements Serializable {
                     gastoEJB.update(gasto);
                 }
             }
+
+            int canCuotas = this.getCanCuotas(), redondeo = 0;
+            if (!pasajero.getViaId().getMonId().getMonAbreviatura().equalsIgnoreCase("GS"))
+                redondeo = 2;
+            BigDecimal montoCuota = pasajero.getViaId().getViaCost().divide(BigDecimal.valueOf(canCuotas), redondeo, RoundingMode.HALF_EVEN);
+            //Agregamos las cuotas del pasajero
+            for (int i=1; i<=canCuotas; i++) {
+                PagCobros cobro = new PagCobros();
+
+                cobro.setCobUsuIns(loginBean.getUsername());
+                cobro.setCobFecIns(new Date());
+
+                cobro.setCobMonto(montoCuota);
+                cobro.setMonId(pasajero.getViaId().getMonId());
+                cobro.setCobNro(Integer.toString(i));
+                cobro.setCobEstado('I'); //Ingresado se actualiza en el momento del pago
+                cobro.setCobForPago("N"); //se actualiza en el momento del pago
+                //cobro.setCobCambio(this.cobroSelected.getCobCambio()); //se actualiza en el momento del pago
+                //cobro.setCobMontoLetras(""); //se actualiza en el momento del pago
+                //cobro.setCobObservacion(""); //se actualiza en el momento del pago
+                //cobro.setCobFecPago(""); //se actualiza en el momento del pago
+                //cobro.setCobFacNro(""); //se actualiza en el momento del pago
+                //cobro.setCobNcrNro(""); //se actualiza en el momento de la anulacion del pago
+                if (i == canCuotas)
+                    cobro.setCobTipo("CAN");
+                else
+                    cobro.setCobTipo("CTA");
+                cobro.setViaId(pasajero.getViaId());
+                cobro.setCobAnulado('N');
+                cobro.setPerId(pasajero.getPerId());
+                cobroEJB.update(cobro);
+            }
         }
         context.addMessage("Mensaje", new FacesMessage("Felicidades! El pasajero fue guardado con éxito", ""));
         pasajeros = pasajeroEJB.getAll();
@@ -189,27 +229,34 @@ public class PasajeroBean implements Serializable {
 
     public void deletePasajero() {
         FacesContext context = FacesContext.getCurrentInstance();
-        //Borramos los gastos del pasajero
-        this.gastos = gastoEJB.getAll(this.pasajeroSelected);
-        for (ViaGastos gasto :this.getGastos()) {
-            gastoEJB.delete(gasto);
+        BigDecimal montoPagado = cobroEJB.getMontoPagado(this.pasajeroSelected.getPerId(), this.pasajeroSelected.getViaId());
+        if (montoPagado.equals(BigDecimal.ZERO)) {
+            //Borramos los gastos del pasajero
+            this.gastos = gastoEJB.getAll(this.pasajeroSelected);
+            for (ViaGastos gasto :this.getGastos()) {
+                gastoEJB.delete(gasto);
+            }
+            this.gastos = gastoEJB.getAll(this.pasajeroSelected);
+
+            //Borramos el pasajero
+            pasajeroEJB.delete(this.pasajeroSelected);
+            context.addMessage(null, new FacesMessage("Felicidades! El pasajero fue borrado con éxito.", ""));
+
+            Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend();
+            //Actualizamos la cantidad de pasajes vendidos en el viaje
+            this.pasajeroSelected.getViaId().setViaCantVend(--cantVend);
+            viajeEJB.update(this.pasajeroSelected.getViaId());
+
+            pasajeros = pasajeroEJB.getAll();
+            viajes = viajeEJB.getAllDisp();
+            RequestContext.getCurrentInstance().update("pasajero-form");
+            this.clean();
+            RequestContext.getCurrentInstance().execute("PF('dlgPasajeroAdd').hide();");
         }
-        this.gastos = gastoEJB.getAll(this.pasajeroSelected);
-
-        //Borramos el pasajero
-        pasajeroEJB.delete(this.pasajeroSelected);
-        context.addMessage(null, new FacesMessage("Felicidades! El pasajero fue borrado con éxito.", ""));
-
-        Integer cantVend = this.pasajeroSelected.getViaId().getViaCantVend();
-        //Actualizamos la cantidad de pasajes vendidos en el viaje
-        this.pasajeroSelected.getViaId().setViaCantVend(--cantVend);
-        viajeEJB.update(this.pasajeroSelected.getViaId());
-
-        pasajeros = pasajeroEJB.getAll();
-        viajes = viajeEJB.getAllDisp();
-        RequestContext.getCurrentInstance().update("pasajero-form");
-        this.clean();
-        RequestContext.getCurrentInstance().execute("PF('dlgPasajeroAdd').hide();");
+        else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Advertencia. El pasajero tiene pagos realizados para "+this.pasajeroSelected.getViaId().getViaDesc()+". Verifique.", ""));
+            return;
+        }
     }
 
     public void onRowSelect(SelectEvent event) {
@@ -287,5 +334,19 @@ public class PasajeroBean implements Serializable {
     public String getSimpleDateFormat(Date fecha) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.format(fecha);
+    }
+
+    /**
+     * @return the canCuotas
+     */
+    public int getCanCuotas() {
+        return canCuotas;
+    }
+
+    /**
+     * @param canCuotas the canCuotas to set
+     */
+    public void setCanCuotas(int canCuotas) {
+        this.canCuotas = canCuotas;
     }
 }
