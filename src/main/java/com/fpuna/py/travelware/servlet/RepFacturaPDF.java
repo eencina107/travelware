@@ -29,12 +29,13 @@ import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import javax.ejb.EJB;
 
 public class RepFacturaPDF extends HttpServlet {
     private static final String CONTENT_TYPE = "application/pdf";
     private String user, pwd, usuario, clave;
-    private int redondeo = 0;
+    private int redondeo;
 
     //private String sentencia = "";
     private PagCobros cobro; //dmezac+
@@ -91,7 +92,9 @@ public class RepFacturaPDF extends HttpServlet {
             String timbrado = "11293569"; //timbrado
             String vigenciaIni = "01/08/2016"; //inicio vigencia
             String vigenciaFin = "31/08/2017"; //fin vigencia
-            String condicion = "CONTADO";
+            String condicion = "Condici&oacute;n de Venta: CONTADO";
+            if(tp.equals("ncr"))
+                condicion = "Comprobante de Venta: " + cobro.getCobFacNro();
 
             String fecEmision;
             if(tp.equals("fac")) {
@@ -106,21 +109,28 @@ public class RepFacturaPDF extends HttpServlet {
                 else
                     fecEmision = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format(new Date());
             }
+            
+            String totalPagAcre = "Total a Pagar";
+            if(tp.equals("ncr"))
+                totalPagAcre = "Total a Acreditar";
 
             String nomCliente = (cobro.getPerId().getPerNom() + " " + cobro.getPerId().getPerApe()).toUpperCase();
             String docCliente = cobro.getPerId().getPerNroDoc();
             String dirCliente = cobro.getPerId().getPerDir();
 
             String concepto = cobro.getViaId().getViaDesc() + " - " + new SimpleDateFormat("dd/MM/yyyy").format(cobro.getCobFecIns())+ " - Cuota " + cobro.getCobNro();
+            redondeo = 0;
             if (!cobro.getMonId().getMonAbreviatura().equalsIgnoreCase("GS"))
                 redondeo = 2;
             BigDecimal monTotal = cobro.getCobMonto().divide(BigDecimal.valueOf(1), redondeo, RoundingMode.HALF_EVEN);
             BigDecimal monIva = cobro.getCobMonto().divide(BigDecimal.valueOf(11), redondeo, RoundingMode.HALF_EVEN);
+
             String monLetras = cobro.getCobMontoLetras();
+            String monTotalSt = new DecimalFormat("###,###.##").format(monTotal);
+            String monIvaSt = new DecimalFormat("###,###.##").format(monIva);
             
             //Nombre del archivo generado como adjunto
-            SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss");
-            response.setHeader("Content-Disposition", "inline; filename=" + nombre.toUpperCase() + sdf.format(new Date())+".pdf");
+            response.setHeader("Content-Disposition", "inline; filename=" + nombre.toUpperCase() + new SimpleDateFormat("_yyyyMMdd_HHmmss").format(new Date())+".pdf");
 
 /* Operaciones con PDF -------------------------------------------------------------------*/
             // Creamos el documento
@@ -286,7 +296,7 @@ public class RepFacturaPDF extends HttpServlet {
                             "<td><table width=680  cellspacing=\"0\" border=0 style=\"margin-top:5px;\"><tr>\n" +
                             "<td class=celda width=\"20%\">Fecha de Emisi&oacute;n:</td>\n" +
                             "<td align=\"left\" bgcolor=\"#ffffff\">" + fecEmision + "</td>\n" +
-                            "<td align=\"right\" class=celda width=\"30%\">Condici&oacute;n de Venta: " + condicion + "</td>\n" +
+                            "<td align=\"right\" class=celda width=\"40%\">" + condicion + "</td>\n" +
                             "</tr>\n" +
                             "<tr>\n" +
                             "<td width=100 class=celda bgcolor=\"#ffffff\">R.U.C./C.I.:</td>\n" +
@@ -325,27 +335,27 @@ public class RepFacturaPDF extends HttpServlet {
                             "<tr>\n" +
                             "<td width=60 class=celda bgcolor=\"#ffffff\">1</td>\n" +
                             "<td width=190 class=celda bgcolor=\"#ffffff\">" + concepto + "</td>\n" +
-                            "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotal + "</td>\n" +
+                            "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotalSt + "</td>\n" +
                             "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">               0</td>\n" +
                             "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">               0</td>\n" +
-                            "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotal + "</td>\n" +
+                            "<td width=85 align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotalSt + "</td>\n" +
                             "</tr>\n" +
                             "<tr>\n" +
                             "<td class=celda colspan=\"3\">Sub Total</td>\n" +
                             "<td align=\"right\" class=celda bgcolor=\"#ffffff\">               0</td>\n" +
                             "<td align=\"right\" class=celda bgcolor=\"#ffffff\">               0</td>\n" +
-                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotal + "</td>\n" +
+                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotalSt + "</td>\n" +
                             "</tr>\n" +
                             "<tr>\n" +
-                            "<td align=\"center\" class=celda colspan=\"1\">Total a Pagar</td>\n" +
+                            "<td align=\"center\" class=celda colspan=\"1\">" + totalPagAcre + "</td>\n" +
                             "<td class=celda colspan=\"4\">" + monLetras + ".-</td>\n" +
-                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotal + "</td>\n" +
+                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monTotalSt + "</td>\n" +
                             "</tr>\n" +
                             "<tr>\n" +
                             "<td class=celda colspan=\"2\">Liquidaci&oacute;n del IVA (5%)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;               0</td>\n" +
-                            "<td align=\"left\" class=celda colspan=\"2\">(10%)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + monIva + "</td>\n" +
+                            "<td align=\"left\" class=celda colspan=\"2\">(10%)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + monIvaSt + "</td>\n" +
                             "<td align=\"left\" bgcolor=\"#ffffff\">Total de IVA </td>\n" +
-                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monIva + "</td>\n" +
+                            "<td align=\"right\" class=celda bgcolor=\"#ffffff\">" + monIvaSt + "</td>\n" +
                             "</tr>\n" +
                             "</table>\n" +
                             "<table width=\"693\" cellspacing=0 border=0 \">\n" +

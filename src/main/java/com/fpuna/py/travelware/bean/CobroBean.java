@@ -408,9 +408,10 @@ public class CobroBean implements Serializable{
 
     public void goReporte(PagCobros cob) {
         try {
-            System.out.println("cob.getCobId() "+cob.getCobId());
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId());
-        } catch (IOException e) {
+            System.out.println("cob.getCobId(): "+cob.getCobId());
+            RequestContext.getCurrentInstance().execute("window.open('"+"/py.travelware/repfacturapdf?id="+cob.getCobId()+"', '_newtab_"+cob.getCobId()+"')");
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId());
+        } catch (Exception e) {
             System.out.println("Error en servlet repFacturaPDF - "+e);
         }
         
@@ -418,9 +419,10 @@ public class CobroBean implements Serializable{
 
     public void goReporte(PagCobros cob, String tipo) {
         try {
-            System.out.println("cob.getCobId() "+cob.getCobId());
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId()+"&tp="+tipo);
-        } catch (IOException e) {
+            System.out.println("cob.getCobId(): "+cob.getCobId());
+            RequestContext.getCurrentInstance().execute("window.open('"+"/py.travelware/repfacturapdf?id="+cob.getCobId()+"&tp="+tipo+"', '_newtab_"+cob.getCobId()+"_"+tipo+"')");
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("/py.travelware/repfacturapdf?id="+cob.getCobId()+"&tp="+tipo);
+        } catch (Exception e) {
             System.out.println("Error en servlet repFacturaPDF - "+e);
         }
         
