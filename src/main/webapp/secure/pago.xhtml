@@ -26,6 +26,9 @@
                     <p:column headerText="Factura" >
                         <h:outputText value="#{pago.facId.facDesc}"/>
                     </p:column>
+                    <p:column headerText="Cuota Nro." >
+                        <h:outputText value="#{pago.pgoCuotaNro}"/>
+                    </p:column>
                     <p:column headerText="Tipo" >
                         <h:outputText value="#{pago.pgoTipo eq  'CTA' ? 'Cuota':'Cancelación'}" />
                     </p:column>

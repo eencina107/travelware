@@ -194,10 +194,10 @@ public class PantallaInicioBean implements Serializable {
     public void mostrarDialogContactosPendientes() {
         this.listaContactosPendientes = contactoDao.getPendientesByUsuario(usuarioDao.getByName(loginBean.getUsername()));
         Map<String, Object> options = new HashMap<>();
-        options.put("resizable", false);
+        options.put("resizable", true);
         options.put("draggable", true);
         options.put("modal", true);
-        //options.put("height", 200);
+//        options.put("width", 1080);
         RequestContext.getCurrentInstance().openDialog("contactosPend", options, null);
     }
 

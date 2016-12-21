@@ -13,21 +13,24 @@
         </style>
     </h:head>
 
-    <h:body style="min-height: 400px">
-        <h:form id="contacto-form">
+    <h:body style="width:768px">
+        <h:form id="contacto-form" >
             <p:growl id="growl" showDetail="true" sticky="true" />
             <p:dataTable id="dtContacto" var="contacto" value="#{pantallaInicioBean.listaContactosPendientes}"
                          rows="5" paginator="true" paginatorPosition="bottom"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15"
                          selection="#{pantallaInicioBean.contactoSelected}" rowKey="#{contacto}"
-                         selectionMode="single">
+                         selectionMode="single" style="width: 100%">
                 <p:column headerText="Nombre" >
                     <h:outputText value="#{contacto.conIdPersonaCont.perNom}" />
                 </p:column>
 
                 <p:column headerText="Apellido" >
                     <h:outputText value="#{contacto.conIdPersonaCont.perApe}" />
+                </p:column>
+                <p:column headerText="Nro. Teléfono" style="width: 15%">
+                    <h:outputText value="#{contacto.conIdPersonaCont.perTel}" />
                 </p:column>
 
                 <p:column headerText="Fecha Agenda" >
@@ -55,8 +58,8 @@
             </p:dataTable>
         </h:form>
 
-        <p:dialog header="Contactos" widgetVar="dlgContactoAdd"
-                  modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:dialog header="Contactos"  widgetVar="dlgContactoAdd"
+                  modal="true"  showEffect="fade" hideEffect="fade" resizable="false">
             <h:form id="form-add">
                 <p:messages id="messages" showDetail="false" autoUpdate="true" />
                 <p:panelGrid columns="2" columnClasses="column" id="contactoGr">
