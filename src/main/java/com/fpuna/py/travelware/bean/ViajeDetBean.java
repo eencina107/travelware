@@ -51,6 +51,8 @@ public class ViajeDetBean implements Serializable{
     private ViaViajesDet viajeDetSelected;
     private ViaViajes viajeSelected;
 
+    
+
     @EJB
     private ViajeDetDao viajeDetEJB;
     @EJB
@@ -105,6 +107,7 @@ public class ViajeDetBean implements Serializable{
     
     public void buttonAction(ActionEvent actionEvent){
         this.viajeDetSelected = new ViaViajesDet();
+//        this.viajeDetSelected.setMonId(this.viajeSelected.getMonId());
     }
     
     public void addViajeDet(){
@@ -170,11 +173,11 @@ public class ViajeDetBean implements Serializable{
         for (ViaConceptos con: conceptosReq){
             //System.out.println("Concepto: "+con.getConDesc());
             Integer actCant = viajeDetEJB.getCantTotCon(viajeDet.getViaId(), con);
-            if(actCant == 0 ) {//Si hay algun concepto requerido que no este cargado entonces salimos del bucle
-                maxCant = 0;
-                break;
-            }
-            else if (actCant > maxCant)
+//            if(actCant == 0 ) {//Si hay algun concepto requerido que no este cargado entonces salimos del bucle
+//                maxCant = 0;
+//                break;
+//            }
+//            else if (actCant > maxCant)
                 maxCant = actCant;
         }
         viajeDet.getViaId().setViaCantTot(maxCant);
@@ -378,5 +381,13 @@ public class ViajeDetBean implements Serializable{
 
     public String getNombreCarpetaImg(String nombreArchivo) {
         return nombreCarpetaImg+nombreArchivo;
+    }
+    
+    public ViaViajes getViajeSelected() {
+        return viajeSelected;
+    }
+
+    public void setViajeSelected(ViaViajes viajeSelected) {
+        this.viajeSelected = viajeSelected;
     }
 }

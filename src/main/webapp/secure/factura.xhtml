@@ -143,8 +143,7 @@
                     <f:facet name="header">
                         <p:commandButton process="dtFactura" icon="ui-icon-document"
                                          value="Agregar"  update=":form-add:facturaGr" 
-                                         oncomplete="document.getElementById('form-add-fs').disabled = false;
-                                         PF('dlgFacturaAdd').show()" 
+                                         oncomplete="PF('dlgFacturaAdd').show()" 
                                          actionListener="#{facturaBean.buttonAction}"/>
                         <!--                        <p:commandButton process="dtFactura" icon="ui-icon-pencil"
                                                                  value="Editar" update=":form-add:facturaGr"
@@ -169,9 +168,9 @@
             <p:dialog header="Facturas" widgetVar="dlgFacturaAdd"
                       modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <h:form id="form-add">
-                    <fieldset id="form-add-fs">
+                  
                         <p:messages id="messages" showDetail="false" autoUpdate="true" />
-                        <p:panelGrid columns="2" columnClasses="column" id="facturaGr">                           
+                        <p:panelGrid columns="6" columnClasses="column" id="facturaGr" style="width: 100%">                           
 
                             <p:outputLabel value="Nro. Factura" for="nroFactura" />
                             <h:panelGroup>
@@ -196,8 +195,8 @@
                             <p:calendar id="fecEmis" 
                                         value="#{facturaBean.facturaSelected.facFecha}" 
                                         pattern="dd/MM/yyyy" 
-                                        mask="true" />
-                            
+                                        mask="true" mindate="today" pagedate="today" />
+
 
                             <p:outputLabel value="Moneda" for="moneda" />
                             <p:selectOneMenu id="moneda" required="true"
@@ -246,37 +245,119 @@
 
                             <p:outputLabel value="Total" for="total" />
                             <p:inputText id="total" required="true"
-                                         value="#{facturaBean.facturaSelected.facTotal}" />
+                                         value="#{facturaBean.facturaSelected.facTotal}" disabled="true"/>
 
                             <p:outputLabel value="Cant. Cuotas" for="caoCuo" />
                             <p:inputText id="caoCuo" 
                                          value="#{facturaBean.facturaSelected.facCanCuo}" />
-
-                            <p:spacer />
-                            <h:panelGroup>
-                                <p:commandButton id="addFactura" 
-                                                 value="Grabar"
-                                                 update="facturaGr,:factura-form:dtFactura"
-                                                 action="#{facturaBean.addFactura}"
-                                                 />
-                                <p:commandButton id="deleteFactura" 
-                                                 value="Anular" style="display: none"
-                                                 update="facturaGr,:factura-form:dtFactura"
-                                                 actionListener="#{facturaBean.deleteFactura}"
-                                                 >
-                                    <p:confirm header="Anular Factura"
-                                               message="Está seguro que desea anular?" icon="ui-icon-alert" />
-                                </p:commandButton>
-                                <p:confirmDialog global="true" showEffect="fade"
-                                                 hideEffect="fade">
-                                    <p:commandButton value="Si" type="button"
-                                                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
-                                    <p:commandButton value="No" type="button"
-                                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                                </p:confirmDialog>
-                            </h:panelGroup>
                         </p:panelGrid>
-                    </fieldset>
+                        <br/>
+                        <p:commandButton actionListener="#{facturaBean.agregarDetalle}" value="Agregar Detalle" update="form-add"/>
+                        <br/>
+                        <br/>
+                        <p:dataTable editable="true" rowKey="#{fDet}" value="#{facturaBean.detallesFacturaSelected}" id="dtFacturaDet" var="fDet">
+                            <f:facet name="header">
+                                Detalles de Factura 
+
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{facturaBean.onRowEdit}" />
+                            <p:ajax event="rowEditCancel" listener="#{facturaBean.onRowCancel}"  />
+                           
+                            <p:column headerText="Acciones">
+                                <p:rowEditor />
+                            </p:column>
+                            <p:column headerText="Descripcion">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{fDet.fadDesc}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="inputFacturaDetDesc" value="#{fDet.fadDesc}" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{fDet.fadCant}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="inputFacturaDescCant" value="#{fDet.fadCant}" /></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Viaje">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{facturaBean.viajeSelected.viaDesc}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="viajeDet" value="#{facturaBean.viajeSelected}" converter="viajeConverter" converterMessage="Error al seleccionar viaje" valueChangeListener="#{facturaBean.seleccionViaje()}">  
+                                            <p:ajax event="change"  listener="#{facturaBean.seleccionViaje}" update="viajeDetAdd"/>
+                                            <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
+                                            <f:selectItems value="#{facturaBean.viajes}" var="viaje" itemLabel="#{viaje.viaDesc}" itemValue="#{viaje}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Detalle Viaje">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{fDet.viaDetId.vidDesc}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="viajeDetAdd" value="#{fDet.viaDetId}" converter="viajeDetConverter"  converterMessage="Error al seleccionar detalle de Viaje">
+                                            <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
+                                            <f:selectItems value="#{facturaBean.detallesViajeSelected}" var="viajeDet" itemLabel="#{viajeDet.vidDesc}" itemValue="#{viajeDet}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                           <p:column headerText="Concepto">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{fDet.conId.conDesc}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="concepto"
+                                                         value="#{fDet.conId}" converter="conceptoConverter" converterMessage="Error al seleccionar Concepto">
+
+                                            <f:selectItem itemLabel=" " itemValue="" />
+                                            <f:selectItems value="#{facturaBean.conceptos}" 
+                                                           var="concepto" 
+                                                           itemLabel="#{concepto.conDesc}" 
+                                                           itemValue="#{concepto}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="% Impuesto">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{fDet.fadPorImp}" /></f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="porcImp" value="#{facturaBean.detalleFacturaSelected.fadPorImp}" >
+                                            <f:selectItem itemLabel="10%" itemValue="10" />
+                                            <f:selectItem itemLabel="5%" itemValue="5" />
+                                            <f:selectItem itemLabel="Exenta" itemValue=""/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+
+                            
+                        </p:dataTable>
+                        <p:spacer />
+                        <h:panelGroup>
+
+                            <p:commandButton id="addFactura" 
+                                             value="Grabar"
+                                             update="facturaGr,:factura-form:dtFactura"
+                                             action="#{facturaBean.addFactura}"
+                                             />
+                            <p:commandButton id="deleteFactura" 
+                                             value="Anular" style="display: none"
+                                             update="facturaGr,:factura-form:dtFactura"
+                                             actionListener="#{facturaBean.deleteFactura}"
+                                             >
+                                <p:confirm header="Anular Factura"
+                                           message="Está seguro que desea anular?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade"
+                                             hideEffect="fade">
+                                <p:commandButton value="Si" type="button"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" ajax="false" />
+                                <p:commandButton value="No" type="button"
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </h:panelGroup>
                 </h:form>
             </p:dialog>
 
@@ -297,16 +378,16 @@
                             <h:inputHidden value="#{facturaDetBean.facturaDetSelected.fadId}" />
                         </h:panelGroup>
                         <p:outputLabel value="Viaje" for="viaje" />
-                            <p:selectOneMenu id="viaje" value="#{facturaDetBean.viajeSelected}" converter="viajeConverter">
-                                <p:ajax event="change" listener="#{facturaDetBean.seleccionViaje}" update="viajeDet"/>
-                                <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
-                                <f:selectItems value="#{facturaDetBean.viajes}" var="viaje" itemLabel="#{viaje.viaDesc}" itemValue="#{viaje}"/>
-                            </p:selectOneMenu>
-                            <p:outputLabel value="Detalle Viaje" for="viajeDet" />
-                            <p:selectOneMenu id="viajeDet" value="#{facturaDetBean.facturaDetSelected.viaDetId}" converter="viajeConverter">
-                                <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
-                                <f:selectItems value="#{facturaDetBean.detallesViaje}" var="viajeDet" itemLabel="#{viajeDet.vidDesc}" itemValue="#{viajeDet}"/>
-                            </p:selectOneMenu>
+                        <p:selectOneMenu id="viaje" value="#{facturaDetBean.viajeSelected}" converter="viajeConverter">
+                            <p:ajax event="change" listener="#{facturaDetBean.seleccionViaje}" update="viajeDet"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
+                            <f:selectItems value="#{facturaDetBean.viajes}" var="viaje" itemLabel="#{viaje.viaDesc}" itemValue="#{viaje}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Detalle Viaje" for="viajeDet" />
+                        <p:selectOneMenu id="viajeDet" value="#{facturaDetBean.facturaDetSelected.viaDetId}" converter="viajeConverter">
+                            <f:selectItem itemValue="#{null}" itemLabel="Seleccione:"/>
+                            <f:selectItems value="#{facturaDetBean.detallesViaje}" var="viajeDet" itemLabel="#{viajeDet.vidDesc}" itemValue="#{viajeDet}"/>
+                        </p:selectOneMenu>
 
                         <p:outputLabel value="Concepto" for="concepto" />
                         <p:selectOneMenu id="concepto"
@@ -323,6 +404,7 @@
                         <p:selectOneMenu id="porImp" value="#{facturaDetBean.facturaDetSelected.fadPorImp}" style="width:125px">
                             <f:selectItem itemLabel="10%" itemValue="10" />
                             <f:selectItem itemLabel="5%" itemValue="5" />
+                            <f:selectItem itemLabel="Exenta" itemValue=""/>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Valor Unitario" for="valUni" />

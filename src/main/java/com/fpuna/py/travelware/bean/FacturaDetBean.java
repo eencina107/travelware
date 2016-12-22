@@ -90,6 +90,8 @@ public class FacturaDetBean implements Serializable{
         this.facturaDetSelected = new ComFacturasDet();
     }
     
+    
+    
     public void addFacturaDet(){
         FacesContext context = FacesContext.getCurrentInstance();
         if (facturasDet!=null){

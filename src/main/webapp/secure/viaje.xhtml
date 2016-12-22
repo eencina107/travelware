@@ -120,7 +120,9 @@
                                         <p:commandButton process="dtViajeDet" icon="ui-icon-document"
                                                          value="Agregar Detalle"  update=":form-add-viajeDet:viajeDetGr" 
                                                          oncomplete="PF('dlgViajeDetAdd').show()" 
-                                                         actionListener="#{viajeDetBean.buttonAction}"/>
+                                                         actionListener="#{viajeDetBean.buttonAction}">
+                                           
+                                        </p:commandButton>
                                         <p:commandButton process="dtViajeDet" icon="ui-icon-pencil"
                                                          value="Editar Detalle" disabled="true" style="display: none"
                                                          oncomplete="PF('dlgViajeDetAdd').show()"
@@ -277,16 +279,16 @@
                                 <p:ajax update="montoD" />
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Det. Factura" for="fadId" />
-                        <p:selectOneMenu id="fadId" disabled="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
-                                         value="#{viajeDetBean.viajeDetSelected.fadId}" converter="facturaDetConverter">
+<!--                        <p:outputLabel value="Det. Factura" for="fadId" />
+                        <p:selectOneMenu id="fadId" disabled="{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
+                                         value="{viajeDetBean.viajeDetSelected.fadId}" converter="facturaDetConverter">
 
                             <f:selectItem itemLabel=" " itemValue="" />
-                            <f:selectItems value="#{viajeDetBean.facturasDet}" 
+                            <f:selectItems value="{viajeDetBean.facturasDet}" 
                                            var="facturaDet" 
-                                           itemLabel="#{facturaDet.fadDesc} (#{facturaDet.conId.conDesc} - #{facturaDet.facId.monId.monAbreviatura})" 
-                                           itemValue="#{facturaDet}" />
-                        </p:selectOneMenu>
+                                           itemLabel="{facturaDet.fadDesc} ({facturaDet.conId.conDesc} - {facturaDet.facId.monId.monAbreviatura})" 
+                                           itemValue="{facturaDet}" />
+                        </p:selectOneMenu>-->
 
                        <p:outputLabel value="Moneda" for="monedaD" />
                         <p:selectOneMenu id="monedaD" required="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
@@ -301,7 +303,6 @@
  
                        <p:outputLabel value="Monto" for="montoD" />
                         <p:inputText id="montoD" required="#{viajeDetBean.viajeDetSelected.conId.conReq == 'N'}"
-                                     disabled="#{viajeDetBean.viajeDetSelected.conId.conReq == 'S'}"
                                      value="#{viajeDetBean.viajeDetSelected.vidMonto}" />
 
                         <p:outputLabel value="Tipo" for="tipoD" />
