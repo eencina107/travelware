@@ -21,6 +21,8 @@ import com.fpuna.py.travelware.model.ViaViajes;
 import com.fpuna.py.travelware.model.ViaViajesDet;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +37,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -75,6 +78,7 @@ public class FacturaBean implements Serializable {
     private PgeMonedas moneda;
     private Date fecha;
     private int anho;
+    private boolean mostrarCantCuotas;
 
     private boolean habilitado;
 
@@ -116,13 +120,43 @@ public class FacturaBean implements Serializable {
         this.detallesFacturaSelected = new ArrayList<>();
     }
 
-    public void onRowEdit() {
-        System.out.println("Editando");
+    public void onRowEdit(RowEditEvent event) {
+        System.out.println("Editando detalle");
+        
+        ComFacturasDet det = (ComFacturasDet) event.getObject();
+        det.setFadMtoExe(BigDecimal.ZERO);
+        det.setFadMtoGra(BigDecimal.ZERO);
+        det.setFadMtoImp(BigDecimal.ZERO);
+        det.setFadMtoTot(BigDecimal.ZERO);
+        if (det.getFadPorImp().equals(BigDecimal.ZERO)){
+            det.setFadMtoExe(det.getViaDetId().getVidMonto());
+        }
+        else if (det.getFadPorImp().equals(BigDecimal.valueOf(5)) ){
+            det.setFadMtoImp(det.getViaDetId().getVidMonto().multiply(BigDecimal.valueOf(det.getFadCant())).divide(BigDecimal.valueOf(21),2,RoundingMode.CEILING));
+            det.setFadMtoGra(det.getViaDetId().getVidMonto().multiply(BigDecimal.valueOf(det.getFadCant())).subtract(det.getFadMtoImp()));
+        }
+        else if (det.getFadPorImp().equals(BigDecimal.valueOf(10))){
+            det.setFadMtoImp(det.getViaDetId().getVidMonto().multiply(BigDecimal.valueOf(det.getFadCant())).divide(BigDecimal.valueOf(11),2,RoundingMode.CEILING));
+            det.setFadMtoGra(det.getViaDetId().getVidMonto().multiply(BigDecimal.valueOf(det.getFadCant())).subtract(det.getFadMtoImp()));
+        }
+        
+        det.setFadMtoTot(det.getFadMtoExe().add(det.getFadMtoGra()).add(det.getFadMtoImp()));
+        BigDecimal totalMontoDetalles = BigDecimal.ZERO;
+        for (ComFacturasDet fd: this.detallesFacturaSelected){
+            totalMontoDetalles=totalMontoDetalles.add(fd.getFadMtoTot());
+        }
+        this.facturaSelected.setFacTotal(totalMontoDetalles);
+        RequestContext.getCurrentInstance().update("form-add:montoTotal");
     }
 
     public void onRowCancel() {
         if (this.detallesViajeSelected != null)
         this.detallesViajeSelected.clear();
+    }
+    
+    public void onChangeCondicion(){
+        this.mostrarCantCuotas = !this.facturaSelected.getFacCond().equals('C');
+        RequestContext.getCurrentInstance().update("form-add:facturaGr");
     }
     
     public void seleccionViaje(){
@@ -179,6 +213,7 @@ public class FacturaBean implements Serializable {
             factura.setFacSaldo(this.facturaSelected.getFacTotal());
         }
         factura.setProId(this.facturaSelected.getProId());
+        factura.setFacRuc(this.facturaSelected.getProId().getProRuc());
         factura.setFacNro(this.facturaSelected.getFacNro());
         factura.setFacFecha(this.facturaSelected.getFacFecha());
         factura.setMonId(this.facturaSelected.getMonId());
@@ -223,7 +258,9 @@ public class FacturaBean implements Serializable {
     }
     
     public void agregarDetalle(){
-        this.detallesFacturaSelected.add(new ComFacturasDet());
+        ComFacturasDet det= new ComFacturasDet();
+        det.setFadPorImp(BigDecimal.ZERO);
+        this.detallesFacturaSelected.add(det);
     }
 
     public List<ComFacturas> getFacturas() {
@@ -337,6 +374,14 @@ public class FacturaBean implements Serializable {
 
     public void setDetallesViajeSelected(List<ViaViajesDet> detallesViajeSelected) {
         this.detallesViajeSelected = detallesViajeSelected;
+    }
+
+    public boolean isMostrarCantCuotas() {
+        return mostrarCantCuotas;
+    }
+
+    public void setMostrarCantCuotas(boolean mostrarCantCuotas) {
+        this.mostrarCantCuotas = mostrarCantCuotas;
     }
 
 }
